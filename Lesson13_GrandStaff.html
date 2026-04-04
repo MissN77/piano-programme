@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lesson 13 – Grand Staff</title>
+<style>
+:root{--accent:#1a252f;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',sans-serif;background:#f0f4f8;color:#222;min-height:100vh;}
+header{background:var(--accent);color:#fff;padding:1rem 1.5rem;display:flex;align-items:center;gap:1rem;}
+header h1{font-size:1.2rem;}
+.prog{display:flex;gap:.5rem;margin-left:auto;}
+.dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;transition:.2s;}
+.dot.on{background:#fff;transform:scale(1.3);}
+.dot.done{background:rgba(255,255,255,.7);}
+.screen{display:none;padding:1.2rem;max-width:700px;margin:0 auto;}
+.screen.active{display:block;}
+h2{color:var(--accent);margin-bottom:.8rem;}
+.card{background:#fff;border-radius:12px;padding:1.2rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.btn{display:inline-block;padding:.6rem 1.4rem;border-radius:8px;background:var(--accent);color:#fff;border:none;font-size:1rem;cursor:pointer;margin:.3rem;}
+.btn.out{background:#fff;color:var(--accent);border:2px solid var(--accent);}
+.piano-wrap{position:relative;height:110px;width:390px;margin:1rem auto;}
+.wk{position:absolute;width:44px;height:100px;background:#fff;border:1px solid #ccc;border-radius:0 0 6px 6px;cursor:pointer;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font-size:.7rem;color:#999;transition:.15s;}
+.wk.hl{background:#fffde7;border-color:var(--accent);color:var(--accent);font-weight:700;}
+.wk:hover,.wk.playing{background:#e3f2fd;}
+.bk{position:absolute;width:28px;height:60px;background:#222;border-radius:0 0 5px 5px;cursor:pointer;z-index:2;top:0;transition:.15s;}
+.bk.hl{background:var(--accent);}
+.bk:hover,.bk.playing{background:#555;}
+#piano{position:relative;}
+.ng{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0;}
+.nc{display:flex;flex-direction:column;align-items:center;gap:.3rem;cursor:pointer;}
+.nd{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.1rem;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:.15s;}
+.nd:hover{transform:scale(1.1);}
+.mel{overflow-x:auto;padding:.5rem 0;}
+.mel-row{display:flex;align-items:center;gap:.4rem;min-width:max-content;}
+.mn{display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;color:#fff;font-weight:700;transition:.15s;padding:.2rem .1rem;}
+.mn.q{width:52px;height:72px;font-size:.85rem;}
+.mn.h{width:80px;height:72px;font-size:.85rem;}
+.mn.wh{width:110px;height:72px;font-size:.9rem;}
+.mn:hover{opacity:.85;transform:translateY(-2px);}
+.mn.playing{transform:scale(1.08);box-shadow:0 4px 12px rgba(0,0,0,.3);}
+.nl{font-size:1rem;}
+.bl{font-size:.7rem;opacity:.85;}
+.bar{width:3px;height:72px;background:#aaa;border-radius:2px;flex-shrink:0;}
+.tr{display:flex;align-items:center;gap:.8rem;margin:.8rem 0;}
+.tr input{flex:1;}
+.ct{display:flex;gap:.5rem;margin:.5rem 0;}
+.asd-box{border-left:4px solid #e67e22;background:#fff8f0;padding:.8rem 1rem;border-radius:0 8px 8px 0;margin:.8rem 0;}
+.tip-box{border-left:4px solid #27ae60;background:#f0fff4;padding:.8rem 1rem;border-radius:0 8px 8px 0;margin:.8rem 0;}
+.nav{display:flex;justify-content:space-between;margin-top:1.2rem;}
+.staff-box{background:#fff;border-radius:10px;padding:1rem;margin:.8rem 0;font-family:monospace;font-size:.9rem;line-height:2;}
+.clef-row{display:flex;gap:1rem;margin:.8rem 0;}
+.clef-card{flex:1;background:#f8f8f8;border-radius:8px;padding:.8rem;text-align:center;}
+.clef-card .sym{font-size:2.5rem;}
+.mem-box{background:#e8f4f8;border-radius:8px;padding:.8rem 1rem;margin:.6rem 0;font-size:.95rem;}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎹 Lesson 13 – The Grand Staff</h1>
+  <div class="prog">
+    <div class="dot" onclick="goTo(0)"></div>
+    <div class="dot" onclick="goTo(1)"></div>
+    <div class="dot" onclick="goTo(2)"></div>
+    <div class="dot" onclick="goTo(3)"></div>
+    <div class="dot" onclick="goTo(4)"></div>
+  </div>
+</header>
+
+<!-- Screen 0: Welcome -->
+<div class="screen active" id="s0">
+  <div class="card">
+    <h2>👋 Welcome to Lesson 13!</h2>
+    <p>Today you'll learn about the <strong>Grand Staff</strong> — how music is written on paper — and play <em>Michael Row the Boat Ashore</em>.</p>
+    <div class="asd-box">🧡 You can tap any note on the piano below to hear it whenever you like!</div>
+    <div class="piano-wrap"><div id="piano"></div></div>
+    <div id="note-grid" class="ng"></div>
+  </div>
+  <div class="nav"><span></span><button class="btn" onclick="goTo(1)">Next ▶</button></div>
+</div>
+
+<!-- Screen 1: Find Notes -->
+<div class="screen" id="s1">
+  <div class="card">
+    <h2>🔍 Find Your Notes</h2>
+    <p>Today's notes are <strong>E, D, G, A</strong>. Tap each one to hear it!</p>
+    <div class="piano-wrap"><div id="piano2"></div></div>
+    <div id="note-grid2" class="ng"></div>
+    <div class="asd-box">🧡 The highlighted keys are the ones you need today. Try pressing each one twice before moving on.</div>
+  </div>
+  <div class="nav"><button class="btn out" onclick="goTo(0)">◀ Back</button><button class="btn" onclick="goTo(2)">Next ▶</button></div>
+</div>
+
+<!-- Screen 2: Theory -->
+<div class="screen" id="s2">
+  <div class="card">
+    <h2>📖 The Grand Staff</h2>
+    <p>Music is written on lines called a <strong>staff</strong>. Piano music uses two staffs joined together — the <strong>Grand Staff</strong>.</p>
+    <div class="clef-row">
+      <div class="clef-card">
+        <div class="sym">𝄞</div>
+        <strong>Treble Clef</strong>
+        <p style="font-size:.85rem;margin-top:.4rem;">Right hand (RH)<br>Higher notes</p>
+      </div>
+      <div class="clef-card">
+        <div class="sym">𝄢</div>
+        <strong>Bass Clef</strong>
+        <p style="font-size:.85rem;margin-top:.4rem;">Left hand (LH)<br>Lower notes</p>
+      </div>
+    </div>
+    <div class="mem-box">
+      <strong>Remember the treble clef lines (bottom to top):</strong><br>
+      <em>E – G – B – D – F</em><br>
+      👉 <strong>"Every Good Boy Deserves Food"</strong>
+    </div>
+    <div class="mem-box">
+      <strong>Remember the treble clef spaces (bottom to top):</strong><br>
+      <em>F – A – C – E</em><br>
+      👉 They spell <strong>FACE</strong>! 😊
+    </div>
+    <div class="tip-box">💡 You don't need to read sheet music perfectly yet — just start to recognise the shapes. It takes time!</div>
+  </div>
+  <div class="nav"><button class="btn out" onclick="goTo(1)">◀ Back</button><button class="btn" onclick="goTo(3)">Next ▶</button></div>
+</div>
+
+<!-- Screen 3: Song -->
+<div class="screen" id="s3">
+  <div class="card">
+    <h2>🎵 Michael Row the Boat Ashore</h2>
+    <p>A beautiful, gentle song. The notes flow smoothly — try to keep a steady beat.</p>
+    <div class="mel"><div id="mel-row" class="mel-row"></div></div>
+    <div class="tr">
+      <span>🐢</span>
+      <input type="range" min="50" max="160" value="90" oninput="setTempo(this.value)">
+      <span>🐇</span>
+      <span id="tv">90 BPM</span>
+    </div>
+    <div class="ct">
+      <button class="btn" onclick="playMelody()">▶ Play</button>
+      <button class="btn out" onclick="stopMelody()">⏹ Stop</button>
+    </div>
+    <div class="asd-box">🧡 Press Play to hear the tune first. Then try playing along — one note at a time is fine!</div>
+    <div style="margin-top:.8rem;">
+      <button class="btn out" onclick="window.open('https://www.youtube.com/results?search_query=Michael+Row+the+Boat+Ashore+piano+tutorial','_blank')">🎬 Watch on YouTube</button>
+    </div>
+  </div>
+  <div class="nav"><button class="btn out" onclick="goTo(2)">◀ Back</button><button class="btn" onclick="goTo(4)">Next ▶</button></div>
+</div>
+
+<!-- Screen 4: Practice Tips -->
+<div class="screen" id="s4">
+  <div class="card">
+    <h2>✅ Practice Tips</h2>
+    <div class="tip-box">💡 <strong>Grand Staff memory game:</strong> Say "Every Good Boy Deserves Food" and "FACE" out loud 3 times each.</div>
+    <div class="tip-box">💡 <strong>Song practice:</strong> Play Michael Row the Boat Ashore hands separately — RH first, then LH.</div>
+    <div class="asd-box">🧡 If the notes feel hard to find, slow the tempo slider right down. It's OK to go very slowly!</div>
+    <div class="card" style="background:#f8f8f8;margin-top:.8rem;">
+      <strong>⭐ This week:</strong>
+      <ul style="margin:.5rem 0 0 1.2rem;line-height:1.8;">
+        <li>Recite "Every Good Boy Deserves Food"</li>
+        <li>Recite the spaces spell "FACE"</li>
+        <li>Play Michael Row the Boat Ashore x3 each day</li>
+      </ul>
+    </div>
+    <div style="margin-top:1rem;text-align:center;">
+      <button class="btn" onclick="goTo(0)">🔄 Start Again</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const FREQS={'C4':261.63,'Cs4':277.18,'D4':293.66,'Ds4':311.13,'E4':329.63,'F4':349.23,'Fs4':369.99,'G4':392.00,'Gs4':415.30,'A4':440.00,'As4':466.16,'B4':493.88,'C5':523.25,'D5':587.33,'E5':659.25,'F5':698.46,'Fs5':739.99,'G5':783.99};
+const NCOLORS={'C4':'#4a90d9','D4':'#16a085','E4':'#27ae60','F4':'#8e44ad','G4':'#e74c3c','A4':'#e67e22','B4':'#f1c40f','C5':'#4a90d9','D5':'#16a085','E5':'#27ae60','Cs4':'#2c7fb8','Ds4':'#1a6b5a','Fs4':'#6c3483','Gs4':'#8b0000','As4':'#b7770d','F5':'#6c3483'};
+const BL={1:'♩',2:'♩♩',3:'♩♩♩',4:'♩♩♩♩'};
+const todayNotes=['E4','D4','G4','A4'];
+const MELODY=[['E4',1],['E4',1],['G4',2],['G4',1],['A4',1],['G4',2],['E4',1],['E4',1],['G4',1],['E4',1],['D4',2],['D4',2]];
+const barPattern=[3,3,4,2];
+let tempo=90,timer=null,actx=null;
+function ctx(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();return actx;}
+function playNote(n){if(!FREQS[n])return;const c=ctx(),o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.value=FREQS[n];g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(0.4,c.currentTime+0.02);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+1.2);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+1.2);document.querySelectorAll('[data-note="'+n+'"]').forEach(k=>{k.classList.add('playing');setTimeout(()=>k.classList.remove('playing'),300);});}
+function flashKey(n){document.querySelectorAll('[data-note="'+n+'"]').forEach(k=>{k.classList.add('playing');setTimeout(()=>k.classList.remove('playing'),200);});}
+function buildPiano(id){const w=document.getElementById(id);if(!w)return;const wns=['C4','D4','E4','F4','G4','A4','B4','C5'];const bm={0:'Cs4',1:'Ds4',3:'Fs4',4:'Gs4',5:'As4'};wns.forEach((n,i)=>{const k=document.createElement('div');k.className='wk';k.dataset.note=n;if(todayNotes.includes(n))k.classList.add('hl');k.style.left=(i*48)+'px';k.textContent=n.replace(/\d/,'');k.onclick=()=>playNote(n);w.appendChild(k);});Object.entries(bm).forEach(([i,n])=>{const k=document.createElement('div');k.className='bk';k.dataset.note=n;if(todayNotes.includes(n))k.classList.add('hl');k.style.left=(parseInt(i)*48+32)+'px';k.onclick=(e)=>{e.stopPropagation();playNote(n);};w.appendChild(k);});}
+function buildNoteGrid(id){const g=document.getElementById(id);if(!g)return;todayNotes.forEach(n=>{const card=document.createElement('div');card.className='nc';const dot=document.createElement('div');dot.className='nd';dot.style.background=NCOLORS[n]||'#888';const lbl=n==='As4'?'Bb':n.replace(/\d/,'').replace('s','#');dot.textContent=lbl;card.appendChild(dot);const txt=document.createElement('div');txt.style.fontSize='.85rem';txt.textContent=lbl;card.appendChild(txt);card.addEventListener('click',()=>playNote(n));g.appendChild(card);});}
+function buildMelody(){const r=document.getElementById('mel-row');if(!r)return;r.innerHTML='';let ni=0;barPattern.forEach((cnt,bi)=>{for(let n=0;n<cnt;n++){if(ni>=MELODY.length)break;const[note,beats]=MELODY[ni];const d=document.createElement('div');d.className='mn '+(beats===1?'q':beats===2?'h':'wh');d.dataset.idx=ni;d.dataset.note=note;d.style.background=NCOLORS[note]||'#888';const lbl=note==='As4'?'Bb':note.replace(/\d/,'').replace('s','#');d.innerHTML='<span class="nl">'+lbl+'</span><span class="bl">'+BL[beats]+'</span>';d.onclick=()=>playNote(note);r.appendChild(d);ni++;}if(bi<barPattern.length-1){const b=document.createElement('div');b.className='bar';r.appendChild(b);}});}
+function setTempo(v){tempo=parseInt(v);document.getElementById('tv').textContent=v+' BPM';}
+function stopMelody(){if(timer){clearTimeout(timer);timer=null;}document.querySelectorAll('.mn').forEach(n=>n.classList.remove('playing'));}
+function playMelody(){stopMelody();let i=0;const bms=60000/tempo;function next(){if(i>=MELODY.length)return;const[n,b]=MELODY[i];playNote(n);flashKey(n);document.querySelectorAll('.mn').forEach(x=>x.classList.remove('playing'));const el=document.querySelector('.mn[data-idx="'+i+'"]');if(el)el.classList.add('playing');i++;timer=setTimeout(next,bms*b);}next();}
+function goTo(idx){document.querySelectorAll('.screen').forEach((s,i)=>s.classList.toggle('active',i===idx));document.querySelectorAll('.dot').forEach((d,i)=>{d.classList.remove('on','done');if(i<idx)d.classList.add('done');if(i===idx)d.classList.add('on');});window.scrollTo(0,0);}
+window.addEventListener('DOMContentLoaded',()=>{buildPiano('piano');buildNoteGrid('note-grid');buildPiano('piano2');buildNoteGrid('note-grid2');buildMelody();document.querySelector('.dot').classList.add('on');});
+</script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lesson 30 – Full Exam Run-Through</title>
+<style>
+:root{--accent:#194d19;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',sans-serif;background:#0d1117;color:#eee;min-height:100vh;}
+.screen{display:none;padding:20px;max-width:700px;margin:0 auto;}
+.screen.active{display:block;}
+h1{font-size:1.6rem;color:#a5d6a7;margin-bottom:8px;}
+h2{font-size:1.2rem;color:#a5d6a7;margin:16px 0 8px;}
+p{line-height:1.6;margin-bottom:10px;font-size:1rem;}
+.asd-box{background:#0f2a0f;border-left:4px solid #e67e22;border-radius:8px;padding:14px;margin:12px 0;}
+.tip-box{background:#1e3a2e;border-left:4px solid #27ae60;border-radius:8px;padding:14px;margin:12px 0;}
+.btn{display:inline-block;background:#194d19;color:#fff;border:none;border-radius:24px;padding:10px 24px;font-size:1rem;cursor:pointer;margin:6px 4px;border:2px solid #a5d6a7;}
+.btn:hover{background:#2e7d32;}
+.btn-outline{background:transparent;color:#a5d6a7;}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;}
+.dots{display:flex;gap:8px;}
+.dot{width:12px;height:12px;border-radius:50%;background:#444;cursor:pointer;transition:.2s;}
+.dot.on{background:#a5d6a7;transform:scale(1.3);}
+.dot.done{background:#888;}
+.phase-badge{display:inline-block;background:#194d19;color:#a5d6a7;border:2px solid #a5d6a7;border-radius:20px;padding:4px 14px;font-size:.85rem;margin-bottom:10px;}
+.checklist{list-style:none;margin:12px 0;}
+.checklist li{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#0f2a0f;border-radius:8px;margin-bottom:8px;font-size:1rem;cursor:pointer;border:2px solid transparent;transition:.2s;}
+.checklist li.done{border-color:#27ae60;background:#1e3a2e;}
+.checklist li:before{content:'⬜';font-size:1.2rem;}
+.checklist li.done:before{content:'✅';}
+.score-box{background:#0f2a0f;border-radius:12px;padding:20px;margin:16px 0;text-align:center;}
+.score-big{font-size:3rem;font-weight:bold;color:#f1c40f;}
+.section-card{background:#0f2a0f;border-radius:10px;padding:14px;margin:10px 0;border-left:4px solid #a5d6a7;}
+.star-row{font-size:2rem;text-align:center;margin:12px 0;}
+</style>
+</head>
+<body>
+<div style="padding:12px 20px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.3);position:fixed;top:0;left:0;right:0;z-index:10;">
+<span style="color:#a5d6a7;font-weight:bold;">🎹 Lesson 30</span>
+<div class="dots">
+<div class="dot" onclick="goTo(0)"></div>
+<div class="dot" onclick="goTo(1)"></div>
+<div class="dot" onclick="goTo(2)"></div>
+<div class="dot" onclick="goTo(3)"></div>
+<div class="dot" onclick="goTo(4)"></div>
+</div>
+</div>
+<div style="height:50px;"></div>
+
+<!-- Screen 0: Welcome -->
+<div class="screen active" id="s0">
+<br>
+<span class="phase-badge">Phase 4 · Week 30</span>
+<h1>Full Exam Run-Through 🎬</h1>
+<p>This is the big one. Today you play through <strong>everything</strong> — all three pieces, scales, and aural — exactly as you will in the exam. Let's see how you do!</p>
+<div class="asd-box">
+<strong>🎯 Today you'll do:</strong><br>
+✅ Run through your List A, B and C pieces in order<br>
+✅ Play your scales (C, G, A minor)<br>
+✅ Practise the aural tests<br>
+✅ Score yourself honestly
+</div>
+<div class="tip-box">
+💡 In the exam you'll do all of this in one go — usually around 15 minutes. Today is your practice exam. Go for it!
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(0)">↩</button>
+<button class="btn" onclick="goTo(1)">Exam Format →</button>
+</div>
+</div>
+
+<!-- Screen 1: Exam Format -->
+<div class="screen" id="s1">
+<h1>ABRSM Grade 1 Format 📋</h1>
+<p>Here's exactly what happens in the exam — in order:</p>
+<div class="section-card">
+<strong>1. Pieces (approx. 9 minutes)</strong><br>
+• List A piece — lively, crisp, energetic<br>
+• List B piece — lyrical, expressive, singing tone<br>
+• List C piece — characterful, fun, with personality<br>
+• You can play them in any order you prefer
+</div>
+<div class="section-card">
+<strong>2. Scales &amp; Arpeggios (approx. 2 minutes)</strong><br>
+• C major — one octave, hands separately<br>
+• G major — one octave, hands separately<br>
+• A minor — one octave, hands separately
+</div>
+<div class="section-card">
+<strong>3. Sight Reading (approx. 1 minute)</strong><br>
+• A short 4-bar passage you haven't seen before<br>
+• You get 30 seconds to look at it first
+</div>
+<div class="section-card">
+<strong>4. Aural Tests (approx. 3 minutes)</strong><br>
+• Clap the pulse • Identify changes in tempo or dynamics<br>
+• Sing back a short phrase
+</div>
+<div class="asd-box">
+💡 <strong>ASD tip:</strong> Knowing the exact order removes surprises. Run through this list in your head before you go in. The exam is very predictable — that's helpful!
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(0)">← Back</button>
+<button class="btn" onclick="goTo(2)">Pieces Checklist →</button>
+</div>
+</div>
+
+<!-- Screen 2: Pieces Checklist -->
+<div class="screen" id="s2">
+<h1>Pieces Run-Through ✅</h1>
+<p>Play all three pieces now — one after the other. Tick each item you achieve:</p>
+<ul class="checklist" id="theory-list">
+<li onclick="toggle(this)">List A — I played it all the way through without stopping</li>
+<li onclick="toggle(this)">List A — It had energy, crisp articulation and a steady pulse</li>
+<li onclick="toggle(this)">List B — I played it all the way through without stopping</li>
+<li onclick="toggle(this)">List B — It had a singing, expressive tone and shaped phrases</li>
+<li onclick="toggle(this)">List C — I played it all the way through without stopping</li>
+<li onclick="toggle(this)">List C — It had clear character and personality</li>
+<li onclick="toggle(this)">All three pieces — I kept going through any small mistakes</li>
+</ul>
+<div class="score-box">
+<div id="theory-score" class="score-big">0/7</div>
+<div style="color:#aaa;margin-top:6px;">pieces score</div>
+</div>
+<div class="asd-box">
+💡 A score of 5/7 or more is really good at this stage. If one piece scores fewer ticks, focus your practice there this week.
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(1)">← Back</button>
+<button class="btn" onclick="goTo(3)">Scales &amp; Aural →</button>
+</div>
+</div>
+
+<!-- Screen 3: Scales & Aural -->
+<div class="screen" id="s3">
+<h1>Scales &amp; Aural ✅</h1>
+<p>Now play your scales, then do the aural practice. Tick each one you complete well:</p>
+<ul class="checklist" id="perf-list">
+<li onclick="toggle2(this)">C major scale — both hands separately, smooth and even</li>
+<li onclick="toggle2(this)">G major scale — both hands separately, F# in the right place</li>
+<li onclick="toggle2(this)">A minor scale — both hands separately, steady tempo</li>
+<li onclick="toggle2(this)">Aural — I can clap a steady pulse to music</li>
+<li onclick="toggle2(this)">Aural — I can identify if music gets louder or softer</li>
+<li onclick="toggle2(this)">Aural — I can sing back a short 2-note phrase</li>
+<li onclick="toggle2(this)">Overall — I felt calm and focused throughout</li>
+</ul>
+<div class="score-box">
+<div id="perf-score" class="score-big">0/7</div>
+<div style="color:#aaa;margin-top:6px;">scales &amp; aural score</div>
+</div>
+<div class="score-box" style="margin-top:8px;">
+<div id="total-score" class="score-big">⭐</div>
+<div style="color:#aaa;margin-top:6px;">overall run-through rating</div>
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(2)">← Back</button>
+<button class="btn" onclick="goTo(4)">Practice Tips →</button>
+</div>
+</div>
+
+<!-- Screen 4: Practice Tips -->
+<div class="screen" id="s4">
+<h1>Practice Tips 💡</h1>
+<div class="tip-box">
+<strong>🎯 This week, practise:</strong><br>
+1. Do another full run-through at least twice before the exam<br>
+2. Time yourself — the whole thing should take about 15 minutes<br>
+3. If a piece goes wrong, keep going — don't stop and restart<br>
+4. Practise walking in, sitting down, and beginning calmly — it helps!
+</div>
+<div class="asd-box">
+<strong>💡 ASD tip:</strong><br>
+A full run-through can feel overwhelming. Break it into two halves if needed: pieces first, scales and aural second. Or do it in a familiar room, in your usual practice spot — that reduces anxiety about the format.
+</div>
+<div style="margin:16px 0;">
+<button class="btn" onclick="window.open('https://www.youtube.com/results?search_query=abrsm+grade+1+piano+exam+what+to+expect')">▶ What to Expect in Grade 1</button>
+<button class="btn" onclick="window.open('https://www.youtube.com/results?search_query=abrsm+grade+1+piano+full+exam+walkthrough')">▶ Full Exam Walkthrough</button>
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(3)">← Back</button>
+<button class="btn" onclick="goTo(0)">↩ Start</button>
+</div>
+</div>
+
+<script>
+function goTo(idx){document.querySelectorAll('.screen').forEach((s,i)=>s.classList.toggle('active',i===idx));document.querySelectorAll('.dot').forEach((d,i)=>{d.classList.remove('on','done');if(i<idx)d.classList.add('done');if(i===idx)d.classList.add('on');});window.scrollTo(0,0);}
+function toggle(el){el.classList.toggle('done');updateScores();}
+function toggle2(el){el.classList.toggle('done');updateScores();}
+function updateScores(){
+  const t=document.querySelectorAll('#theory-list li.done').length;
+  const p=document.querySelectorAll('#perf-list li.done').length;
+  const ts=document.getElementById('theory-score');
+  const ps=document.getElementById('perf-score');
+  if(ts)ts.textContent=t+'/7';
+  if(ps)ps.textContent=p+'/7';
+  const tot=document.getElementById('total-score');
+  if(tot){const total=t+p;tot.textContent=total>=12?'⭐⭐⭐':total>=8?'⭐⭐':'⭐';}
+}
+window.addEventListener('DOMContentLoaded',()=>{document.querySelector('.dot').classList.add('on');});
+</script>
+</body>
+</html>

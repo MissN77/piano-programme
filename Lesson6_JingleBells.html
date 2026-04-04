@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 6 – Jingle Bells</title>
+<style>
+  :root {
+    --primary: #e67e22;
+    --primary-dark: #ca6f1e;
+    --primary-light: #fdebd0;
+    --accent: #f39c12;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f9f9f9; color: #2c2c2c; }
+  header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white; padding: 18px 24px; display: flex; align-items: center; gap: 16px;
+  }
+  header .badge {
+    background: rgba(255,255,255,0.25); border-radius: 50%;
+    width: 52px; height: 52px; display: flex; align-items: center;
+    justify-content: center; font-size: 1.5rem; font-weight: 700; flex-shrink: 0;
+  }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: 0.88rem; opacity: 0.9; margin-top: 2px; }
+
+  /* Progress dots */
+  .progress-bar {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0; background: white; border-bottom: 1px solid #e0e0e0;
+    padding: 0; overflow-x: auto;
+  }
+  .prog-dot {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 10px 14px; cursor: pointer; border-bottom: 3px solid transparent;
+    transition: all 0.2s; flex: 1; min-width: 70px;
+  }
+  .prog-dot:hover { background: #f5f5f5; }
+  .prog-dot.active { border-bottom-color: var(--primary); }
+  .prog-dot.done .dot-circle { background: var(--primary); color: white; }
+  .dot-circle {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #e0e0e0; color: #666;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700; margin-bottom: 4px; transition: all 0.2s;
+  }
+  .prog-dot.active .dot-circle { background: var(--primary); color: white; }
+  .dot-label { font-size: 0.65rem; color: #666; text-align: center; line-height: 1.2; }
+  .prog-dot.active .dot-label { color: var(--primary); font-weight: 600; }
+
+  /* Sections */
+  .section { display: none; padding: 20px; max-width: 780px; margin: 0 auto; }
+  .section.active { display: block; }
+
+  .card {
+    background: white; border-radius: 12px; padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07); margin-bottom: 16px;
+  }
+  .card h2 { font-size: 1.1rem; color: var(--primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .card h3 { font-size: 0.95rem; color: #444; margin: 14px 0 8px; }
+  .card p, .card li { font-size: 0.9rem; line-height: 1.65; color: #444; }
+  .card ul { padding-left: 18px; }
+  .card ul li { margin-bottom: 6px; }
+
+  .asd-box {
+    background: #fff8f0; border-left: 4px solid #e67e22;
+    border-radius: 8px; padding: 14px 16px; margin-top: 14px;
+  }
+  .asd-box .asd-title { font-size: 0.8rem; font-weight: 700; color: #e67e22; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .asd-box p { font-size: 0.88rem; color: #7d4e00; }
+
+  .tip-box {
+    background: #f0faf4; border-left: 4px solid #27ae60;
+    border-radius: 8px; padding: 14px 16px; margin-top: 14px;
+  }
+  .tip-box .tip-title { font-size: 0.8rem; font-weight: 700; color: #27ae60; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .tip-box p { font-size: 0.88rem; color: #1b5e20; }
+
+  /* Note boxes for find-notes section */
+  .note-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+  .note-box {
+    border-radius: 10px; padding: 12px 16px; text-align: center;
+    flex: 1; min-width: 80px; color: white; font-weight: 700;
+  }
+  .note-box .note-name { font-size: 1.3rem; }
+  .note-box .note-desc { font-size: 0.75rem; opacity: 0.9; margin-top: 4px; }
+  .note-box .finger { font-size: 1.6rem; margin-bottom: 4px; }
+
+  /* Piano keyboard */
+  .keyboard-wrap { overflow-x: auto; padding: 10px 0; }
+  .piano {
+    position: relative; height: 130px; display: inline-flex;
+    min-width: 360px; user-select: none;
+  }
+  .white-key {
+    width: 48px; height: 130px; background: white;
+    border: 1px solid #bbb; border-radius: 0 0 6px 6px;
+    cursor: pointer; position: relative; transition: background 0.1s;
+    display: flex; align-items: flex-end; justify-content: center; padding-bottom: 6px;
+    font-size: 0.7rem; color: #555; font-weight: 600;
+  }
+  .white-key:hover { background: #f0f0f0; }
+  .white-key.pressed { background: #ffe0b2; }
+  .black-key {
+    width: 32px; height: 80px; background: #222;
+    border-radius: 0 0 4px 4px; cursor: pointer;
+    position: absolute; top: 0; z-index: 2; transition: background 0.1s;
+  }
+  .black-key:hover { background: #444; }
+  .black-key.pressed { background: #e67e22; }
+  .key-highlight { background: var(--primary) !important; color: white !important; }
+
+  /* Melody row */
+  .mel-row-wrap { overflow-x: auto; padding: 8px 0; }
+  #mel-row {
+    display: flex; align-items: center; gap: 6px;
+    min-height: 80px; flex-wrap: nowrap; padding: 4px 0;
+  }
+  .mel-note {
+    border-radius: 8px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    color: white; font-weight: 700; cursor: default;
+    transition: transform 0.15s, box-shadow 0.15s; flex-shrink: 0;
+    height: 64px; position: relative;
+  }
+  .mel-note.q  { width: 48px; }
+  .mel-note.h  { width: 80px; }
+  .mel-note.wh { width: 110px; }
+  .mel-note .note-label { font-size: 1rem; }
+  .mel-note .beat-label { font-size: 0.6rem; opacity: 0.85; margin-top: 2px; }
+  .mel-note.flash {
+    transform: scale(1.12);
+    box-shadow: 0 0 14px rgba(0,0,0,0.4);
+    outline: 3px solid white;
+  }
+  .bar-line {
+    width: 3px; height: 52px; background: #555;
+    flex-shrink: 0; border-radius: 2px;
+  }
+
+  /* Tempo buttons */
+  .tempo-btns { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .tempo-btn {
+    padding: 6px 14px; border: 2px solid var(--primary); border-radius: 20px;
+    background: white; color: var(--primary); font-weight: 600; cursor: pointer;
+    font-size: 0.85rem; transition: all 0.15s;
+  }
+  .tempo-btn.active { background: var(--primary); color: white; }
+  .tempo-btn:hover { background: var(--primary); color: white; }
+
+  /* Play/Stop buttons */
+  .play-btn {
+    background: var(--primary); color: white; border: none;
+    padding: 10px 24px; border-radius: 24px; font-size: 0.95rem;
+    font-weight: 600; cursor: pointer; transition: background 0.15s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .play-btn:hover { background: var(--primary-dark); }
+  .stop-btn {
+    background: #666; color: white; border: none;
+    padding: 10px 20px; border-radius: 24px; font-size: 0.95rem;
+    font-weight: 600; cursor: pointer; margin-left: 8px; transition: background 0.15s;
+  }
+  .stop-btn:hover { background: #444; }
+
+  /* Navigation */
+  .nav-btns { display: flex; justify-content: space-between; margin-top: 20px; gap: 10px; }
+  .nav-btn {
+    padding: 10px 22px; border-radius: 24px; border: none;
+    font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
+  }
+  .nav-btn.prev { background: #e0e0e0; color: #444; }
+  .nav-btn.prev:hover { background: #ccc; }
+  .nav-btn.next { background: var(--primary); color: white; }
+  .nav-btn.next:hover { background: var(--primary-dark); }
+
+  /* YouTube button */
+  .yt-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #c0392b; color: white; border: none;
+    padding: 8px 16px; border-radius: 20px; font-size: 0.82rem;
+    font-weight: 600; cursor: pointer; margin-top: 10px; text-decoration: none;
+  }
+  .yt-btn:hover { background: #a93226; }
+
+  /* Time signature display */
+  .time-sig {
+    display: inline-flex; flex-direction: column; align-items: center;
+    background: var(--primary-light); border: 2px solid var(--primary);
+    border-radius: 8px; padding: 8px 16px; margin: 8px;
+  }
+  .time-sig .top-num { font-size: 2rem; font-weight: 900; color: var(--primary); line-height: 1; }
+  .time-sig .bot-num { font-size: 2rem; font-weight: 900; color: var(--primary); line-height: 1; border-top: 2px solid var(--primary); padding-top: 2px; }
+
+  .bar-visual {
+    display: flex; align-items: flex-end; gap: 4px;
+    background: #f5f5f5; border-radius: 8px; padding: 12px;
+    margin-top: 10px; overflow-x: auto;
+  }
+  .bv-bar {
+    display: flex; gap: 4px; align-items: flex-end;
+    padding-right: 8px; border-right: 3px solid #555;
+  }
+  .bv-bar:last-child { border-right: none; }
+  .bv-beat {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 0.85rem;
+  }
+  .bv-beat.strong { background: var(--primary); }
+  .bv-beat.weak { background: #bbb; color: #555; }
+
+  /* Practice checklist */
+  .check-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 0; border-bottom: 1px solid #f0f0f0;
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-item input[type=checkbox] { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--primary); flex-shrink: 0; }
+  .check-item label { font-size: 0.88rem; color: #444; line-height: 1.5; }
+
+  .phase-badge {
+    display: inline-block; background: var(--primary); color: white;
+    font-size: 0.72rem; font-weight: 700; padding: 3px 10px;
+    border-radius: 12px; margin-bottom: 10px; letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 500px) {
+    header h1 { font-size: 1.15rem; }
+    .section { padding: 14px; }
+    .card { padding: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">6</div>
+  <div>
+    <h1>Lesson 6 – Jingle Bells</h1>
+    <p>Phase 1 · Week 6 · 4/4 Time &amp; Bar Lines</p>
+  </div>
+</header>
+
+<!-- Progress dots -->
+<nav class="progress-bar" id="prog-bar">
+  <div class="prog-dot active" onclick="goTo(0)">
+    <div class="dot-circle">1</div>
+    <div class="dot-label">Welcome</div>
+  </div>
+  <div class="prog-dot" onclick="goTo(1)">
+    <div class="dot-circle">2</div>
+    <div class="dot-label">Find Notes</div>
+  </div>
+  <div class="prog-dot" onclick="goTo(2)">
+    <div class="dot-circle">3</div>
+    <div class="dot-label">4/4 Time</div>
+  </div>
+  <div class="prog-dot" onclick="goTo(3)">
+    <div class="dot-circle">4</div>
+    <div class="dot-label">The Song</div>
+  </div>
+  <div class="prog-dot" onclick="goTo(4)">
+    <div class="dot-circle">5</div>
+    <div class="dot-label">Practice</div>
+  </div>
+</nav>
+
+<!-- SECTION 0: Welcome -->
+<section class="section active" id="sec-0">
+  <div class="card">
+    <span class="phase-badge">Phase 1 — Five-Finger Pieces</span>
+    <h2>🎵 Welcome to Lesson 6!</h2>
+    <p>Today you'll play the opening of <strong>Jingle Bells</strong> — one of the most famous melodies in the world! You already know all the notes you need. This lesson introduces <strong>4/4 time signatures</strong> and <strong>bar lines</strong> — the rules that keep music organised and predictable.</p>
+
+    <div class="asd-box">
+      <div class="asd-title">🧠 ASD Note for Parent/Carer</div>
+      <p>Music has <em>rules, just like maths</em> — this can be very appealing for many children with ASD. Bar lines divide music into equal chunks so you always know where you are. Try saying: <strong>"4/4 means every bar has exactly 4 beats — no more, no less."</strong> You can also draw bar lines in different colours to make them visually distinct.</p>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-title">🎯 Lesson Goal</div>
+      <p>Play the opening 4 bars of Jingle Bells (right hand only) at a steady tempo, counting beats aloud. Understand what a time signature means.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📋 What You'll Learn</h2>
+    <ul>
+      <li>What a <strong>time signature</strong> means (top and bottom numbers)</li>
+      <li>How <strong>bar lines</strong> divide music into equal groups</li>
+      <li>What a <strong>double bar line</strong> and <strong>repeat sign</strong> look like</li>
+      <li>Play a 4-bar melody using E, G, C, D (right hand)</li>
+    </ul>
+    <br>
+    <h3>⏱️ Suggested Timing</h3>
+    <ul>
+      <li>Warm-up: 5 minutes (scales/finger exercises)</li>
+      <li>Theory (time signature): 10 minutes</li>
+      <li>Learning the melody: 15 minutes</li>
+      <li>Free play / fun: 5 minutes</li>
+    </ul>
+  </div>
+
+  <div class="nav-btns">
+    <div></div>
+    <button class="nav-btn next" onclick="goTo(1)">Find Notes →</button>
+  </div>
+</section>
+
+<!-- SECTION 1: Find Notes -->
+<section class="section" id="sec-1">
+  <div class="card">
+    <h2>🎹 Notes in Jingle Bells</h2>
+    <p>Today's melody uses <strong>four notes</strong>: C, D, E, and G. All in the right-hand five-finger position — but notice that G is played with your <strong>5th finger</strong>, so you need to stretch slightly from your normal C position.</p>
+
+    <div class="note-grid">
+      <div class="note-box" style="background:#4a90d9">
+        <div class="finger">👆</div>
+        <div class="note-name">C4</div>
+        <div class="note-desc">Finger 1 (thumb)<br>Middle C</div>
+      </div>
+      <div class="note-box" style="background:#16a085">
+        <div class="finger">✌️</div>
+        <div class="note-name">D4</div>
+        <div class="note-desc">Finger 2<br>D above Middle C</div>
+      </div>
+      <div class="note-box" style="background:#27ae60">
+        <div class="finger">🤟</div>
+        <div class="note-name">E4</div>
+        <div class="note-desc">Finger 3<br>Main melody note!</div>
+      </div>
+      <div class="note-box" style="background:#e74c3c">
+        <div class="finger">🖐️</div>
+        <div class="note-name">G4</div>
+        <div class="note-desc">Finger 5<br>Slight stretch</div>
+      </div>
+    </div>
+
+    <div class="tip-box" style="margin-top:14px">
+      <div class="tip-title">💡 Hand Position</div>
+      <p>Place your thumb (1) on Middle C. Your fingers naturally land on D (2), E (3), F (4), G (5). Today you skip F — just use fingers 1, 2, 3, and 5. Keep your hand relaxed and curved.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🎹 Interactive Keyboard</h2>
+    <p style="font-size:0.85rem;color:#666;margin-bottom:10px">Click the highlighted keys to hear each note. The notes used today are marked.</p>
+    <div class="keyboard-wrap">
+      <div class="piano" id="piano"></div>
+    </div>
+    <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:8px;">
+      <button class="play-btn" style="font-size:0.82rem;padding:7px 16px" onclick="playNote('C4')">▶ C4</button>
+      <button class="play-btn" style="font-size:0.82rem;padding:7px 16px" onclick="playNote('D4')">▶ D4</button>
+      <button class="play-btn" style="font-size:0.82rem;padding:7px 16px" onclick="playNote('E4')">▶ E4</button>
+      <button class="play-btn" style="font-size:0.82rem;padding:7px 16px" onclick="playNote('G4')">▶ G4</button>
+    </div>
+  </div>
+
+  <div class="nav-btns">
+    <button class="nav-btn prev" onclick="goTo(0)">← Welcome</button>
+    <button class="nav-btn next" onclick="goTo(2)">4/4 Time →</button>
+  </div>
+</section>
+
+<!-- SECTION 2: 4/4 Time -->
+<section class="section" id="sec-2">
+  <div class="card">
+    <h2>📐 What Is a Time Signature?</h2>
+    <p>At the start of every piece of music, you'll see two numbers stacked on top of each other — this is the <strong>time signature</strong>. It tells you the rules for counting beats.</p>
+
+    <div style="display:flex; align-items:center; gap:20px; margin:16px 0; flex-wrap:wrap;">
+      <div class="time-sig">
+        <div class="top-num">4</div>
+        <div class="bot-num">4</div>
+      </div>
+      <div>
+        <p><strong>Top number (4):</strong> There are <em>4 beats in every bar</em></p>
+        <br>
+        <p><strong>Bottom number (4):</strong> Each beat is worth a <em>quarter note (crotchet)</em></p>
+      </div>
+    </div>
+
+    <div class="asd-box">
+      <div class="asd-title">🧠 ASD Note</div>
+      <p>The time signature is like a <strong>rule that never changes</strong> throughout the piece. Every single bar will have exactly 4 beats. This is predictable and consistent — once you know the rule, you can always count correctly.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📊 4 Beats in a Bar</h2>
+    <p>In 4/4 time, beat 1 is the <strong>strong beat</strong> (louder). Beats 2, 3, and 4 are weaker. This creates a natural rhythm: <strong>STRONG – weak – weak – weak</strong>.</p>
+
+    <div style="margin:14px 0;">
+      <p style="font-size:0.88rem;color:#666;margin-bottom:8px">Each group of 4 = one bar. Bar lines divide them:</p>
+      <div class="bar-visual">
+        <div class="bv-bar">
+          <div class="bv-beat strong">1</div>
+          <div class="bv-beat weak">2</div>
+          <div class="bv-beat weak">3</div>
+          <div class="bv-beat weak">4</div>
+        </div>
+        <div class="bv-bar">
+          <div class="bv-beat strong">1</div>
+          <div class="bv-beat weak">2</div>
+          <div class="bv-beat weak">3</div>
+          <div class="bv-beat weak">4</div>
+        </div>
+        <div class="bv-bar">
+          <div class="bv-beat strong">1</div>
+          <div class="bv-beat weak">2</div>
+          <div class="bv-beat weak">3</div>
+          <div class="bv-beat weak">4</div>
+        </div>
+        <div class="bv-bar">
+          <div class="bv-beat strong">1</div>
+          <div class="bv-beat weak">2</div>
+          <div class="bv-beat weak">3</div>
+          <div class="bv-beat weak">4</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-title">💡 How Bar Lines Work</div>
+      <p>A <strong>bar line</strong> is a vertical line on the staff that separates one bar from the next. A <strong>double bar line</strong> (two lines) marks the end of a section. A <strong>repeat sign</strong> (double bar + dots) means "go back and play this section again."</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🎙️ Counting Practice</h2>
+    <p>Before playing, practise saying the counts aloud. For Jingle Bells, it goes:</p>
+    <div style="background:#fdebd0; border-radius:8px; padding:12px 16px; margin-top:10px; font-family:monospace; font-size:0.9rem; line-height:2;">
+      <strong>Bar 1:</strong> E  —  E  —  E — — <em>(count: 1 – 2 – 3–4)</em><br>
+      <strong>Bar 2:</strong> E  —  E  —  E — — <em>(count: 1 – 2 – 3–4)</em><br>
+      <strong>Bar 3:</strong> E  —  G  —  C  —  D <em>(count: 1 – 2 – 3 – 4)</em><br>
+      <strong>Bar 4:</strong> E — — — — — — — <em>(count: 1–2–3–4, hold)</em>
+    </div>
+    <div style="margin-top:12px;">
+      <a class="yt-btn" href="https://www.youtube.com/results?search_query=jingle+bells+piano+tutorial+easy+beginners" target="_blank">
+        ▶ Watch: Jingle Bells piano tutorial
+      </a>
+    </div>
+  </div>
+
+  <div class="nav-btns">
+    <button class="nav-btn prev" onclick="goTo(1)">← Find Notes</button>
+    <button class="nav-btn next" onclick="goTo(3)">The Song →</button>
+  </div>
+</section>
+
+<!-- SECTION 3: The Song -->
+<section class="section" id="sec-3">
+  <div class="card">
+    <h2>🎼 Jingle Bells – First 4 Bars</h2>
+    <p>Here is the melody row with all 4 bars shown. Press <strong>Play</strong> to hear it. Each coloured block is one note — the width shows how long to hold it.</p>
+
+    <div class="tempo-btns">
+      <button class="tempo-btn active" onclick="setTempo(60,this)">♩=60 Slow</button>
+      <button class="tempo-btn" onclick="setTempo(80,this)">♩=80 Medium</button>
+      <button class="tempo-btn" onclick="setTempo(100,this)">♩=100 Fast</button>
+    </div>
+
+    <div class="mel-row-wrap">
+      <div id="mel-row"></div>
+    </div>
+
+    <div style="margin-top:14px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+      <button class="play-btn" onclick="playMelody()">▶ Play Melody</button>
+      <button class="stop-btn" onclick="stopMelody()">■ Stop</button>
+    </div>
+
+    <div class="tip-box" style="margin-top:14px">
+      <div class="tip-title">🔑 Legend</div>
+      <p>Narrow block = quarter note (1 beat). Medium block = half note (2 beats). Wide block = whole note (4 beats). The vertical lines between groups are bar lines.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🎹 Interactive Keyboard</h2>
+    <p style="font-size:0.85rem;color:#666;margin-bottom:8px">The highlighted keys show today's notes. Click any key to hear it.</p>
+    <div class="keyboard-wrap">
+      <div class="piano" id="piano2"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📝 Note-by-Note Breakdown</h2>
+    <div style="display:grid; gap:8px; margin-top:8px;">
+      <div style="background:#f0f9f0; border-radius:8px; padding:10px 14px;">
+        <strong style="color:#27ae60">Bar 1 (beats 1–4):</strong>
+        <span style="font-size:0.88rem; color:#444"> E(1 beat) + E(1 beat) + E(2 beats) = 4 beats total ✓</span>
+      </div>
+      <div style="background:#f0f9f0; border-radius:8px; padding:10px 14px;">
+        <strong style="color:#27ae60">Bar 2 (beats 1–4):</strong>
+        <span style="font-size:0.88rem; color:#444"> E(1 beat) + E(1 beat) + E(2 beats) = 4 beats total ✓</span>
+      </div>
+      <div style="background:#f0f9f0; border-radius:8px; padding:10px 14px;">
+        <strong style="color:#27ae60">Bar 3 (beats 1–4):</strong>
+        <span style="font-size:0.88rem; color:#444"> E(1 beat) + G(1 beat) + C(1 beat) + D(1 beat) = 4 beats total ✓</span>
+      </div>
+      <div style="background:#f0f9f0; border-radius:8px; padding:10px 14px;">
+        <strong style="color:#27ae60">Bar 4 (beats 1–4):</strong>
+        <span style="font-size:0.88rem; color:#444"> E(4 beats — whole note, hold for full bar) = 4 beats total ✓</span>
+      </div>
+    </div>
+
+    <div class="asd-box">
+      <div class="asd-title">🧠 ASD Tip — Counting Aloud</div>
+      <p>Count every beat aloud before playing: "1, 2, 3, 4 / 1, 2, 3, 4 / ..." Some children find it helpful to tap the beat on their knee with one hand while the other hand plays. This builds <em>physical pattern recognition</em> — an area many children with ASD excel in.</p>
+    </div>
+  </div>
+
+  <div class="nav-btns">
+    <button class="nav-btn prev" onclick="goTo(2)">← 4/4 Time</button>
+    <button class="nav-btn next" onclick="goTo(4)">Practice Tips →</button>
+  </div>
+</section>
+
+<!-- SECTION 4: Practice Tips -->
+<section class="section" id="sec-4">
+  <div class="card">
+    <h2>✅ Today's Practice Checklist</h2>
+    <div>
+      <div class="check-item">
+        <input type="checkbox" id="c1"><label for="c1">I can say what the top number in a time signature means</label>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="c2"><label for="c2">I can say what the bottom number in a time signature means</label>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="c3"><label for="c3">I played Jingle Bells bars 1–2 (E E E half-note) three times in a row</label>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="c4"><label for="c4">I played bar 3 (E G C D) slowly with correct fingers</label>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="c5"><label for="c5">I played all 4 bars together, counting 1–2–3–4 aloud</label>
+      </div>
+      <div class="check-item">
+        <input type="checkbox" id="c6"><label for="c6">I drew a 4-bar grid on paper and wrote bar lines in different colours</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🏠 Daily Practice Plan (15 min)</h2>
+    <ul>
+      <li><strong>Days 1–2:</strong> Practise bar 1 and bar 2 separately. Count "1-2-3-4" aloud. E–E–E(hold 2).</li>
+      <li><strong>Days 3–4:</strong> Add bar 3 (E–G–C–D). Play bars 1–3 in sequence.</li>
+      <li><strong>Day 5:</strong> Play all 4 bars. Hold the final E for 4 full beats.</li>
+      <li><strong>Days 6–7:</strong> Play all 4 bars from memory at ♩=60, then try ♩=80.</li>
+    </ul>
+
+    <div class="tip-box" style="margin-top:14px">
+      <div class="tip-title">💡 Theory Activity</div>
+      <p>Draw a blank staff and write 4 bars with bar lines. Fill in the notes from today using note heads. Count the beats in each bar — do they all add up to 4? This visual exercise reinforces the concept of bar lines as "equal containers."</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>⭐ Well Done!</h2>
+    <p>You've just learned one of the most famous pieces in music! You also now understand <strong>time signatures</strong> and <strong>bar lines</strong> — two fundamental concepts you'll use in every piece of music you ever play.</p>
+    <p style="margin-top:10px">Next lesson: <strong>Lesson 7</strong> covers Ode to Joy as a full 16-bar piece — using what you know about bar lines to map the whole song.</p>
+
+    <div class="asd-box">
+      <div class="asd-title">🌟 Parent Note</div>
+      <p>Celebrate specific achievements: "You played bar 3 correctly — that had 4 different notes!" Specific praise is more meaningful than general praise. If the child asks to play "just one more time," that's a great sign of engagement — go with it!</p>
+    </div>
+  </div>
+
+  <div class="nav-btns">
+    <button class="nav-btn prev" onclick="goTo(3)">← The Song</button>
+    <div></div>
+  </div>
+</section>
+
+<script>
+// Audio context
+let ctx = null;
+function getCtx(){
+  if(!ctx) ctx = new (window.AudioContext||window.webkitAudioContext)();
+  if(ctx.state==='suspended') ctx.resume();
+  return ctx;
+}
+
+const FREQS = {
+  'C4':261.63,'Cs4':277.18,'D4':293.66,'Ds4':311.13,
+  'E4':329.63,'F4':349.23,'Fs4':369.99,'G4':392.00,
+  'Gs4':415.30,'A4':440.00,'As4':466.16,'B4':493.88,'C5':523.25
+};
+
+const NCOLORS = {
+  'C4':'#4a90d9','D4':'#16a085','E4':'#27ae60',
+  'F4':'#8e44ad','G4':'#e74c3c','A4':'#e67e22',
+  'B4':'#f1c40f','C5':'#4a90d9'
+};
+
+const BEAT_LABELS = {1:'♩ 1', 2:'𝅗𝅥 1-2', 4:'𝅝 1-2-3-4'};
+
+// Jingle Bells first 4 bars (opening line)
+const MELODY = [
+  ['E4',1],['E4',1],['E4',2],  // bar 1
+  ['E4',1],['E4',1],['E4',2],  // bar 2
+  ['E4',1],['G4',1],['C4',1],['D4',1], // bar 3
+  ['E4',4]                     // bar 4
+];
+const barPattern = [3, 3, 4, 1];
+
+let tempo = 60;
+let melodyTimers = [];
+
+function playTone(freq, dur){
+  const a = getCtx();
+  const osc = a.createOscillator();
+  const gain = a.createGain();
+  osc.connect(gain); gain.connect(a.destination);
+  osc.type = 'triangle';
+  osc.frequency.value = freq;
+  const now = a.currentTime;
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.4, now + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + Math.max(dur, 0.05));
+  osc.start(now); osc.stop(now + Math.max(dur, 0.05));
+}
+
+function playNote(note){
+  playTone(FREQS[note]||440, 0.5);
+  flashKey(note);
+}
+
+function flashKey(note){
+  ['#piano','#piano2'].forEach(id=>{
+    const key = document.querySelector(id+' [data-note="'+note+'"]');
+    if(key){
+      key.classList.add('pressed');
+      setTimeout(()=>key.classList.remove('pressed'), 300);
+    }
+  });
+}
+
+function setTempo(t, btn){
+  tempo = t;
+  document.querySelectorAll('.tempo-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function stopMelody(){
+  melodyTimers.forEach(t=>clearTimeout(t));
+  melodyTimers = [];
+  document.querySelectorAll('#mel-row .mel-note').forEach(n=>n.classList.remove('flash'));
+}
+
+function buildMelodyRow(){
+  const row = document.getElementById('mel-row');
+  if(!row) return;
+  row.innerHTML = '';
+  let noteIdx = 0;
+  for(let b = 0; b < barPattern.length; b++){
+    for(let n = 0; n < barPattern[b]; n++){
+      if(noteIdx >= MELODY.length) break;
+      const [note, beats] = MELODY[noteIdx];
+      const cls = beats===1?'q':beats===2?'h':'wh';
+      const div = document.createElement('div');
+      div.className = 'mel-note ' + cls;
+      div.dataset.idx = noteIdx;
+      div.dataset.note = note;
+      div.style.background = NCOLORS[note]||'#888';
+      div.innerHTML = '<span class="note-label">'+note.replace(/\d/,'')+'</span><span class="beat-label">'+BEAT_LABELS[beats]+'</span>';
+      row.appendChild(div);
+      noteIdx++;
+    }
+    if(b < barPattern.length - 1){
+      const bl = document.createElement('div');
+      bl.className = 'bar-line';
+      row.appendChild(bl);
+    }
+  }
+}
+
+function playMelody(){
+  stopMelody();
+  buildMelodyRow();
+  let t = 0;
+  const spb = 60 / tempo;
+  MELODY.forEach(([note, beats], i)=>{
+    const delay = t * 1000;
+    const dur = beats * spb;
+    melodyTimers.push(setTimeout(()=>{
+      document.querySelectorAll('#mel-row .mel-note').forEach(n=>n.classList.remove('flash'));
+      const el = document.querySelector('#mel-row .mel-note[data-idx="'+i+'"]');
+      if(el) el.classList.add('flash');
+      playTone(FREQS[note]||440, dur * 0.9);
+      flashKey(note);
+    }, delay));
+    t += beats * spb;
+  });
+  // Clear flash at end
+  melodyTimers.push(setTimeout(()=>{
+    document.querySelectorAll('#mel-row .mel-note').forEach(n=>n.classList.remove('flash'));
+  }, t * 1000 + 200));
+}
+
+// Navigation
+let currentSection = 0;
+function goTo(idx){
+  document.querySelectorAll('.section').forEach((s,i)=>{
+    s.classList.toggle('active', i===idx);
+  });
+  document.querySelectorAll('.prog-dot').forEach((d,i)=>{
+    d.classList.toggle('active', i===idx);
+    d.classList.toggle('done', i<idx);
+    d.querySelector('.dot-circle').textContent = i < idx ? '✓' : (i+1);
+  });
+  currentSection = idx;
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(idx === 3) buildMelodyRow();
+}
+
+// Build piano keyboard
+function buildPiano(id){
+  const wrap = document.getElementById(id);
+  if(!wrap) return;
+  const whites = ['C4','D4','E4','F4','G4','A4','B4','C5'];
+  const blackMap = {0:'Cs4',1:'Ds4',3:'Fs4',4:'Gs4',5:'As4'};
+  const todayNotes = ['C4','D4','E4','G4'];
+
+  whites.forEach((note, i)=>{
+    const key = document.createElement('div');
+    key.className = 'white-key';
+    key.dataset.note = note;
+    if(todayNotes.includes(note)) key.classList.add('key-highlight');
+    key.style.left = (i * 48) + 'px';
+    key.innerHTML = note.replace('4','').replace('5','');
+    key.addEventListener('click', ()=>playNote(note));
+    wrap.appendChild(key);
+  });
+
+  Object.entries(blackMap).forEach(([idx, note])=>{
+    const key = document.createElement('div');
+    key.className = 'black-key';
+    key.dataset.note = note;
+    key.style.left = (parseInt(idx) * 48 + 32) + 'px';
+    key.addEventListener('click', (e)=>{ e.stopPropagation(); playNote(note); });
+    wrap.appendChild(key);
+  });
+}
+
+buildPiano('piano');
+buildPiano('piano2');
+buildMelodyRow();
+</script>
+</body>
+</html>

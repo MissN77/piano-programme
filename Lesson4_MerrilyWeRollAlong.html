@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 4 – Merrily We Roll Along 🎹</title>
+<style>
+  :root {
+    --primary: #27ae60;
+    --accent: #f39c12;
+    --green: #27ae60;
+    --red: #e74c3c;
+    --purple: #8e44ad;
+    --bg: #f0f4f8;
+    --card: #ffffff;
+    --text: #2c3e50;
+    --muted: #7f8c8d;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 16px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 1.6rem;
+    margin-bottom: 4px;
+    color: var(--primary);
+  }
+
+  .subtitle {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+  }
+
+  .progress-bar {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .prog-dot {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: #dde1e7;
+    border: 2px solid transparent;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .prog-dot.active { background: var(--primary); color: white; border-color: var(--primary); transform: scale(1.1); }
+  .prog-dot.done   { background: var(--green);   color: white; border-color: var(--green); }
+
+  .step { display: none; max-width: 680px; margin: 0 auto; }
+  .step.active { display: block; }
+
+  .card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    margin-bottom: 16px;
+  }
+
+  .card h2 { font-size: 1.1rem; margin-bottom: 12px; color: var(--primary); }
+  .card h3 { font-size: 0.95rem; margin-bottom: 8px; color: var(--text); }
+  .card p  { font-size: 0.9rem; line-height: 1.6; color: var(--text); margin-bottom: 8px; }
+  .card ul { padding-left: 18px; font-size: 0.9rem; line-height: 1.8; }
+
+  .hero-card {
+    background: linear-gradient(135deg, #27ae60, #1e8449);
+    color: white;
+    border-radius: 16px;
+    padding: 28px 24px;
+    text-align: center;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 16px rgba(39,174,96,0.3);
+  }
+  .hero-card h2 { color: white; font-size: 1.3rem; margin-bottom: 8px; }
+  .hero-card p  { color: rgba(255,255,255,0.9); font-size: 0.95rem; }
+
+  .chip {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin: 3px;
+    color: white;
+  }
+
+  /* Hand diagram */
+  .hand-diagram {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin: 16px 0;
+    flex-wrap: wrap;
+  }
+
+  .finger {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; font-weight: 700;
+    color: white;
+    flex-direction: column;
+    font-size: 0.65rem;
+  }
+
+  /* Piano keyboard */
+  .piano-wrap { overflow-x: auto; padding: 8px 0; }
+
+  .piano {
+    position: relative;
+    height: 130px;
+    width: 322px;
+    margin: 0 auto;
+    user-select: none;
+  }
+
+  .white-key {
+    position: absolute;
+    width: 40px; height: 120px;
+    background: white;
+    border: 1.5px solid #bbb;
+    border-radius: 0 0 6px 6px;
+    cursor: pointer;
+    display: flex; align-items: flex-end; justify-content: center;
+    padding-bottom: 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    transition: background 0.1s;
+  }
+
+  .white-key:active, .white-key.playing { background: #d0f0e0; }
+
+  .black-key {
+    position: absolute;
+    width: 26px; height: 76px;
+    background: #2c3e50;
+    border-radius: 0 0 4px 4px;
+    cursor: pointer;
+    z-index: 2;
+    display: flex; align-items: flex-end; justify-content: center;
+    padding-bottom: 6px;
+    font-size: 0.55rem;
+    color: rgba(255,255,255,0.8);
+    font-weight: 700;
+    transition: background 0.1s;
+  }
+
+  .black-key:active, .black-key.playing { background: #27ae60; }
+
+  /* Melody sequence */
+  .mel-seq {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 12px 0;
+    justify-content: center;
+  }
+
+  .mel-note {
+    padding: 8px 10px;
+    border-radius: 10px;
+    color: white;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-align: center;
+    min-width: 44px;
+    transition: transform 0.1s, box-shadow 0.1s;
+    position: relative;
+  }
+
+  .mel-note .finger-num {
+    font-size: 0.6rem;
+    opacity: 0.85;
+    display: block;
+  }
+
+  .mel-note.lit {
+    transform: scale(1.25);
+    box-shadow: 0 0 12px rgba(0,0,0,0.4);
+  }
+
+  /* Tempo */
+  .tempo-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .tempo-btn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 2px solid var(--primary);
+    background: white;
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .tempo-btn.active, .tempo-btn:hover { background: var(--primary); color: white; }
+
+  .play-btn {
+    padding: 10px 24px;
+    border-radius: 24px;
+    border: none;
+    background: var(--primary);
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.1s;
+    margin: 4px;
+  }
+
+  .play-btn:hover { background: #1e8449; }
+  .play-btn:active { transform: scale(0.96); }
+
+  /* Checklist */
+  .checklist { list-style: none; padding: 0; }
+  .checklist li {
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    background: #f8f9fa;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.88rem;
+    transition: background 0.15s;
+  }
+  .checklist li:hover { background: #e8f5e9; }
+  .checklist li.done { background: #e8f5e9; text-decoration: line-through; color: var(--muted); }
+  .checklist li::before {
+    content: '○';
+    font-size: 1.1rem;
+    color: var(--primary);
+    flex-shrink: 0;
+  }
+  .checklist li.done::before { content: '✓'; color: var(--green); }
+
+  /* Navigation */
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 680px;
+    margin: 8px auto 0;
+    gap: 12px;
+  }
+
+  .nav-btn {
+    padding: 10px 22px;
+    border-radius: 24px;
+    border: none;
+    background: var(--primary);
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.1s, background 0.1s;
+    min-width: 100px;
+  }
+
+  .nav-btn:hover { background: #1e8449; }
+  .nav-btn:active { transform: scale(0.96); }
+  .nav-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+  .step-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-left: 6px;
+  }
+
+  .tip-box {
+    background: #e8f5e9;
+    border-left: 4px solid var(--green);
+    border-radius: 0 10px 10px 0;
+    padding: 12px 14px;
+    margin: 10px 0;
+    font-size: 0.88rem;
+  }
+
+  .asd-box {
+    background: #fff3e0;
+    border-left: 4px solid #f39c12;
+    border-radius: 0 10px 10px 0;
+    padding: 12px 14px;
+    margin: 10px 0;
+    font-size: 0.88rem;
+  }
+
+  .yt-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #ff0000;
+    color: white;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin: 4px;
+    transition: background 0.15s;
+  }
+  .yt-btn:hover { background: #cc0000; }
+
+  .clef-box {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    margin: 10px 0;
+    font-size: 2.5rem;
+  }
+
+  .staff-line {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    margin: 4px 0;
+  }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 1.3rem; }
+    .card { padding: 16px; }
+    .piano { transform: scale(0.85); transform-origin: top left; }
+  }
+</style>
+</head>
+<body>
+
+<h1>🎹 Lesson 4 – Merrily We Roll Along</h1>
+<p class="subtitle">Left hand only · Bass clef introduction · Phase 1 Week 4</p>
+
+<div class="progress-bar" id="progressBar">
+  <div class="prog-dot active" onclick="goTo(0)" title="Welcome">1</div>
+  <div class="prog-dot"        onclick="goTo(1)" title="Find Notes">2</div>
+  <div class="prog-dot"        onclick="goTo(2)" title="Finger Warm-Up">3</div>
+  <div class="prog-dot"        onclick="goTo(3)" title="The Song">4</div>
+  <div class="prog-dot"        onclick="goTo(4)" title="Practice Tips">5</div>
+</div>
+
+<!-- STEP 0: WELCOME -->
+<div class="step active" id="step0">
+  <div class="hero-card">
+    <h2>🎵 Left Hand Time!</h2>
+    <p>Today your left hand gets to be the star. We'll learn <strong>Merrily We Roll Along</strong> using just three fingers.</p>
+  </div>
+
+  <div class="card">
+    <h2>🎯 Today's Goals</h2>
+    <p>By the end of this lesson you'll be able to:</p>
+    <ul>
+      <li>Place your left hand in C position</li>
+      <li>Play a melody with your left hand</li>
+      <li>Recognise the bass clef (the left-hand clef)</li>
+      <li>Play C, D, E and G with your LH</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📖 What's New Today</h2>
+    <p><strong>Left hand (LH) only</strong> — just like your right hand has a "home", so does your left hand. Today we put the <strong>LH pinky (finger 5) on C</strong> and work upward.</p>
+    <div class="clef-box">𝄢</div>
+    <p>That curly symbol is the <strong>bass clef</strong>. It shows left-hand notes. You'll meet it a lot!</p>
+    <div class="asd-box">
+      💡 <strong>Sticker tip:</strong> Your left C and right C are the same note but played by different hands. Try a <em>different colour sticker</em> for your LH C to tell them apart.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🎬 Watch First</h2>
+    <p>See a teacher play Merrily We Roll Along LH first:</p>
+    <a class="yt-btn" href="https://www.youtube.com/results?search_query=merrily+we+roll+along+piano+left+hand+tutorial+beginner" target="_blank">▶ Watch on YouTube</a>
+  </div>
+</div>
+
+<!-- STEP 1: FIND NOTES -->
+<div class="step" id="step1">
+  <div class="card">
+    <h2>🖐️ Left Hand C Position</h2>
+    <p>Rest your <strong>left hand</strong> on the keyboard like this. Fingers curl gently over the keys:</p>
+    <div class="hand-diagram">
+      <div class="finger" style="background:#7f8c8d;">5<span class="finger-num">C</span></div>
+      <div class="finger" style="background:#7f8c8d;">4<span class="finger-num">D</span></div>
+      <div class="finger" style="background:#27ae60;">3<span class="finger-num">E</span></div>
+      <div class="finger" style="background:#27ae60;">4<span class="finger-num">D</span></div>
+      <div class="finger" style="background:#27ae60;">5<span class="finger-num">C</span></div>
+    </div>
+    <p>Today we mainly use <strong>fingers 3, 4 and 5</strong>. Thumb (1) reaches up to G when needed.</p>
+  </div>
+
+  <div class="card">
+    <h2>🎹 Tap Each Note</h2>
+    <p>Click the green notes below — C, D, E and G. Listen to each one:</p>
+    <div class="piano-wrap">
+      <div class="piano" id="piano">
+        <!-- White keys -->
+        <div class="white-key" style="left:0px;"   data-note="C4" onclick="playKey('C4',this)">C<br><small>5</small></div>
+        <div class="white-key" style="left:42px;"  data-note="D4" onclick="playKey('D4',this)">D<br><small>4</small></div>
+        <div class="white-key" style="left:84px;"  data-note="E4" onclick="playKey('E4',this)">E<br><small>3</small></div>
+        <div class="white-key" style="left:126px;" data-note="F4" onclick="playKey('F4',this)">F<br><small>2</small></div>
+        <div class="white-key" style="left:168px;" data-note="G4" onclick="playKey('G4',this)">G<br><small>1</small></div>
+        <div class="white-key" style="left:210px;" data-note="A4" onclick="playKey('A4',this)">A</div>
+        <div class="white-key" style="left:252px;" data-note="B4" onclick="playKey('B4',this)">B</div>
+        <div class="white-key" style="left:294px;" data-note="C5" onclick="playKey('C5',this)">C5</div>
+        <!-- Black keys -->
+        <div class="black-key" style="left:31px;"  data-note="Cs4" onclick="playKey('Cs4',this)">C#</div>
+        <div class="black-key" style="left:73px;"  data-note="Ds4" onclick="playKey('Ds4',this)">D#</div>
+        <div class="black-key" style="left:157px;" data-note="Fs4" onclick="playKey('Fs4',this)">F#</div>
+        <div class="black-key" style="left:199px;" data-note="Gs4" onclick="playKey('Gs4',this)">G#</div>
+        <div class="black-key" style="left:241px;" data-note="As4" onclick="playKey('As4',this)">A#</div>
+      </div>
+    </div>
+    <div class="tip-box">
+      ✋ <strong>LH reminder:</strong> In left hand position, finger <strong>5 (pinky) is on the LEFT</strong> at C, and finger <strong>1 (thumb) is on the RIGHT</strong> at G. The opposite of RH!
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🎵 The Bass Clef</h2>
+    <p>On the bass clef staff, the lines from bottom to top spell: <strong>G – B – D – F – A</strong></p>
+    <p><em>Remember: "Good Boys Do Fine Always"</em></p>
+    <p>The spaces from bottom to top spell: <strong>A – C – E – G</strong></p>
+    <p><em>Remember: "All Cows Eat Grass"</em></p>
+    <div class="tip-box">
+      For now, just know that <strong>C D E G</strong> sit in easy-to-find spots. Your stickers will help!
+    </div>
+  </div>
+</div>
+
+<!-- STEP 2: FINGER WARM-UP -->
+<div class="step" id="step2">
+  <div class="card">
+    <h2>🔥 LH Warm-Up Exercises</h2>
+    <p>Before the melody, wake up your left-hand fingers:</p>
+
+    <h3>Exercise 1 – Walk Down and Up</h3>
+    <p>Play slowly: <strong>E4 → D4 → C4</strong>, then back up: <strong>C4 → D4 → E4</strong></p>
+    <p>Fingers: <strong>3 → 4 → 5</strong>, then <strong>5 → 4 → 3</strong></p>
+    <div class="hand-diagram">
+      <div class="finger" style="background:#27ae60;">3<span class="finger-num">E</span></div>
+      <div class="finger" style="background:#27ae60;">4<span class="finger-num">D</span></div>
+      <div class="finger" style="background:#27ae60;">5<span class="finger-num">C</span></div>
+    </div>
+
+    <h3 style="margin-top:14px;">Exercise 2 – C to G Stretch</h3>
+    <p>Play: <strong>C4 → G4</strong> — pinky (5) to thumb (1). Keep your wrist relaxed!</p>
+    <div class="asd-box">
+      💡 <strong>Relax check:</strong> Drop your arm from the shoulder, let it hang, shake your wrist gently. That's how relaxed your hand should feel while playing.
+    </div>
+
+    <h3 style="margin-top:14px;">Exercise 3 – Count Along</h3>
+    <p>Play E4–D4–C4 three times, counting aloud: <strong>"1–2–3, 1–2–3, 1–2–3"</strong></p>
+    <p>Try to make each note the same length.</p>
+  </div>
+
+  <div class="card">
+    <h2>🎹 Practise the Melody Shape</h2>
+    <p>The main melody shape is <strong>3 – 4 – 5</strong> (E – D – C). Click to play the notes:</p>
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin:10px 0;">
+      <button class="play-btn" onclick="playSeq([['E4',0.5],['D4',0.5],['C4',1]])">▶ E – D – C</button>
+      <button class="play-btn" onclick="playSeq([['D4',0.5],['E4',0.5],['D4',0.5],['C4',1]])">▶ D – E – D – C</button>
+      <button class="play-btn" onclick="playSeq([['E4',0.5],['G4',0.5]])">▶ E – G jump</button>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 3: THE SONG -->
+<div class="step" id="step3">
+  <div class="card">
+    <h2>🎵 Merrily We Roll Along – LH</h2>
+    <p>Left hand melody. Use fingers 3, 4, 5 (and thumb for G):</p>
+
+    <div class="tempo-card">
+      <span style="font-size:0.85rem; font-weight:600;">♩ =</span>
+      <button class="tempo-btn active" onclick="setTempo(60,this)">60</button>
+      <button class="tempo-btn"        onclick="setTempo(80,this)">80</button>
+      <button class="tempo-btn"        onclick="setTempo(100,this)">100</button>
+    </div>
+
+    <div class="mel-seq" id="melSeq"></div>
+
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+      <button class="play-btn" onclick="playMelody()">▶ Play Melody</button>
+      <button class="play-btn" onclick="stopMelody()" style="background:#e74c3c;">■ Stop</button>
+    </div>
+
+    <div class="piano-wrap" style="margin-top:16px;">
+      <div class="piano" id="piano2">
+        <div class="white-key" style="left:0px;"   data-note="C4" onclick="playKey('C4',this)">C<br><small>5</small></div>
+        <div class="white-key" style="left:42px;"  data-note="D4" onclick="playKey('D4',this)">D<br><small>4</small></div>
+        <div class="white-key" style="left:84px;"  data-note="E4" onclick="playKey('E4',this)">E<br><small>3</small></div>
+        <div class="white-key" style="left:126px;" data-note="F4" onclick="playKey('F4',this)">F<br><small>2</small></div>
+        <div class="white-key" style="left:168px;" data-note="G4" onclick="playKey('G4',this)">G<br><small>1</small></div>
+        <div class="white-key" style="left:210px;" data-note="A4" onclick="playKey('A4',this)">A</div>
+        <div class="white-key" style="left:252px;" data-note="B4" onclick="playKey('B4',this)">B</div>
+        <div class="white-key" style="left:294px;" data-note="C5" onclick="playKey('C5',this)">C5</div>
+        <div class="black-key" style="left:31px;"  data-note="Cs4" onclick="playKey('Cs4',this)">C#</div>
+        <div class="black-key" style="left:73px;"  data-note="Ds4" onclick="playKey('Ds4',this)">D#</div>
+        <div class="black-key" style="left:157px;" data-note="Fs4" onclick="playKey('Fs4',this)">F#</div>
+        <div class="black-key" style="left:199px;" data-note="Gs4" onclick="playKey('Gs4',this)">G#</div>
+        <div class="black-key" style="left:241px;" data-note="As4" onclick="playKey('As4',this)">A#</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🎬 Watch a Performance</h2>
+    <a class="yt-btn" href="https://www.youtube.com/results?search_query=merrily+we+roll+along+piano+beginner+tutorial" target="_blank">▶ Watch on YouTube</a>
+    <div class="tip-box" style="margin-top:10px;">
+      🎯 <strong>Challenge:</strong> Can you play along with the melody playback? Press Play, then join in on your keyboard — it's OK to be a beat or two late at first!
+    </div>
+  </div>
+</div>
+
+<!-- STEP 4: PRACTICE TIPS -->
+<div class="step" id="step4">
+  <div class="card">
+    <h2>✅ Practice Checklist</h2>
+    <p>Tap each item when you've done it:</p>
+    <ul class="checklist" id="checklist">
+      <li onclick="toggleCheck(this)">Placed LH in C position (finger 5 on C)</li>
+      <li onclick="toggleCheck(this)">Played E – D – C three times slowly</li>
+      <li onclick="toggleCheck(this)">Played the full melody at ♩=60</li>
+      <li onclick="toggleCheck(this)">Played the full melody at ♩=80</li>
+      <li onclick="toggleCheck(this)">Played with eyes closed (listening only)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>💡 Parent / Carer Notes</h2>
+    <div class="tip-box">
+      <p><strong>This week practise:</strong> 5–10 min daily. Focus on a relaxed LH position before playing.</p>
+    </div>
+    <ul>
+      <li>If finger 5 curls too much, gently remind: "pretend you're holding a small ball"</li>
+      <li>The E–D–C shape (3–4–5) is the key pattern — drill this separately if needed</li>
+      <li>The jump to G (finger 1) can be tricky — practise just that jump by itself</li>
+      <li>Different-coloured sticker on LH C vs RH C really helps distinguish the two</li>
+    </ul>
+    <div class="asd-box" style="margin-top:12px;">
+      🌟 <strong>ASD tip:</strong> Predictable routine helps. Always start practice with the same warm-up (E–D–C five times), then the song. Knowing "what comes next" reduces anxiety.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>⭐ Well Done!</h2>
+    <p>You've learned your first left-hand melody and met the bass clef! Next lesson: <strong>London Bridge</strong> — we'll explore note lengths (quarter notes vs half notes).</p>
+    <div style="text-align:center; margin-top:16px; font-size:2rem;">🎉🎹✨</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-row">
+  <button class="nav-btn" id="prevBtn" onclick="prev()" disabled>← Back</button>
+  <span class="step-label" id="stepLabel">Step 1 of 5</span>
+  <button class="nav-btn" id="nextBtn" onclick="next()">Next →</button>
+</div>
+
+<script>
+// ── Audio ────────────────────────────────────────────────────────────────────
+let audioCtx = null;
+function getCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+const FREQS = {
+  'C4':261.63,'Cs4':277.18,'D4':293.66,'Ds4':311.13,
+  'E4':329.63,'F4':349.23,'Fs4':369.99,'G4':392.00,
+  'Gs4':415.30,'A4':440.00,'As4':466.16,'B4':493.88,
+  'C5':523.25
+};
+
+function playTone(freq, duration) {
+  const ctx = getCtx();
+  const osc  = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(freq, ctx.currentTime);
+  gain.gain.setValueAtTime(0, ctx.currentTime);
+  gain.gain.linearRampToValueAtTime(0.4, ctx.currentTime + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + duration + 0.05);
+}
+
+function flashKey(note) {
+  ['piano','piano2'].forEach(id => {
+    const el = document.querySelector('#'+id+' [data-note="'+note+'"]');
+    if (el) {
+      el.classList.add('playing');
+      setTimeout(() => el.classList.remove('playing'), 300);
+    }
+  });
+}
+
+function playKey(note, el) {
+  const freq = FREQS[note];
+  if (!freq) return;
+  playTone(freq, 0.6);
+  if (el) {
+    el.classList.add('playing');
+    setTimeout(() => el.classList.remove('playing'), 300);
+  }
+}
+
+function playSeq(seq) {
+  let t = 0;
+  seq.forEach(([note, dur]) => {
+    setTimeout(() => {
+      playTone(FREQS[note], dur * 0.4);
+      flashKey(note);
+    }, t * 500);
+    t += dur;
+  });
+}
+
+// ── Melody ───────────────────────────────────────────────────────────────────
+const MELODY = [
+  ['E4',1],['D4',1],['C4',2],
+  ['D4',1],['E4',1],['D4',1],['C4',2],
+  ['E4',1],['E4',1],['E4',2],
+  ['D4',1],['D4',1],['E4',1],['G4',2],
+  ['E4',1],['D4',1],['C4',4]
+];
+
+// Finger numbers for each note
+const FINGERS = {
+  'C4':'5','D4':'4','E4':'3','F4':'2','G4':'1','A4':'','B4':'','C5':''
+};
+
+// Note colours
+const NCOLORS = {
+  'C4':'#4a90d9','D4':'#16a085','E4':'#27ae60','F4':'#8e44ad',
+  'G4':'#e74c3c','A4':'#e67e22','B4':'#27ae60','C5':'#4a90d9'
+};
+
+let tempo = 60;
+let melodyTimers = [];
+
+function setTempo(bpm, btn) {
+  tempo = bpm;
+  document.querySelectorAll('.tempo-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function stopMelody() {
+  melodyTimers.forEach(t => clearTimeout(t));
+  melodyTimers = [];
+  document.querySelectorAll('.mel-note').forEach(n => n.classList.remove('lit'));
+}
+
+function playMelody() {
+  stopMelody();
+  const secPerBeat = 60 / tempo;
+  let t = 0;
+  MELODY.forEach(([note, beats], i) => {
+    const delay = t * secPerBeat * 1000;
+    const dur   = beats * secPerBeat * 0.9;
+    const id = setTimeout(() => {
+      document.querySelectorAll('.mel-note').forEach(n => n.classList.remove('lit'));
+      const noteEl = document.querySelectorAll('.mel-note')[i];
+      if (noteEl) noteEl.classList.add('lit');
+      playTone(FREQS[note], dur);
+      flashKey(note);
+    }, delay);
+    melodyTimers.push(id);
+    t += beats;
+  });
+  const clearId = setTimeout(() => {
+    document.querySelectorAll('.mel-note').forEach(n => n.classList.remove('lit'));
+  }, t * secPerBeat * 1000 + 200);
+  melodyTimers.push(clearId);
+}
+
+function buildMelSeq() {
+  const container = document.getElementById('melSeq');
+  if (!container) return;
+  container.innerHTML = '';
+  MELODY.forEach(([note, beats]) => {
+    const div = document.createElement('div');
+    div.className = 'mel-note';
+    div.style.background = NCOLORS[note] || '#999';
+    const noteName = note.replace('4','').replace('5','5');
+    const finger = FINGERS[note] || '';
+    div.innerHTML = noteName + (finger ? '<span class="finger-num">finger ' + finger + '</span>' : '');
+    div.style.minWidth = (36 + beats * 8) + 'px';
+    div.onclick = () => { playTone(FREQS[note], beats * 0.4); };
+    container.appendChild(div);
+  });
+}
+
+// ── Navigation ───────────────────────────────────────────────────────────────
+let currentStep = 0;
+const STEP_NAMES = ['Welcome','Find Notes','Finger Warm-Up','The Song','Practice Tips'];
+
+function goTo(idx) {
+  document.getElementById('step' + currentStep).classList.remove('active');
+  const dots = document.querySelectorAll('.prog-dot');
+  dots[currentStep].classList.remove('active');
+  if (idx > currentStep) dots[currentStep].classList.add('done');
+  currentStep = idx;
+  document.getElementById('step' + currentStep).classList.add('active');
+  dots[currentStep].classList.remove('done');
+  dots[currentStep].classList.add('active');
+  document.getElementById('prevBtn').disabled = currentStep === 0;
+  document.getElementById('nextBtn').disabled = currentStep === 4;
+  document.getElementById('stepLabel').textContent = 'Step ' + (currentStep + 1) + ' of 5 – ' + STEP_NAMES[currentStep];
+  window.scrollTo(0, 0);
+  stopMelody();
+  if (currentStep === 3) buildMelSeq();
+}
+
+function next() { if (currentStep < 4) goTo(currentStep + 1); }
+function prev() { if (currentStep > 0) goTo(currentStep - 1); }
+
+function toggleCheck(li) {
+  li.classList.toggle('done');
+}
+
+// Init
+document.getElementById('stepLabel').textContent = 'Step 1 of 5 – ' + STEP_NAMES[0];
+</script>
+</body>
+</html>

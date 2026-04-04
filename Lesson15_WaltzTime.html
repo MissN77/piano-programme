@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lesson 15 – Waltz Time</title>
+<style>
+:root{--accent:#c2185b;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',sans-serif;background:#1a1a2e;color:#eee;min-height:100vh;}
+.screen{display:none;padding:20px;max-width:700px;margin:0 auto;}
+.screen.active{display:block;}
+h1{font-size:1.6rem;color:var(--accent);margin-bottom:8px;}
+h2{font-size:1.2rem;color:var(--accent);margin:16px 0 8px;}
+p{line-height:1.6;margin-bottom:10px;font-size:1rem;}
+.asd-box{background:#1e1e3a;border-left:4px solid #e67e22;border-radius:8px;padding:14px;margin:12px 0;}
+.tip-box{background:#1e3a1e;border-left:4px solid #27ae60;border-radius:8px;padding:14px;margin:12px 0;}
+.btn{display:inline-block;background:var(--accent);color:#fff;border:none;border-radius:24px;padding:10px 24px;font-size:1rem;cursor:pointer;margin:6px 4px;}
+.btn:hover{opacity:.85;}
+.btn-outline{background:transparent;border:2px solid var(--accent);color:var(--accent);}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;}
+.dots{display:flex;gap:8px;}
+.dot{width:12px;height:12px;border-radius:50%;background:#444;cursor:pointer;transition:.2s;}
+.dot.on{background:var(--accent);transform:scale(1.3);}
+.dot.done{background:#888;}
+.piano-wrap{position:relative;height:120px;width:384px;margin:16px auto;}
+.wk{position:absolute;width:44px;height:110px;background:#f5f0e8;border:1px solid #999;border-radius:0 0 6px 6px;cursor:pointer;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;font-size:.75rem;color:#333;transition:.15s;}
+.wk.hl{background:#fff9c4;border-color:var(--accent);border-width:2px;}
+.wk.playing{background:#ffd54f;}
+.bk{position:absolute;width:28px;height:70px;background:#222;border-radius:0 0 5px 5px;cursor:pointer;z-index:2;top:0;transition:.15s;}
+.bk.hl{background:#3a3a00;box-shadow:0 0 0 2px var(--accent);}
+.bk.playing{background:#f57f17;}
+.ng{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0;}
+.nc{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;}
+.nd{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:1rem;color:#fff;}
+.theory-card{background:#1e1e3a;border-radius:10px;padding:16px;margin:10px 0;border:2px solid var(--accent);}
+.count-grid{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap;}
+.count-beat{background:#2a2a4a;border-radius:8px;padding:10px 16px;text-align:center;font-size:1.1rem;font-weight:bold;}
+.count-beat.strong{background:var(--accent);font-size:1.3rem;}
+.mel{background:#1e1e3a;border-radius:10px;padding:14px;margin:12px 0;overflow-x:auto;}
+.mel-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.mn{border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;padding:6px;min-width:44px;transition:.15s;border:2px solid transparent;}
+.mn.playing{border-color:#fff;transform:scale(1.1);}
+.mn.q{height:52px;min-width:44px;}
+.mn.h{height:52px;min-width:68px;}
+.mn.wh{height:52px;min-width:92px;}
+.nl{color:#fff;font-weight:bold;font-size:.95rem;}
+.bl{color:rgba(255,255,255,.7);font-size:.75rem;}
+.bar{width:2px;background:#555;height:52px;margin:0 4px;}
+input[type=range]{width:100%;accent-color:var(--accent);margin:8px 0;}
+.yt-btn{background:#c00;color:#fff;border:none;border-radius:20px;padding:8px 18px;cursor:pointer;font-size:.9rem;margin:4px;}
+.yt-btn:hover{background:#a00;}
+.phase-badge{display:inline-block;background:var(--accent);color:#fff;border-radius:20px;padding:4px 14px;font-size:.85rem;margin-bottom:10px;}
+.waltz-box{display:flex;gap:12px;margin:14px 0;flex-wrap:wrap;}
+.beat-card{background:#1e1e3a;border-radius:10px;padding:14px;text-align:center;flex:1;min-width:80px;}
+.beat-card.beat1{border:3px solid var(--accent);background:#2a1a2a;}
+.beat-num{font-size:2rem;font-weight:bold;color:var(--accent);}
+.beat-label{font-size:.85rem;color:#aaa;margin-top:4px;}
+</style>
+</head>
+<body>
+<div style="padding:12px 20px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.3);">
+<span style="color:var(--accent);font-weight:bold;">🎹 Lesson 15</span>
+<div class="dots">
+<div class="dot" onclick="goTo(0)"></div>
+<div class="dot" onclick="goTo(1)"></div>
+<div class="dot" onclick="goTo(2)"></div>
+<div class="dot" onclick="goTo(3)"></div>
+<div class="dot" onclick="goTo(4)"></div>
+</div>
+</div>
+
+<!-- Screen 0: Welcome -->
+<div class="screen active" id="s0">
+<br>
+<span class="phase-badge">Phase 2 · Week 15</span>
+<h1>Waltz Time 🎀</h1>
+<p>Today we learn about <strong>3/4 time</strong> — the beautiful waltz rhythm!</p>
+<div class="asd-box">
+<strong>🎯 Today you will:</strong><br>
+✅ Learn to count in 3 (1-2-3)<br>
+✅ Feel the strong first beat<br>
+✅ Play <em>Happy Birthday</em> in waltz time
+</div>
+<div class="piano-wrap" id="piano"></div>
+<div class="ng" id="note-grid"></div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(0)">↩</button>
+<button class="btn" onclick="goTo(1)">Find Notes →</button>
+</div>
+</div>
+
+<!-- Screen 1: Find Notes -->
+<div class="screen" id="s1">
+<h1>Find Your Notes 🔍</h1>
+<div class="asd-box">
+<strong>Today's notes: C · D · F · G</strong>
+</div>
+<div class="piano-wrap" id="piano2"></div>
+<div class="ng" id="note-grid2"></div>
+<p style="margin-top:12px;">Try pressing each highlighted key. What does it sound like?</p>
+<div class="tip-box">
+💡 <strong>Notice the gap!</strong> Skip from D to F — you're jumping over E!
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(0)">← Back</button>
+<button class="btn" onclick="goTo(2)">Theory →</button>
+</div>
+</div>
+
+<!-- Screen 2: Theory -->
+<div class="screen" id="s2">
+<h1>Waltz Time 💃</h1>
+<div class="theory-card">
+<h2>What is 3/4 Time?</h2>
+<p>In <strong>3/4 time</strong>, we count <strong>3 beats per bar</strong>.</p>
+<div class="waltz-box">
+<div class="beat-card beat1">
+<div class="beat-num">1</div>
+<div class="beat-label">STRONG<br>da</div>
+</div>
+<div class="beat-card">
+<div class="beat-num" style="color:#aaa;">2</div>
+<div class="beat-label">soft<br>da</div>
+</div>
+<div class="beat-card">
+<div class="beat-num" style="color:#aaa;">3</div>
+<div class="beat-label">soft<br>da</div>
+</div>
+</div>
+<p>Say it aloud: <strong>"ONE two three, ONE two three…"</strong></p>
+</div>
+<div class="asd-box">
+<strong>🕺 The Waltz Feel</strong><br>
+It swings like a rocking boat. Beat 1 is strong, beats 2 and 3 are gentle.<br>
+<em>"Oom-pah-pah, Oom-pah-pah"</em>
+</div>
+<div class="theory-card">
+<h2>The Time Signature</h2>
+<p>The <strong>3</strong> on top means: 3 beats per bar<br>
+The <strong>4</strong> on bottom means: a quarter note (♩) gets one beat</p>
+<p style="font-size:2rem;text-align:center;margin:10px 0;letter-spacing:8px;">3<br>4</p>
+</div>
+<div class="tip-box">
+💡 <strong>Remember:</strong> 4/4 has 4 beats (march). 3/4 has 3 beats (waltz)!
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(1)">← Back</button>
+<button class="btn" onclick="goTo(3)">The Song →</button>
+</div>
+</div>
+
+<!-- Screen 3: The Song -->
+<div class="screen" id="s3">
+<h1>Happy Birthday 🎂</h1>
+<p>One of the most famous waltz tunes ever!</p>
+<div class="asd-box">
+<strong>Count as you play: 1-2-3, 1-2-3…</strong><br>
+Beat 1 is always the strongest!
+</div>
+<div class="mel">
+<div style="margin-bottom:8px;font-size:.9rem;color:#aaa;">Tap any note to hear it. Use Play to hear the full melody.</div>
+<div class="mel-row" id="mel-row"></div>
+</div>
+<div style="margin:10px 0;">
+<label style="font-size:.9rem;">Tempo: <span id="tv">80 BPM</span></label>
+<input type="range" min="50" max="160" value="80" oninput="setTempo(this.value)">
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;">
+<button class="btn" onclick="playMelody()">▶ Play</button>
+<button class="btn btn-outline" onclick="stopMelody()">■ Stop</button>
+</div>
+<div style="margin-top:12px;">
+<button class="yt-btn" onclick="window.open('https://www.youtube.com/results?search_query=happy+birthday+piano+easy')">▶ YouTube: Happy Birthday piano</button>
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(2)">← Back</button>
+<button class="btn" onclick="goTo(4)">Tips →</button>
+</div>
+</div>
+
+<!-- Screen 4: Practice Tips -->
+<div class="screen" id="s4">
+<h1>Practice Tips 💡</h1>
+<div class="tip-box">
+<strong>🎯 This Week's Focus</strong><br>
+Feel the waltz swing. Count 1-2-3 out loud every time!
+</div>
+<div class="asd-box">
+<strong>Step-by-step practice:</strong><br>
+1️⃣ Count "1-2-3" aloud with a clap on beat 1<br>
+2️⃣ Play just the melody slowly<br>
+3️⃣ Count AND play at the same time<br>
+4️⃣ Speed up when it feels comfortable
+</div>
+<div class="tip-box">
+<strong>✅ You're ready to move on when:</strong><br>
+• You can count to 3 in time<br>
+• Happy Birthday sounds like a song, not just notes!
+</div>
+<div style="margin-top:16px;">
+<button class="yt-btn" onclick="window.open('https://www.youtube.com/results?search_query=waltz+time+signature+3+4+piano+beginners')">▶ YouTube: Waltz time explained</button>
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(3)">← Back</button>
+<button class="btn" onclick="goTo(0)">↩ Start</button>
+</div>
+</div>
+
+<script>
+const FREQS={'C4':261.63,'Cs4':277.18,'D4':293.66,'Ds4':311.13,'E4':329.63,'F4':349.23,'Fs4':369.99,'G4':392.00,'Gs4':415.30,'A4':440.00,'As4':466.16,'B4':493.88,'C5':523.25,'D5':587.33,'E5':659.25,'F5':698.46,'Fs5':739.99,'G5':783.99};
+const NCOLORS={'C4':'#4a90d9','D4':'#16a085','E4':'#27ae60','F4':'#8e44ad','G4':'#e74c3c','A4':'#e67e22','B4':'#f1c40f','C5':'#4a90d9','D5':'#16a085','E5':'#27ae60','Cs4':'#2c7fb8','Ds4':'#1a6b5a','Fs4':'#6c3483','Gs4':'#8b0000','As4':'#b7770d','F5':'#6c3483'};
+const BL={1:'♩',2:'𝅗𝅥',3:'𝅗𝅥.',4:'𝅝'};
+const todayNotes=['C4','D4','F4','G4'];
+const MELODY=[['G4',1],['C4',2],['C4',1],['D4',1],['C4',1],['F4',2],['E4',2],['G4',1],['C4',2],['C4',1],['D4',1],['C4',1]];
+const barPattern=[3,3,3,3];
+let tempo=80,timer=null,actx=null;
+function ctx(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();return actx;}
+function playNote(n){if(!FREQS[n])return;const c=ctx(),o=c.createOscillator(),g=c.createGain();o.type='triangle';o.frequency.value=FREQS[n];g.gain.setValueAtTime(0,c.currentTime);g.gain.linearRampToValueAtTime(0.4,c.currentTime+0.02);g.gain.exponentialRampToValueAtTime(0.001,c.currentTime+1.2);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+1.2);document.querySelectorAll('[data-note="'+n+'"]').forEach(k=>{k.classList.add('playing');setTimeout(()=>k.classList.remove('playing'),300);});}
+function flashKey(n){document.querySelectorAll('[data-note="'+n+'"]').forEach(k=>{k.classList.add('playing');setTimeout(()=>k.classList.remove('playing'),200);});}
+function buildPiano(id){const w=document.getElementById(id);if(!w)return;const wns=['C4','D4','E4','F4','G4','A4','B4','C5'];const bm={0:'Cs4',1:'Ds4',3:'Fs4',4:'Gs4',5:'As4'};wns.forEach((n,i)=>{const k=document.createElement('div');k.className='wk';k.dataset.note=n;if(todayNotes.includes(n))k.classList.add('hl');k.style.left=(i*48)+'px';k.textContent=n.replace(/\d/,'');k.onclick=()=>playNote(n);w.appendChild(k);});Object.entries(bm).forEach(([i,n])=>{const k=document.createElement('div');k.className='bk';k.dataset.note=n;if(todayNotes.includes(n))k.classList.add('hl');k.style.left=(parseInt(i)*48+32)+'px';k.onclick=(e)=>{e.stopPropagation();playNote(n);};w.appendChild(k);});}
+function buildNoteGrid(id){const g=document.getElementById(id);if(!g)return;todayNotes.forEach(n=>{const card=document.createElement('div');card.className='nc';const dot=document.createElement('div');dot.className='nd';dot.style.background=NCOLORS[n]||'#888';const lbl=n==='As4'?'Bb':n.replace(/\d/,'').replace('s','#');dot.textContent=lbl;card.appendChild(dot);const txt=document.createElement('div');txt.style.fontSize='.85rem';txt.textContent=lbl;card.appendChild(txt);card.addEventListener('click',()=>playNote(n));g.appendChild(card);});}
+function buildMelody(){const r=document.getElementById('mel-row');if(!r)return;r.innerHTML='';let ni=0;barPattern.forEach((cnt,bi)=>{for(let n=0;n<cnt;n++){if(ni>=MELODY.length)break;const[note,beats]=MELODY[ni];const d=document.createElement('div');d.className='mn '+(beats===1?'q':beats===2?'h':'wh');d.dataset.idx=ni;d.dataset.note=note;d.style.background=NCOLORS[note]||'#888';const lbl=note==='As4'?'Bb':note.replace(/\d/,'').replace('s','#');d.innerHTML='<span class="nl">'+lbl+'</span><span class="bl">'+BL[beats]+'</span>';d.onclick=()=>playNote(note);r.appendChild(d);ni++;}if(bi<barPattern.length-1){const b=document.createElement('div');b.className='bar';r.appendChild(b);}});}
+function setTempo(v){tempo=parseInt(v);document.getElementById('tv').textContent=v+' BPM';}
+function stopMelody(){if(timer){clearTimeout(timer);timer=null;}document.querySelectorAll('.mn').forEach(n=>n.classList.remove('playing'));}
+function playMelody(){stopMelody();let i=0;const bms=60000/tempo;function next(){if(i>=MELODY.length)return;const[n,b]=MELODY[i];playNote(n);flashKey(n);document.querySelectorAll('.mn').forEach(x=>x.classList.remove('playing'));const el=document.querySelector('.mn[data-idx="'+i+'"]');if(el)el.classList.add('playing');i++;timer=setTimeout(next,bms*b);}next();}
+function goTo(idx){document.querySelectorAll('.screen').forEach((s,i)=>s.classList.toggle('active',i===idx));document.querySelectorAll('.dot').forEach((d,i)=>{d.classList.remove('on','done');if(i<idx)d.classList.add('done');if(i===idx)d.classList.add('on');});window.scrollTo(0,0);}
+window.addEventListener('DOMContentLoaded',()=>{buildPiano('piano');buildNoteGrid('note-grid');buildPiano('piano2');buildNoteGrid('note-grid2');buildMelody();document.querySelector('.dot').classList.add('on');});
+</script>
+</body>
+</html>

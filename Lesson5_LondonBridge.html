@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 5 – London Bridge</title>
+<style>
+:root {
+  --primary:#16a085;
+  --accent:#f5a623;
+  --green:#27ae60;
+  --red:#e74c3c;
+  --purple:#8e44ad;
+  --bg:#f0f4f8;
+  --card:#ffffff;
+  --text:#2c3e50;
+  --muted:#7f8c8d;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+header{background:linear-gradient(135deg,#16a085,#0e6655);color:#fff;padding:20px 24px;display:flex;align-items:center;gap:16px}
+header .lesson-badge{background:rgba(255,255,255,0.25);border-radius:12px;padding:6px 14px;font-size:13px;font-weight:600}
+header h1{font-size:22px;font-weight:700}
+header p{font-size:14px;opacity:0.85;margin-top:2px}
+.prog-bar{display:flex;justify-content:center;align-items:center;gap:10px;padding:18px;background:#fff;border-bottom:1px solid #e0e0e0;flex-wrap:wrap}
+.prog-dot{width:36px;height:36px;border-radius:50%;border:2px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;color:var(--muted);background:#f9f9f9}
+.prog-dot.active{background:var(--primary);border-color:var(--primary);color:#fff;transform:scale(1.1)}
+.prog-dot.done{background:var(--green);border-color:var(--green);color:#fff}
+.prog-label{font-size:11px;color:var(--muted);text-align:center;max-width:60px;line-height:1.3}
+.prog-item{display:flex;flex-direction:column;align-items:center;gap:4px}
+main{max-width:680px;margin:0 auto;padding:24px 16px}
+.step{display:none}
+.step.active{display:block}
+.card{background:var(--card);border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,0.08);margin-bottom:20px}
+.card h2{font-size:18px;color:var(--primary);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card p{line-height:1.6;margin-bottom:10px;color:var(--text)}
+.card ul{padding-left:20px;line-height:1.8}
+.card ul li{margin-bottom:4px}
+.tip-box{border-left:4px solid var(--green);background:#f0faf4;border-radius:0 12px 12px 0;padding:14px 16px;margin:12px 0}
+.asd-box{border-left:4px solid var(--accent);background:#fffbf0;border-radius:0 12px 12px 0;padding:14px 16px;margin:12px 0}
+.asd-box .asd-label{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+/* Piano keyboard */
+.piano-wrap{overflow-x:auto;padding:12px 0 20px}
+.piano{position:relative;display:inline-flex;height:120px;margin:0 auto}
+.white-key{width:40px;height:120px;background:#fff;border:2px solid #ccc;border-radius:0 0 6px 6px;position:relative;cursor:pointer;transition:background 0.1s;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:6px;z-index:1}
+.white-key:hover,.white-key.pressed{background:#e8f8f4}
+.white-key .note-label{font-size:11px;font-weight:700;pointer-events:none}
+.white-key .finger-num{font-size:13px;font-weight:800;margin-bottom:2px;pointer-events:none}
+.black-key{width:26px;height:74px;background:#2c3e50;border-radius:0 0 5px 5px;position:absolute;top:0;z-index:2;cursor:pointer;transition:background 0.1s;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:5px}
+.black-key:hover,.black-key.pressed{background:#4a6274}
+.black-key .note-label{font-size:9px;color:#ddd;pointer-events:none}
+/* Melody display */
+.melody-row{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0;align-items:flex-end}
+.mel-note{border-radius:8px;color:#fff;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:transform 0.1s,box-shadow 0.1s;border:2px solid rgba(0,0,0,0.1)}
+.mel-note.q{width:48px;height:52px;font-size:14px}
+.mel-note.h{width:80px;height:52px;font-size:14px}
+.mel-note.wh{width:100px;height:52px;font-size:14px}
+.mel-note .beat-count{font-size:10px;opacity:0.85;font-weight:600}
+.mel-note.flash{transform:scale(1.12);box-shadow:0 0 12px rgba(0,0,0,0.3);border-color:rgba(255,255,255,0.6)}
+.bar-line{width:3px;height:52px;background:#7f8c8d;border-radius:2px;align-self:center}
+/* Rhythm legend */
+.rhythm-legend{display:flex;gap:16px;flex-wrap:wrap;margin:12px 0}
+.rhy-item{display:flex;align-items:center;gap:8px;background:#f8f9fa;border-radius:10px;padding:8px 12px}
+.rhy-box{border-radius:6px;color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+.rhy-box.q-box{width:36px;height:36px}
+.rhy-box.h-box{width:60px;height:36px}
+.rhy-box.w-box{width:80px;height:36px}
+/* Tempo buttons */
+.tempo-row{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+.tempo-btn{padding:8px 18px;border:2px solid var(--primary);border-radius:20px;background:#fff;color:var(--primary);font-weight:700;font-size:13px;cursor:pointer;transition:all 0.2s}
+.tempo-btn.active,.tempo-btn:hover{background:var(--primary);color:#fff}
+/* Buttons */
+.btn{display:inline-block;padding:12px 28px;border-radius:24px;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;text-decoration:none;margin-top:8px}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:#0e6655;transform:translateY(-1px)}
+.btn-secondary{background:#fff;color:var(--primary);border:2px solid var(--primary)}
+.btn-secondary:hover{background:#f0faf8}
+.btn-yt{background:#ff0000;color:#fff;font-size:13px;padding:9px 20px}
+.btn-yt:hover{background:#cc0000}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px;flex-wrap:wrap;gap:10px}
+.checklist{list-style:none;padding:0}
+.checklist li{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:15px}
+.checklist li:last-child{border-bottom:none}
+.checklist input[type=checkbox]{width:20px;height:20px;margin-top:2px;accent-color:var(--primary);flex-shrink:0}
+.phase-tag{display:inline-block;background:rgba(22,160,133,0.12);color:var(--primary);font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="lesson-badge">Phase 1 · Lesson 5 of 36</div>
+    <h1>🌉 London Bridge</h1>
+    <p>Quarter notes vs half notes — counting beats</p>
+  </div>
+</header>
+
+<div class="prog-bar">
+  <div class="prog-item">
+    <div class="prog-dot active" id="dot0" onclick="goTo(0)">1</div>
+    <div class="prog-label">Welcome</div>
+  </div>
+  <div class="prog-item">
+    <div class="prog-dot" id="dot1" onclick="goTo(1)">2</div>
+    <div class="prog-label">Find Notes</div>
+  </div>
+  <div class="prog-item">
+    <div class="prog-dot" id="dot2" onclick="goTo(2)">3</div>
+    <div class="prog-label">Rhythm</div>
+  </div>
+  <div class="prog-item">
+    <div class="prog-dot" id="dot3" onclick="goTo(3)">4</div>
+    <div class="prog-label">The Song</div>
+  </div>
+  <div class="prog-item">
+    <div class="prog-dot" id="dot4" onclick="goTo(4)">5</div>
+    <div class="prog-label">Practice Tips</div>
+  </div>
+</div>
+
+<main>
+
+<!-- STEP 0: WELCOME -->
+<div class="step active" id="step0">
+  <div class="card">
+    <span class="phase-tag">Phase 1 · Week 5</span>
+    <h2>🎉 Today we learn London Bridge!</h2>
+    <p>This week's big idea: <strong>not all notes are the same length!</strong> Some notes last <strong>1 beat</strong> and some last <strong>2 beats</strong>. Learning this is a huge step in reading music.</p>
+    <div class="tip-box">
+      <strong>🎵 What you'll learn today:</strong>
+      <ul style="margin-top:8px">
+        <li>Quarter note (♩) = 1 beat</li>
+        <li>Half note (𝅗𝅥) = 2 beats</li>
+        <li>Whole note (𝅝) = 4 beats</li>
+        <li>Quarter rest (𝄽) = 1 beat of silence</li>
+        <li>Playing London Bridge with the right hand</li>
+      </ul>
+    </div>
+    <div class="asd-box">
+      <div class="asd-label">💡 ASD Support</div>
+      <p>We'll <strong>clap the rhythm first</strong> before touching the keys. This separates the challenge of counting from the challenge of finding notes — much easier!</p>
+    </div>
+  </div>
+  <div class="card">
+    <h2>🎬 Listen first!</h2>
+    <p>Hear what London Bridge sounds like before you play it. Click below to search for a piano version.</p>
+    <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=London+Bridge+is+Falling+Down+piano+easy+kids" target="_blank">▶ Search YouTube</a>
+  </div>
+  <div class="nav-row">
+    <span></span>
+    <button class="btn btn-primary" onclick="goTo(1)">Let's find the notes →</button>
+  </div>
+</div>
+
+<!-- STEP 1: FIND THE NOTES -->
+<div class="step" id="step1">
+  <div class="card">
+    <h2>🎹 Find the notes on your keyboard</h2>
+    <p>London Bridge uses <strong>6 notes</strong>: C · D · E · F · G · A. Your hand starts in <strong>C position</strong> (RH, finger 1 on C). To reach A, slide your hand up slightly so finger 5 lands on A.</p>
+    <div class="asd-box">
+      <div class="asd-label">💡 Sticker tip</div>
+      <p>Put stickers on C · D · E · F · G · A using the colours below. C is always blue!</p>
+    </div>
+    <div class="tip-box">
+      <strong>Note colours:</strong> C=Blue · D=Teal · E=Green · F=Purple · G=Red · A=Orange
+    </div>
+  </div>
+  <div class="card">
+    <h2>🖱️ Click the keys to hear them</h2>
+    <div class="piano-wrap">
+      <div class="piano" id="piano1">
+        <!-- White keys C4–B4 + C5 -->
+        <div class="white-key" data-note="C4" onclick="playKey('C4',this)" style="border-bottom:4px solid #4a90d9">
+          <span class="finger-num" style="color:#4a90d9">1</span>
+          <span class="note-label" style="color:#4a90d9">C</span>
+        </div>
+        <div class="white-key" data-note="D4" onclick="playKey('D4',this)" style="border-bottom:4px solid #16a085">
+          <span class="finger-num" style="color:#16a085">2</span>
+          <span class="note-label" style="color:#16a085">D</span>
+        </div>
+        <div class="white-key" data-note="E4" onclick="playKey('E4',this)" style="border-bottom:4px solid #27ae60">
+          <span class="finger-num" style="color:#27ae60">3</span>
+          <span class="note-label" style="color:#27ae60">E</span>
+        </div>
+        <div class="white-key" data-note="F4" onclick="playKey('F4',this)" style="border-bottom:4px solid #8e44ad">
+          <span class="finger-num" style="color:#8e44ad">4</span>
+          <span class="note-label" style="color:#8e44ad">F</span>
+        </div>
+        <div class="white-key" data-note="G4" onclick="playKey('G4',this)" style="border-bottom:4px solid #e74c3c">
+          <span class="finger-num" style="color:#e74c3c">5</span>
+          <span class="note-label" style="color:#e74c3c">G</span>
+        </div>
+        <div class="white-key" data-note="A4" onclick="playKey('A4',this)" style="border-bottom:4px solid #e67e22">
+          <span class="finger-num" style="color:#e67e22">↑</span>
+          <span class="note-label" style="color:#e67e22">A</span>
+        </div>
+        <div class="white-key" data-note="B4" onclick="playKey('B4',this)">
+          <span class="note-label" style="color:#999">B</span>
+        </div>
+        <div class="white-key" data-note="C5" onclick="playKey('C5',this)">
+          <span class="note-label" style="color:#4a90d9">C5</span>
+        </div>
+        <!-- Black keys -->
+        <div class="black-key" data-note="Cs4" onclick="playKey('Cs4',this)" style="left:27px"><span class="note-label">C#</span></div>
+        <div class="black-key" data-note="Ds4" onclick="playKey('Ds4',this)" style="left:67px"><span class="note-label">D#</span></div>
+        <div class="black-key" data-note="Fs4" onclick="playKey('Fs4',this)" style="left:147px"><span class="note-label">F#</span></div>
+        <div class="black-key" data-note="Gs4" onclick="playKey('Gs4',this)" style="left:187px"><span class="note-label">G#</span></div>
+        <div class="black-key" data-note="As4" onclick="playKey('As4',this)" style="left:227px"><span class="note-label">A#</span></div>
+      </div>
+    </div>
+    <p style="color:var(--muted);font-size:13px;text-align:center;margin-top:4px">Click any key to hear it · ↑ = shift hand up for A</p>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-secondary" onclick="goTo(0)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(2)">Now let's count! →</button>
+  </div>
+</div>
+
+<!-- STEP 2: RHYTHM -->
+<div class="step" id="step2">
+  <div class="card">
+    <h2>🥁 Note values — counting beats</h2>
+    <p>Before you play, let's understand how long each note lasts. Music is like a clock — the <strong>beat</strong> is the steady tick. Different note shapes tell you how many ticks to hold each note.</p>
+
+    <div class="rhythm-legend">
+      <div class="rhy-item">
+        <div class="rhy-box q-box" style="background:#e74c3c">♩</div>
+        <div>
+          <div style="font-weight:700;font-size:14px">Quarter note</div>
+          <div style="font-size:13px;color:var(--muted)">1 beat · "Ta"</div>
+        </div>
+      </div>
+      <div class="rhy-item">
+        <div class="rhy-box h-box" style="background:#8e44ad">𝅗𝅥</div>
+        <div>
+          <div style="font-weight:700;font-size:14px">Half note</div>
+          <div style="font-size:13px;color:var(--muted)">2 beats · "Ta-aa"</div>
+        </div>
+      </div>
+      <div class="rhy-item">
+        <div class="rhy-box w-box" style="background:#2c3e50">𝅝</div>
+        <div>
+          <div style="font-weight:700;font-size:14px">Whole note</div>
+          <div style="font-size:13px;color:var(--muted)">4 beats · "Ta-aa-aa-aa"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <strong>🎵 Try this!</strong> Clap and count aloud: <em>"1, 2, 3, 4 / 1, 2, 3, 4"</em> — keep it <strong>steady like a clock</strong>. When you see a half note, hold the clap for 2 counts.
+    </div>
+
+    <div class="asd-box">
+      <div class="asd-label">💡 Visual Rhythm Cards</div>
+      <p>Use a <strong>visual timer</strong> (like a Time Timer) to show how long each note lasts. Quarter = ¼ of the dial, half = ½. This makes abstract counting concrete and visual!</p>
+    </div>
+  </div>
+  <div class="card">
+    <h2>👏 Clap the London Bridge rhythm</h2>
+    <p>Clap along with the beat count below. <strong>Wider boxes = hold longer!</strong></p>
+    <div class="melody-row" id="clap-row">
+      <!-- Line 1: London Bridge is falling down -->
+      <div class="mel-note q" style="background:#e74c3c"><span>G</span><span class="beat-count">♩1</span></div>
+      <div class="mel-note q" style="background:#e67e22"><span>A</span><span class="beat-count">♩1</span></div>
+      <div class="mel-note q" style="background:#e74c3c"><span>G</span><span class="beat-count">♩1</span></div>
+      <div class="mel-note q" style="background:#8e44ad"><span>F</span><span class="beat-count">♩1</span></div>
+      <div class="bar-line"></div>
+      <div class="mel-note q" style="background:#27ae60"><span>E</span><span class="beat-count">♩1</span></div>
+      <div class="mel-note q" style="background:#8e44ad"><span>F</span><span class="beat-count">♩1</span></div>
+      <div class="mel-note h" style="background:#e74c3c"><span>G</span><span class="beat-count">𝅗𝅥 1-2</span></div>
+      <div class="bar-line"></div>
+      <!-- Line 2: Falling down, falling down -->
+      <div class="mel-note q" style="background:#16a085"><span>D</span><span class="beat-count">♩1</span></div>
+      <div class="mel-note q" style="background:#27ae60"><span>E</span><span class="beat-count">♩1</span></div>
+      <div class="mel-note h" style="background:#8e44ad"><span>F</span><span class="beat-count">𝅗𝅥 1-2</span></div>
+      <div class="bar-line"></div>
+      <div class="mel-note q" style="background:#27ae60"><span>E</span><span class="beat-count">♩1</span></div>
+      <div class="mel-note q" style="background:#8e44ad"><span>F</span><span class="beat-count">♩1</span></div>
+      <div class="mel-note h" style="background:#e74c3c"><span>G</span><span class="beat-count">𝅗𝅥 1-2</span></div>
+      <div class="bar-line"></div>
+      <!-- Line 3: London Bridge is falling down, My fair lady -->
+      <div class="mel-note q" style="background:#e74c3c"><span>G</span><span class="beat-count">♩1</span></div>
+      <div class="mel-note q" style="background:#e67e22"><span>A</span><span class="beat-count">♩1</span></div>
+      <div class="mel-note q" style="background:#e74c3c"><span>G</span><span class="beat-count">♩1</span></div>
+      <div class="mel-note q" style="background:#8e44ad"><span>F</span><span class="beat-count">♩1</span></div>
+      <div class="bar-line"></div>
+      <div class="mel-note q" style="background:#27ae60"><span>E</span><span class="beat-count">♩1</span></div>
+      <div class="mel-note q" style="background:#8e44ad"><span>F</span><span class="beat-count">♩1</span></div>
+      <div class="mel-note q" style="background:#e74c3c"><span>G</span><span class="beat-count">♩1</span></div>
+      <div class="mel-note q" style="background:#27ae60"><span>E</span><span class="beat-count">♩1</span></div>
+      <div class="bar-line"></div>
+      <div class="mel-note wh" style="background:#4a90d9"><span>C</span><span class="beat-count">𝅝 1-2-3-4</span></div>
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px">Wider = hold longer. Click a note to hear it!</p>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-secondary" onclick="goTo(1)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(3)">Now play it! →</button>
+  </div>
+</div>
+
+<!-- STEP 3: THE SONG -->
+<div class="step" id="step3">
+  <div class="card">
+    <h2>🎵 London Bridge — Play Along!</h2>
+    <p>Set your metronome to <strong>♩ = 60</strong> (slow). The coloured notes will light up one by one. Play along on your keyboard!</p>
+
+    <div class="tempo-row">
+      <button class="tempo-btn active" onclick="setTempo(60,this)">♩ = 60 (slow)</button>
+      <button class="tempo-btn" onclick="setTempo(80,this)">♩ = 80</button>
+      <button class="tempo-btn" onclick="setTempo(100,this)">♩ = 100</button>
+    </div>
+
+    <div class="melody-row" id="mel-row">
+      <!-- dynamically populated by JS -->
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="playMelody()">▶ Play melody</button>
+      <button class="btn btn-secondary" onclick="stopMelody()">■ Stop</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🎹 Play along keyboard</h2>
+    <div class="piano-wrap">
+      <div class="piano" id="piano2">
+        <div class="white-key" data-note="C4" onclick="playKey('C4',this)" style="border-bottom:4px solid #4a90d9">
+          <span class="finger-num" style="color:#4a90d9">1</span>
+          <span class="note-label" style="color:#4a90d9">C</span>
+        </div>
+        <div class="white-key" data-note="D4" onclick="playKey('D4',this)" style="border-bottom:4px solid #16a085">
+          <span class="finger-num" style="color:#16a085">2</span>
+          <span class="note-label" style="color:#16a085">D</span>
+        </div>
+        <div class="white-key" data-note="E4" onclick="playKey('E4',this)" style="border-bottom:4px solid #27ae60">
+          <span class="finger-num" style="color:#27ae60">3</span>
+          <span class="note-label" style="color:#27ae60">E</span>
+        </div>
+        <div class="white-key" data-note="F4" onclick="playKey('F4',this)" style="border-bottom:4px solid #8e44ad">
+          <span class="finger-num" style="color:#8e44ad">4</span>
+          <span class="note-label" style="color:#8e44ad">F</span>
+        </div>
+        <div class="white-key" data-note="G4" onclick="playKey('G4',this)" style="border-bottom:4px solid #e74c3c">
+          <span class="finger-num" style="color:#e74c3c">5</span>
+          <span class="note-label" style="color:#e74c3c">G</span>
+        </div>
+        <div class="white-key" data-note="A4" onclick="playKey('A4',this)" style="border-bottom:4px solid #e67e22">
+          <span class="finger-num" style="color:#e67e22">↑</span>
+          <span class="note-label" style="color:#e67e22">A</span>
+        </div>
+        <div class="white-key" data-note="B4" onclick="playKey('B4',this)">
+          <span class="note-label" style="color:#999">B</span>
+        </div>
+        <div class="white-key" data-note="C5" onclick="playKey('C5',this)">
+          <span class="note-label" style="color:#4a90d9">C5</span>
+        </div>
+        <div class="black-key" data-note="Cs4" onclick="playKey('Cs4',this)" style="left:27px"><span class="note-label">C#</span></div>
+        <div class="black-key" data-note="Ds4" onclick="playKey('Ds4',this)" style="left:67px"><span class="note-label">D#</span></div>
+        <div class="black-key" data-note="Fs4" onclick="playKey('Fs4',this)" style="left:147px"><span class="note-label">F#</span></div>
+        <div class="black-key" data-note="Gs4" onclick="playKey('Gs4',this)" style="left:187px"><span class="note-label">G#</span></div>
+        <div class="black-key" data-note="As4" onclick="playKey('As4',this)" style="left:227px"><span class="note-label">A#</span></div>
+      </div>
+    </div>
+    <div class="tip-box" style="margin-top:8px">
+      <strong>🎵 Count aloud while you play:</strong> Say "1" for quarter notes and "1-2" for half notes. For the last C, say "1-2-3-4"!
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-secondary" onclick="goTo(2)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(4)">Practice tips →</button>
+  </div>
+</div>
+
+<!-- STEP 4: PRACTICE TIPS -->
+<div class="step" id="step4">
+  <div class="card">
+    <h2>✅ Practice checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>Clapped the full rhythm counting aloud (3 times)</span></li>
+      <li><input type="checkbox"><span>Found all 6 notes on the keyboard (C D E F G A)</span></li>
+      <li><input type="checkbox"><span>Played the melody slowly at ♩=60</span></li>
+      <li><input type="checkbox"><span>Said the beat numbers aloud while playing</span></li>
+      <li><input type="checkbox"><span>Tried at ♩=80</span></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2>🏠 This week at home</h2>
+    <ul style="padding-left:18px;line-height:2">
+      <li>Play London Bridge <strong>3 times each day</strong></li>
+      <li>Each time, count the beats aloud ("1, 1, 1, 1, 1, 1, 1-2 …")</li>
+      <li>Can you clap the rhythm without looking at the screen?</li>
+      <li>Try tapping the rhythm on your knee first, then play on keys</li>
+    </ul>
+    <div class="asd-box" style="margin-top:14px">
+      <div class="asd-label">💡 ASD Support — Separate the challenges</div>
+      <p>If both counting AND finding notes feels hard at the same time, do them <strong>separately</strong>: first clap just the rhythm (no keyboard), then play just the notes (no counting). Then put them together.</p>
+    </div>
+  </div>
+  <div class="card">
+    <h2>🌟 Well done!</h2>
+    <p>You've learned quarter notes and half notes — one of the most important skills in music! Next week we'll learn about <strong>bar lines and time signatures</strong> with Jingle Bells.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+      <button class="btn btn-primary" onclick="goTo(0)">🔁 Start again</button>
+      <a class="btn btn-yt" href="https://www.youtube.com/results?search_query=London+Bridge+piano+tutorial+kids+beginner" target="_blank">▶ More videos</a>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+const FREQS = {
+  'C4':261.63,'Cs4':277.18,'D4':293.66,'Ds4':311.13,
+  'E4':329.63,'F4':349.23,'Fs4':369.99,'G4':392.00,
+  'Gs4':415.30,'A4':440.00,'As4':466.16,'B4':493.88,
+  'C5':523.25
+};
+const NCOLORS = {
+  'C4':'#4a90d9','D4':'#16a085','E4':'#27ae60',
+  'F4':'#8e44ad','G4':'#e74c3c','A4':'#e67e22',
+  'B4':'#f1c40f','C5':'#4a90d9'
+};
+const MELODY = [
+  ['G4',1],['A4',1],['G4',1],['F4',1],
+  ['E4',1],['F4',1],['G4',2],
+  ['D4',1],['E4',1],['F4',2],
+  ['E4',1],['F4',1],['G4',2],
+  ['G4',1],['A4',1],['G4',1],['F4',1],
+  ['E4',1],['F4',1],['G4',1],['E4',1],
+  ['C4',4]
+];
+const NOTE_NAMES = {'C4':'C','D4':'D','E4':'E','F4':'F','G4':'G','A4':'A','B4':'B','C5':'C'};
+const BEAT_LABELS = {1:'♩1',2:'𝅗𝅥 1-2',4:'𝅝 1-2-3-4'};
+
+let tempo = 60;
+let melodyTimers = [];
+let audioCtx = null;
+
+function getAudioCtx(){
+  if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playTone(freq, duration){
+  const ctx = getAudioCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'triangle';
+  osc.frequency.value = freq;
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  gain.gain.setValueAtTime(0, ctx.currentTime);
+  gain.gain.linearRampToValueAtTime(0.4, ctx.currentTime + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + Math.max(0.05, duration - 0.05));
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + duration);
+}
+
+function playKey(note, el){
+  const freq = FREQS[note];
+  if(freq) playTone(freq, 0.5);
+  if(el){
+    el.classList.add('pressed');
+    setTimeout(()=>el.classList.remove('pressed'), 200);
+  }
+}
+
+function flashKey(note){
+  document.querySelectorAll('[data-note="'+note+'"]').forEach(el=>{
+    el.classList.add('pressed');
+    setTimeout(()=>el.classList.remove('pressed'), 300);
+  });
+}
+
+function setTempo(t, btn){
+  tempo = t;
+  document.querySelectorAll('.tempo-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  stopMelody();
+}
+
+function stopMelody(){
+  melodyTimers.forEach(clearTimeout);
+  melodyTimers = [];
+  document.querySelectorAll('.mel-note').forEach(n=>n.classList.remove('flash'));
+}
+
+function buildMelodyRow(){
+  const row = document.getElementById('mel-row');
+  if(!row) return;
+  row.innerHTML = '';
+  const barPattern = [4,3,3,3,4,4,4]; // notes per bar
+  let noteIdx = 0;
+  for(let b=0; b<barPattern.length; b++){
+    for(let n=0; n<barPattern[b]; n++){
+      if(noteIdx >= MELODY.length) break;
+      const [note, beats] = MELODY[noteIdx];
+      const cls = beats===1?'q':beats===2?'h':'wh';
+      const col = NCOLORS[note]||'#7f8c8d';
+      const label = NOTE_NAMES[note]||note;
+      const beatLabel = BEAT_LABELS[beats]||beats;
+      const div = document.createElement('div');
+      div.className = 'mel-note '+cls;
+      div.style.background = col;
+      div.dataset.idx = noteIdx;
+      div.innerHTML = '<span>'+label+'</span><span class="beat-count">'+beatLabel+'</span>';
+      div.onclick = ()=>{ playTone(FREQS[note]||440, beats*(60/tempo)); };
+      row.appendChild(div);
+      noteIdx++;
+    }
+    if(b < barPattern.length-1){
+      const bl = document.createElement('div');
+      bl.className = 'bar-line';
+      row.appendChild(bl);
+    }
+  }
+}
+
+function playMelody(){
+  stopMelody();
+  buildMelodyRow();
+  const notes = document.querySelectorAll('#mel-row .mel-note');
+  let t = 0;
+  const spb = 60/tempo;
+  MELODY.forEach(([note, beats], i)=>{
+    const delay = t * 1000;
+    const dur = beats * spb;
+    melodyTimers.push(setTimeout(()=>{
+      document.querySelectorAll('#mel-row .mel-note').forEach(n=>n.classList.remove('flash'));
+      const el = document.querySelector('#mel-row .mel-note[data-idx="'+i+'"]');
+      if(el) el.classList.add('flash');
+      playTone(FREQS[note]||440, dur * 0.9);
+      flashKey(note);
+    }, delay));
+    t += beats * spb;
+  });
+  melodyTimers.push(setTimeout(()=>{
+    document.querySelectorAll('#mel-row .mel-note').forEach(n=>n.classList.remove('flash'));
+  }, (t+0.5)*1000));
+}
+
+// Add click handlers for clap-row notes
+document.querySelectorAll('#clap-row .mel-note').forEach(el=>{
+  const note = el.querySelector('span:first-child').textContent;
+  const noteMap={'C':'C4','D':'D4','E':'E4','F':'F4','G':'G4','A':'A4'};
+  el.onclick = ()=>{
+    const n = noteMap[note];
+    if(n && FREQS[n]) playTone(FREQS[n], 0.4);
+  };
+});
+
+function goTo(idx){
+  stopMelody();
+  document.querySelectorAll('.step').forEach((s,i)=>s.classList.toggle('active',i===idx));
+  for(let i=0;i<5;i++){
+    const d=document.getElementById('dot'+i);
+    d.classList.toggle('active',i===idx);
+    d.classList.toggle('done',i<idx);
+  }
+  if(idx===3) buildMelodyRow();
+  window.scrollTo(0,0);
+}
+
+buildMelodyRow();
+</script>
+</body>
+</html>

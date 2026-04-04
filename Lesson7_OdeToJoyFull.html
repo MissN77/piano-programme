@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 7 – Ode to Joy (Full)</title>
+<style>
+  :root { --primary:#2980b9; --grad:#1f618d; --accent:#1a6fa0; }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f4f8;color:#2c3e50;min-height:100vh;}
+  header{background:linear-gradient(135deg,var(--primary),var(--grad));color:#fff;padding:20px 24px 16px;box-shadow:0 3px 10px rgba(0,0,0,.2);}
+  header h1{font-size:1.5rem;margin-bottom:4px;}
+  header p{font-size:.9rem;opacity:.9;}
+  .progress-bar{display:flex;justify-content:center;gap:12px;padding:16px;background:#fff;border-bottom:2px solid #e0e8f0;}
+  .prog-dot{width:36px;height:36px;border-radius:50%;background:#d0dce8;border:none;cursor:pointer;font-size:.8rem;font-weight:700;color:#fff;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+  .prog-dot.active{background:var(--primary);transform:scale(1.2);}
+  .prog-dot.done{background:#27ae60;}
+  .prog-dot.done::after{content:'✓';}
+  section{display:none;padding:20px;max-width:700px;margin:0 auto;}
+  section.active{display:block;}
+  .card{background:#fff;border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+  .card h2{color:var(--primary);margin-bottom:12px;font-size:1.2rem;}
+  .asd-box{background:#fff8f0;border-left:4px solid #e67e22;border-radius:8px;padding:14px;margin:12px 0;}
+  .asd-box strong{color:#e67e22;}
+  .tip-box{background:#f0faf4;border-left:4px solid #27ae60;border-radius:8px;padding:14px;margin:12px 0;}
+  .tip-box strong{color:#27ae60;}
+  .btn{display:inline-block;padding:10px 22px;border-radius:8px;border:none;cursor:pointer;font-size:.95rem;font-weight:600;margin:6px 4px;transition:all .2s;}
+  .btn-primary{background:var(--primary);color:#fff;}
+  .btn-primary:hover{background:var(--grad);}
+  .btn-secondary{background:#ecf0f1;color:#2c3e50;}
+  .btn-secondary:hover{background:#d5dbdb;}
+  .btn-small{padding:6px 14px;font-size:.85rem;}
+  .nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px;}
+  /* Piano */
+  .piano-wrap{position:relative;height:130px;margin:16px 0;min-width:384px;background:#222;border-radius:8px;padding:8px;overflow:hidden;}
+  .white-key{position:absolute;width:44px;height:110px;background:#fff;border:1px solid #aaa;border-radius:0 0 6px 6px;cursor:pointer;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;font-size:.75rem;font-weight:700;color:#555;transition:background .1s;top:8px;}
+  .white-key:hover{background:#e8f4fd;}
+  .white-key.key-highlight{background:#b3d9f5;border-color:var(--primary);}
+  .black-key{position:absolute;width:30px;height:70px;background:#222;border-radius:0 0 5px 5px;cursor:pointer;z-index:2;top:8px;}
+  .black-key:hover{background:#444;}
+  /* Melody row */
+  .mel-row-wrap{overflow-x:auto;padding:10px 0;}
+  #mel-row,#mel-row2{display:flex;align-items:center;gap:4px;min-height:80px;padding:8px;}
+  .mel-note{border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;box-shadow:0 2px 5px rgba(0,0,0,.2);flex-shrink:0;}
+  .mel-note.q{width:40px;height:60px;}
+  .mel-note.h{width:72px;height:60px;}
+  .mel-note.wh{width:100px;height:60px;}
+  .mel-note.flash{transform:scale(1.1);box-shadow:0 0 12px rgba(255,255,255,.8);filter:brightness(1.3);}
+  .note-label{color:#fff;font-weight:700;font-size:.85rem;text-shadow:0 1px 2px rgba(0,0,0,.4);}
+  .beat-label{color:rgba(255,255,255,.8);font-size:.65rem;margin-top:2px;}
+  .bar-line{width:3px;height:52px;background:#555;flex-shrink:0;margin:0 4px;}
+  /* Tempo */
+  .tempo-row{display:flex;gap:8px;margin:10px 0;}
+  .tempo-btn{padding:7px 14px;border-radius:6px;border:2px solid var(--primary);background:#fff;color:var(--primary);font-weight:700;cursor:pointer;font-size:.85rem;}
+  .tempo-btn.active{background:var(--primary);color:#fff;}
+  /* Theory */
+  .phrase-diagram{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;}
+  .phrase-block{padding:8px 14px;border-radius:8px;font-weight:700;color:#fff;font-size:.9rem;}
+  /* Days */
+  .day-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0;}
+  .day-card{background:#f8f9fa;border-radius:8px;padding:10px 12px;border-left:3px solid var(--primary);font-size:.9rem;}
+  .day-card strong{color:var(--primary);}
+  .yt-btn{background:#c0392b;color:#fff;}
+  .yt-btn:hover{background:#a93226;}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎹 Lesson 7 – Ode to Joy (Full 8 Bars)</h1>
+  <p>Phase 1 · Week 7 · Beethoven's masterpiece — complete!</p>
+</header>
+<div class="progress-bar">
+  <button class="prog-dot active" onclick="goTo(0)" title="Welcome">1</button>
+  <button class="prog-dot" onclick="goTo(1)" title="Find Notes">2</button>
+  <button class="prog-dot" onclick="goTo(2)" title="Phrases">3</button>
+  <button class="prog-dot" onclick="goTo(3)" title="The Song">4</button>
+  <button class="prog-dot" onclick="goTo(4)" title="Practice Plan">5</button>
+</div>
+
+<!-- Section 0: Welcome -->
+<section class="active">
+  <div class="card">
+    <h2>🎉 Welcome — The Full Ode to Joy!</h2>
+    <p>Over the last two lessons you've learned parts of Ode to Joy. Today you play <strong>all 8 bars</strong> — exactly as Beethoven wrote it!</p>
+    <div class="asd-box">
+      <strong>🌟 Amazing fact:</strong> Beethoven was completely deaf when he wrote this music. He could never hear it with his ears — but he heard it perfectly inside his mind. That is a true superpower.
+    </div>
+    <p style="margin-top:12px;">Today you will put <strong>two phrases</strong> together and perform the whole piece from start to finish.</p>
+    <div class="tip-box">
+      <strong>🎯 Today's goals:</strong> Play all 8 bars smoothly · Understand musical phrases · Perform for someone
+    </div>
+  </div>
+  <div class="card">
+    <h2>📖 What is a phrase?</h2>
+    <p>A musical phrase is like a sentence in speech — it starts, travels somewhere, and comes to a resting point. Ode to Joy has two main phrases:</p>
+    <div class="phrase-diagram">
+      <div class="phrase-block" style="background:#2980b9;">Phrase A (bars 1–4)</div>
+      <div class="phrase-block" style="background:#1f618d;">Phrase B (bars 5–8)</div>
+    </div>
+    <p>Phrase A ends on a <strong>questioning</strong> note (D). Phrase B ends on a <strong>settled</strong> note (C) — it feels complete.</p>
+  </div>
+  <div class="nav-row">
+    <span></span>
+    <button class="btn btn-primary" onclick="goTo(1)">Find the Notes →</button>
+  </div>
+</section>
+
+<!-- Section 1: Find Notes -->
+<section>
+  <div class="card">
+    <h2>🎹 Your 5-Finger Position</h2>
+    <p>Today you use all <strong>5 notes</strong>: C · D · E · F · G. Place your fingers before you start:</p>
+    <ul style="margin:10px 0 10px 20px;line-height:1.9;">
+      <li>Thumb (1) → <strong style="color:#4a90d9;">C4</strong></li>
+      <li>Index (2) → <strong style="color:#16a085;">D4</strong></li>
+      <li>Middle (3) → <strong style="color:#27ae60;">E4</strong></li>
+      <li>Ring (4) → <strong style="color:#8e44ad;">F4</strong></li>
+      <li>Pinky (5) → <strong style="color:#e74c3c;">G4</strong></li>
+    </ul>
+    <p>Click each key to hear it, then close your eyes and find them by feel.</p>
+    <div class="piano-wrap" id="piano"></div>
+    <div class="asd-box">
+      <strong>💡 Tip:</strong> Before playing, rest all 5 fingers on the keys without pressing. Feel the shape of your hand — that is your home position.
+    </div>
+  </div>
+  <div class="card">
+    <h2>🎵 Warm-Up: Scale Walk</h2>
+    <p>Play slowly up and down: C–D–E–F–G–F–E–D–C. Say each note name as you play.</p>
+    <button class="btn btn-secondary btn-small" onclick="playWarmup()">▶ Play warm-up</button>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-secondary" onclick="goTo(0)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(2)">Phrases →</button>
+  </div>
+</section>
+
+<!-- Section 2: Theory / Phrases -->
+<section>
+  <div class="card">
+    <h2>🎼 The Two Phrases</h2>
+    <p><strong>Phrase A (bars 1–4):</strong> E E F G G F E D C C D E E–D–D</p>
+    <p style="margin-top:8px;">Notice it ends on two long D notes — that feels like a question waiting for an answer.</p>
+    <p style="margin-top:12px;"><strong>Phrase B (bars 5–8):</strong> E E F G G F E D C C D E D–C–C</p>
+    <p style="margin-top:8px;">Now it ends on a long C — that feels settled and finished. The music has found its home.</p>
+    <div class="tip-box">
+      <strong>🎯 Musical tip:</strong> Play Phrase A a little forward (leaning toward the ending), then let Phrase B feel like it gently lands. Imagine a journey and then arriving home.
+    </div>
+  </div>
+  <div class="card">
+    <h2>📊 Understanding the Structure</h2>
+    <div class="phrase-diagram">
+      <div class="phrase-block" style="background:#2980b9;flex:1;text-align:center;">A<br><span style="font-size:.75rem;font-weight:400;">Bars 1–4 · ends on D</span></div>
+      <div class="phrase-block" style="background:#1f618d;flex:1;text-align:center;">B<br><span style="font-size:.75rem;font-weight:400;">Bars 5–8 · ends on C</span></div>
+    </div>
+    <p style="margin-top:8px;font-size:.9rem;">This A–B pattern is called <strong>binary form</strong> — one of the most common musical structures. You will meet it in many exam pieces!</p>
+    <div class="asd-box">
+      <strong>🌟 ASD tip:</strong> If playing the full 8 bars feels too much at once, practise Phrase A on its own until it is easy, then add Phrase B. You do not have to play everything at once.
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-secondary" onclick="goTo(1)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(3)">The Song →</button>
+  </div>
+</section>
+
+<!-- Section 3: The Song -->
+<section>
+  <div class="card">
+    <h2>🎵 Ode to Joy — Full 8 Bars</h2>
+    <div class="tempo-row">
+      <button class="tempo-btn active" onclick="setTempo(60,this)">♩=60</button>
+      <button class="tempo-btn" onclick="setTempo(80,this)">♩=80</button>
+      <button class="tempo-btn" onclick="setTempo(100,this)">♩=100</button>
+    </div>
+    <div class="mel-row-wrap"><div id="mel-row"></div></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn btn-primary" onclick="playMelody()">▶ Play full melody</button>
+      <button class="btn btn-secondary" onclick="stopMelody()">■ Stop</button>
+      <button class="btn btn-secondary btn-small yt-btn" onclick="window.open('https://www.youtube.com/results?search_query=ode+to+joy+beethoven+piano+grade+1','_blank')">▶ YouTube</button>
+    </div>
+    <div class="piano-wrap" id="piano2"></div>
+    <div class="asd-box">
+      <strong>⏸️ Pause between phrases:</strong> After bar 4, take a tiny breath before starting bar 5. This makes the music feel musical rather than mechanical.
+    </div>
+  </div>
+  <div class="card">
+    <h2>🎤 Performance Time!</h2>
+    <p>When you can play through without stopping, it is time to <strong>perform</strong>!</p>
+    <ol style="margin:10px 0 10px 20px;line-height:1.9;">
+      <li>Sit up straight, hands in position</li>
+      <li>Take one slow breath in and out</li>
+      <li>Play from start to finish without stopping</li>
+      <li>Bow when finished 🎩</li>
+    </ol>
+    <div class="tip-box">
+      <strong>👨‍👩‍👧 Perform for someone:</strong> Even if it is not perfect, performing makes you a musician. Ask a family member to be your audience today!
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-secondary" onclick="goTo(2)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(4)">Practice Plan →</button>
+  </div>
+</section>
+
+<!-- Section 4: Practice Plan -->
+<section>
+  <div class="card">
+    <h2>📅 Your 7-Day Practice Plan</h2>
+    <div class="day-grid">
+      <div class="day-card"><strong>Day 1</strong> — Phrase A hands alone × 3</div>
+      <div class="day-card"><strong>Day 2</strong> — Phrase B hands alone × 3</div>
+      <div class="day-card"><strong>Day 3</strong> — Full piece at ♩=60</div>
+      <div class="day-card"><strong>Day 4</strong> — Full piece at ♩=80</div>
+      <div class="day-card"><strong>Day 5</strong> — Full piece at ♩=100</div>
+      <div class="day-card"><strong>Day 6</strong> — 🎙️ Record yourself and listen back</div>
+      <div class="day-card"><strong>Day 7</strong> — Perform for family 🎉</div>
+    </div>
+    <div class="asd-box">
+      <strong>🎙️ Recording tip:</strong> Use a phone or tablet to record. Listen back once. Do not judge — just notice one thing you like and one thing to improve next time.
+    </div>
+  </div>
+  <div class="card">
+    <h2>🏆 Phase 1 Almost Complete!</h2>
+    <p>Next lesson is your <strong>Phase 1 Mini Recital</strong> — you will pick your favourite piece from Lessons 1–7 and perform it. Well done for reaching this milestone!</p>
+    <div class="tip-box">
+      <strong>🎯 Looking ahead:</strong> In Phase 2 you will learn full scales, hands-together playing, and new keys. Everything you have learned so far prepares you perfectly.
+    </div>
+    <div style="margin-top:16px;">
+      <button class="btn btn-secondary btn-small yt-btn" onclick="window.open('https://www.youtube.com/results?search_query=beethoven+ode+to+joy+beginner+piano','_blank')">▶ Watch on YouTube</button>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-secondary" onclick="goTo(3)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(0)">↺ Start Again</button>
+  </div>
+</section>
+
+<script>
+const FREQS={'C4':261.63,'Cs4':277.18,'D4':293.66,'Ds4':311.13,'E4':329.63,'F4':349.23,'Fs4':369.99,'G4':392.00,'Gs4':415.30,'A4':440.00,'As4':466.16,'B4':493.88,'C5':523.25};
+const NCOLORS={'C4':'#4a90d9','D4':'#16a085','E4':'#27ae60','F4':'#8e44ad','G4':'#e74c3c','A4':'#e67e22','B4':'#f1c40f','C5':'#4a90d9'};
+const BEAT_LABELS={1:'♩',2:'𝅗𝅥',4:'𝅝'};
+const MELODY=[['E4',1],['E4',1],['F4',1],['G4',1],['G4',1],['F4',1],['E4',1],['D4',1],['C4',1],['C4',1],['D4',1],['E4',1],['E4',2],['D4',2],['E4',1],['E4',1],['F4',1],['G4',1],['G4',1],['F4',1],['E4',1],['D4',1],['C4',1],['C4',1],['D4',1],['E4',1],['D4',2],['C4',2]];
+const barPattern=[4,4,4,2,4,4,4,2];
+let tempo=60,melodyTimers=[];
+let audioCtx=null;
+function getCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function playTone(freq,dur){
+  const ctx=getCtx();const now=ctx.currentTime;
+  const o=ctx.createOscillator();const g=ctx.createGain();
+  o.connect(g);g.connect(ctx.destination);
+  o.type='triangle';o.frequency.value=freq;
+  g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(0.4,now+0.02);
+  g.gain.exponentialRampToValueAtTime(0.001,now+Math.max(dur,0.05));
+  o.start(now);o.stop(now+Math.max(dur,0.05)+0.01);
+}
+function playNote(note){if(FREQS[note])playTone(FREQS[note],0.5);}
+function flashKey(note){
+  document.querySelectorAll('[data-note="'+note+'"]').forEach(k=>{
+    k.style.filter='brightness(1.5)';setTimeout(()=>k.style.filter='',300);
+  });
+}
+function setTempo(t,btn){tempo=t;document.querySelectorAll('.tempo-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function stopMelody(){melodyTimers.forEach(clearTimeout);melodyTimers=[];document.querySelectorAll('.mel-note').forEach(n=>n.classList.remove('flash'));}
+function buildPiano(id){
+  const wrap=document.getElementById(id);if(!wrap)return;
+  const whites=['C4','D4','E4','F4','G4','A4','B4','C5'];
+  const blackMap={0:'Cs4',1:'Ds4',3:'Fs4',4:'Gs4',5:'As4'};
+  const todayNotes=['C4','D4','E4','F4','G4'];
+  whites.forEach((note,i)=>{
+    const key=document.createElement('div');key.className='white-key';key.dataset.note=note;
+    if(todayNotes.includes(note))key.classList.add('key-highlight');
+    key.style.left=(i*48)+'px';key.innerHTML=note.replace(/\d/,'');
+    key.addEventListener('click',()=>playNote(note));wrap.appendChild(key);
+  });
+  Object.entries(blackMap).forEach(([idx,note])=>{
+    const key=document.createElement('div');key.className='black-key';key.dataset.note=note;
+    key.style.left=(parseInt(idx)*48+32)+'px';
+    key.addEventListener('click',(e)=>{e.stopPropagation();playNote(note);});wrap.appendChild(key);
+  });
+}
+function buildMelodyRow(){
+  const row=document.getElementById('mel-row');if(!row)return;row.innerHTML='';
+  let noteIdx=0;
+  for(let b=0;b<barPattern.length;b++){
+    for(let n=0;n<barPattern[b];n++){
+      if(noteIdx>=MELODY.length)break;
+      const[note,beats]=MELODY[noteIdx];
+      const cls=beats===1?'q':beats===2?'h':'wh';
+      const div=document.createElement('div');div.className='mel-note '+cls;
+      div.dataset.idx=noteIdx;div.dataset.note=note;
+      div.style.background=NCOLORS[note]||'#888';
+      div.innerHTML='<span class="note-label">'+note.replace(/\d/,'')+'</span><span class="beat-label">'+BEAT_LABELS[beats]+'</span>';
+      row.appendChild(div);noteIdx++;
+    }
+    if(b<barPattern.length-1){const bl=document.createElement('div');bl.className='bar-line';row.appendChild(bl);}
+  }
+}
+function playMelody(){
+  stopMelody();buildMelodyRow();
+  let t=0;const spb=60/tempo;
+  MELODY.forEach(([note,beats],i)=>{
+    const delay=t*1000;const dur=beats*spb;
+    melodyTimers.push(setTimeout(()=>{
+      document.querySelectorAll('#mel-row .mel-note').forEach(n=>n.classList.remove('flash'));
+      const el=document.querySelector('#mel-row .mel-note[data-idx="'+i+'"]');
+      if(el)el.classList.add('flash');
+      playTone(FREQS[note]||440,dur*0.9);flashKey(note);
+    },delay));
+    t+=beats*spb;
+  });
+  melodyTimers.push(setTimeout(()=>{document.querySelectorAll('#mel-row .mel-note').forEach(n=>n.classList.remove('flash'));},t*1000+200));
+}
+function playWarmup(){
+  const scale=['C4','D4','E4','F4','G4','F4','E4','D4','C4'];
+  let t=0;
+  scale.forEach(note=>{
+    setTimeout(()=>{playTone(FREQS[note],0.4);flashKey(note);},t);
+    t+=500;
+  });
+}
+function goTo(idx){
+  const secs=document.querySelectorAll('section');
+  const dots=document.querySelectorAll('.prog-dot');
+  secs.forEach((s,i)=>s.classList.toggle('active',i===idx));
+  dots.forEach((d,i)=>{d.classList.remove('active','done');if(i===idx)d.classList.add('active');else if(i<idx)d.classList.add('done');});
+  if(idx===3)buildMelodyRow();
+  window.scrollTo(0,0);
+}
+buildPiano('piano');
+buildPiano('piano2');
+</script>
+</body>
+</html>

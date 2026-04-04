@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lesson 36 – You Did It!</title>
+<style>
+:root{--accent:#f57f17;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',sans-serif;background:#0d1117;color:#eee;min-height:100vh;}
+.screen{display:none;padding:20px;max-width:700px;margin:0 auto;}
+.screen.active{display:block;}
+h1{font-size:1.6rem;color:#ffe082;margin-bottom:8px;}
+h2{font-size:1.2rem;color:#ffe082;margin:16px 0 8px;}
+p{line-height:1.6;margin-bottom:10px;font-size:1rem;}
+.asd-box{background:#2a1800;border-left:4px solid #e67e22;border-radius:8px;padding:14px;margin:12px 0;}
+.tip-box{background:#1e3a2e;border-left:4px solid #27ae60;border-radius:8px;padding:14px;margin:12px 0;}
+.btn{display:inline-block;background:#f57f17;color:#fff;border:none;border-radius:24px;padding:10px 24px;font-size:1rem;cursor:pointer;margin:6px 4px;border:2px solid #ffe082;}
+.btn:hover{background:#e65100;}
+.btn-outline{background:transparent;color:#ffe082;}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;}
+.dots{display:flex;gap:8px;}
+.dot{width:12px;height:12px;border-radius:50%;background:#444;cursor:pointer;transition:.2s;}
+.dot.on{background:#ffe082;transform:scale(1.3);}
+.dot.done{background:#888;}
+.phase-badge{display:inline-block;background:#f57f17;color:#ffe082;border:2px solid #ffe082;border-radius:20px;padding:4px 14px;font-size:.85rem;margin-bottom:10px;}
+.checklist{list-style:none;margin:12px 0;}
+.checklist li{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#2a1800;border-radius:8px;margin-bottom:8px;font-size:1rem;cursor:pointer;border:2px solid transparent;transition:.2s;}
+.checklist li.done{border-color:#27ae60;background:#1e3a2e;}
+.checklist li:before{content:'⬜';font-size:1.2rem;}
+.checklist li.done:before{content:'✅';}
+.score-box{background:#2a1800;border-radius:12px;padding:20px;margin:16px 0;text-align:center;}
+.score-big{font-size:3rem;font-weight:bold;color:#f1c40f;}
+.journey-card{background:#2a1800;border-radius:10px;padding:14px;margin:10px 0;border-left:4px solid #ffe082;}
+.phase-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;}
+.pbadge{padding:6px 14px;border-radius:16px;font-size:.85rem;font-weight:bold;border:2px solid;}
+.star-row{font-size:2.5rem;text-align:center;margin:16px 0;letter-spacing:4px;}
+.next-card{background:#2a1800;border-radius:10px;padding:14px;margin:10px 0;border-left:4px solid #f57f17;}
+</style>
+</head>
+<body>
+<div style="padding:12px 20px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.3);position:fixed;top:0;left:0;right:0;z-index:10;">
+<span style="color:#ffe082;font-weight:bold;">🎹 Lesson 36</span>
+<div class="dots">
+<div class="dot" onclick="goTo(0)"></div>
+<div class="dot" onclick="goTo(1)"></div>
+<div class="dot" onclick="goTo(2)"></div>
+<div class="dot" onclick="goTo(3)"></div>
+<div class="dot" onclick="goTo(4)"></div>
+</div>
+</div>
+<div style="height:50px;"></div>
+
+<!-- Screen 0: Welcome -->
+<div class="screen active" id="s0">
+<br>
+<span class="phase-badge">Phase 4 · Week 36</span>
+<h1>You Did It! 🎉</h1>
+<p>You've reached the end of the programme. 36 weeks. 5 phases. Hundreds of notes, scales, rhythms, and songs. From reading your very first note to running through a full Grade 1 mock exam — you've come an enormous way.</p>
+<div class="tip-box">
+🎓 This isn't the end of music. It's the start of everything that comes next.
+</div>
+<div class="star-row">⭐⭐⭐⭐⭐</div>
+<div class="asd-box">
+<strong>💡 A note for you both:</strong><br>
+Learning an instrument takes courage — especially when things are hard or unfamiliar. You showed up every week. You kept going. That is something to be genuinely proud of.
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(0)">↩</button>
+<button class="btn" onclick="goTo(1)">Your Journey →</button>
+</div>
+</div>
+
+<!-- Screen 1: Journey Through the Programme -->
+<div class="screen" id="s1">
+<h1>Your Journey 🗺️</h1>
+<p>Here's everything you've covered across 36 weeks:</p>
+<div class="journey-card">
+<strong>Phase 1 — Getting Started (Weeks 1–7)</strong><br>
+<span style="color:#ffe082;font-size:.9rem;">Posture · First notes C–G · Reading treble clef · Rhythm basics · Skips and steps · Both hands together</span>
+</div>
+<div class="journey-card">
+<strong>Phase 2 — Building Skills (Weeks 8–14)</strong><br>
+<span style="color:#ffe082;font-size:.9rem;">Bass clef · Left hand melodies · Ties and slurs · F and G position · First complete songs · Dynamics (f and p)</span>
+</div>
+<div class="journey-card">
+<strong>Phase 3 — Putting It Together (Weeks 15–22)</strong><br>
+<span style="color:#ffe082;font-size:.9rem;">Full C position · Sharps and flats · Time signatures · Key of G major · Scales C, G, A minor · Sight reading strategies</span>
+</div>
+<div class="journey-card">
+<strong>Phase 4 — Exam Preparation (Weeks 23–36)</strong><br>
+<span style="color:#ffe082;font-size:.9rem;">ABRSM Grade 1 pieces (Lists A, B and C) · Scales drill · Aural training · Sight reading exam technique · Two full mock exams</span>
+</div>
+<div class="asd-box">
+💡 Look at how far that list goes. Every single item on it is something you can now do.
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(0)">← Back</button>
+<button class="btn" onclick="goTo(2)">Achievements →</button>
+</div>
+</div>
+
+<!-- Screen 2: Achievements Checklist -->
+<div class="screen" id="s2">
+<h1>Achievements Unlocked 🏆</h1>
+<p>Tick each achievement you've earned over the programme:</p>
+<ul class="checklist" id="achieve-list">
+<li onclick="toggle(this)">🎹 I can read notes in the treble clef</li>
+<li onclick="toggle(this)">🎹 I can read notes in the bass clef</li>
+<li onclick="toggle(this)">🎵 I can play a melody with my right hand</li>
+<li onclick="toggle(this)">🎵 I can play notes with my left hand too</li>
+<li onclick="toggle(this)">🎼 I can play hands together on a piece of music</li>
+<li onclick="toggle(this)">🎼 I know what sharps and flats are</li>
+<li onclick="toggle(this)">📏 I can play in 3/4 and 4/4 time</li>
+<li onclick="toggle(this)">🎓 I can play C major, G major and A minor scales</li>
+<li onclick="toggle(this)">👁️ I can sight read a short piece I've never seen before</li>
+<li onclick="toggle(this)">👂 I can clap a steady pulse to music</li>
+<li onclick="toggle(this)">👂 I can tell if music gets louder, softer, faster or slower</li>
+<li onclick="toggle(this)">🎤 I can sing back a short phrase I've just heard</li>
+<li onclick="toggle(this)">🏅 I have run through a full Grade 1 mock exam</li>
+<li onclick="toggle(this)">⭐ I kept going even when something was hard</li>
+</ul>
+<div class="score-box">
+<div id="achieve-score" class="score-big">0/14</div>
+<div style="color:#aaa;margin-top:6px;">achievements</div>
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(1)">← Back</button>
+<button class="btn" onclick="goTo(3)">What's Next →</button>
+</div>
+</div>
+
+<!-- Screen 3: What Comes Next -->
+<div class="screen" id="s3">
+<h1>What's Next? 🚀</h1>
+<p>Finishing this programme means you're ready to take the ABRSM Grade 1 exam — and ready to start thinking about what comes after that!</p>
+<div class="next-card">
+<strong>🎓 If you're taking the Grade 1 exam</strong><br>
+You're prepared. You know the format, you've done two mock exams, and you know your pieces. Walk in, breathe, and enjoy it — the examiner genuinely wants you to do well.
+</div>
+<div class="next-card">
+<strong>📚 Grade 2 — what to look forward to</strong><br>
+More pieces with more expressive range · Extra scales (F major, D major, B minor) · Slightly longer sight reading · Aural tests with more detail<br>
+<span style="color:#ffe082;font-size:.9rem;">Everything you've learnt here carries straight into Grade 2. You're already ahead.</span>
+</div>
+<div class="next-card">
+<strong>🎵 Keep playing for fun</strong><br>
+Learn songs you love · Explore YouTube tutorials · Try playing along to music you enjoy<br>
+<span style="color:#ffe082;font-size:.9rem;">The best pianists never stop playing just for the joy of it.</span>
+</div>
+<div class="tip-box">
+💡 <strong>Practise tip:</strong> Even 10 minutes a day keeps everything fresh. You've built the habit — keep it going!
+</div>
+<div class="asd-box">
+<strong>💡 ASD tip:</strong><br>
+If the idea of starting Grade 2 feels overwhelming, don't start yet. Spend a few weeks just playing pieces you love — things you already know and enjoy. Music should feel good. Come back to new challenges when you're ready.
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(2)">← Back</button>
+<button class="btn" onclick="goTo(4)">Keep Going →</button>
+</div>
+</div>
+
+<!-- Screen 4: Final Words -->
+<div class="screen" id="s4">
+<h1>You Should Be Proud 🌟</h1>
+<div class="tip-box">
+<strong>A message from this programme:</strong><br><br>
+You started from scratch. You learned to read music, to use both hands, to listen carefully, to practise calmly, and to perform. That's not easy — for anyone. You did it anyway.<br><br>
+Whatever comes next in your musical life, you've got the foundation. The notes, the scales, the rhythm, the ear — it's all yours now.
+</div>
+<div class="star-row">🎹🎶⭐🎶🎹</div>
+<div class="asd-box">
+<strong>💡 For the grown-ups supporting this journey:</strong><br>
+Thank you for making time for music each week. Children with ASD often thrive with structured, predictable learning — and you gave them exactly that. The patience, the encouragement, and the consistency all made this possible.
+</div>
+<div style="margin:16px 0;">
+<button class="btn" onclick="window.open('https://www.youtube.com/results?search_query=abrsm+grade+1+piano+exam+day+tips')">▶ Exam Day Tips</button>
+<button class="btn" onclick="window.open('https://www.youtube.com/results?search_query=abrsm+grade+2+piano+pieces+beginners')">▶ Grade 2 Preview</button>
+<button class="btn" onclick="window.open('https://www.youtube.com/results?search_query=fun+easy+piano+songs+for+kids+beginners')">▶ Fun Songs to Explore</button>
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(3)">← Back</button>
+<button class="btn" onclick="goTo(0)">↩ Start</button>
+</div>
+</div>
+
+<script>
+function goTo(idx){document.querySelectorAll('.screen').forEach((s,i)=>s.classList.toggle('active',i===idx));document.querySelectorAll('.dot').forEach((d,i)=>{d.classList.remove('on','done');if(i<idx)d.classList.add('done');if(i===idx)d.classList.add('on');});window.scrollTo(0,0);}
+function toggle(el){el.classList.toggle('done');updateScores();}
+function updateScores(){
+  const t=document.querySelectorAll('#achieve-list li.done').length;
+  const ts=document.getElementById('achieve-score');
+  if(ts)ts.textContent=t+'/14';
+}
+window.addEventListener('DOMContentLoaded',()=>{document.querySelector('.dot').classList.add('on');});
+</script>
+</body>
+</html>

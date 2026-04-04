@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lesson 16 – Phase 2 Recital</title>
+<style>
+:root{--accent:#154360;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',sans-serif;background:#0d1117;color:#eee;min-height:100vh;}
+.screen{display:none;padding:20px;max-width:700px;margin:0 auto;}
+.screen.active{display:block;}
+h1{font-size:1.6rem;color:#5dade2;margin-bottom:8px;}
+h2{font-size:1.2rem;color:#5dade2;margin:16px 0 8px;}
+p{line-height:1.6;margin-bottom:10px;font-size:1rem;}
+.asd-box{background:#1e2a3a;border-left:4px solid #e67e22;border-radius:8px;padding:14px;margin:12px 0;}
+.tip-box{background:#1e3a2e;border-left:4px solid #27ae60;border-radius:8px;padding:14px;margin:12px 0;}
+.btn{display:inline-block;background:#154360;color:#fff;border:none;border-radius:24px;padding:10px 24px;font-size:1rem;cursor:pointer;margin:6px 4px;border:2px solid #5dade2;}
+.btn:hover{background:#1a5276;}
+.btn-outline{background:transparent;color:#5dade2;}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;}
+.dots{display:flex;gap:8px;}
+.dot{width:12px;height:12px;border-radius:50%;background:#444;cursor:pointer;transition:.2s;}
+.dot.on{background:#5dade2;transform:scale(1.3);}
+.dot.done{background:#888;}
+.checklist{list-style:none;margin:12px 0;}
+.checklist li{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#1e2a3a;border-radius:8px;margin-bottom:8px;font-size:1rem;cursor:pointer;border:2px solid transparent;transition:.2s;}
+.checklist li.done{border-color:#27ae60;background:#1e3a2e;}
+.checklist li:before{content:'⬜';font-size:1.2rem;}
+.checklist li.done:before{content:'✅';}
+.song-card{background:#1e2a3a;border-radius:10px;padding:14px;margin:10px 0;border-left:4px solid #5dade2;}
+.song-num{font-size:1.5rem;color:#5dade2;font-weight:bold;}
+.star-row{font-size:1.4rem;margin:8px 0;letter-spacing:4px;}
+.phase-badge{display:inline-block;background:#154360;color:#5dade2;border:2px solid #5dade2;border-radius:20px;padding:4px 14px;font-size:.85rem;margin-bottom:10px;}
+.trophy{font-size:4rem;text-align:center;margin:20px 0;}
+.score-box{background:#1e2a3a;border-radius:12px;padding:20px;margin:16px 0;text-align:center;}
+.score-big{font-size:3rem;font-weight:bold;color:#f1c40f;}
+.criteria-row{display:flex;gap:10px;margin:8px 0;flex-wrap:wrap;}
+.criteria-pill{background:#0d1117;border-radius:20px;padding:6px 14px;font-size:.85rem;border:1px solid #444;cursor:pointer;transition:.2s;}
+.criteria-pill.selected{background:#154360;border-color:#5dade2;color:#5dade2;}
+</style>
+</head>
+<body>
+<div style="padding:12px 20px;display:flex;justify-content:space-between;align-items:background:rgba(0,0,0,.3);">
+<div style="padding:12px 20px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.3);position:fixed;top:0;left:0;right:0;z-index:10;">
+<span style="color:#5dade2;font-weight:bold;">🎹 Lesson 16</span>
+<div class="dots">
+<div class="dot" onclick="goTo(0)"></div>
+<div class="dot" onclick="goTo(1)"></div>
+<div class="dot" onclick="goTo(2)"></div>
+<div class="dot" onclick="goTo(3)"></div>
+<div class="dot" onclick="goTo(4)"></div>
+</div>
+</div>
+</div>
+<div style="height:50px;"></div>
+
+<!-- Screen 0: Welcome -->
+<div class="screen active" id="s0">
+<br>
+<span class="phase-badge">Phase 2 · Week 16</span>
+<h1>Phase 2 Recital! 🎭</h1>
+<div class="trophy">🏆</div>
+<p>You've completed Phase 2! Time to show what you've learned.</p>
+<div class="asd-box">
+<strong>🎯 Recital includes:</strong><br>
+✅ Play 2 songs from Phase 2<br>
+✅ Explain one music theory idea<br>
+✅ Self-assess using the checklist<br>
+✅ Celebrate your progress!
+</div>
+<div class="tip-box">
+💡 There's no right or wrong here — this is YOUR recital at YOUR pace!
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(0)">↩</button>
+<button class="btn" onclick="goTo(1)">Get Ready →</button>
+</div>
+</div>
+
+<!-- Screen 1: Song Choices -->
+<div class="screen" id="s1">
+<h1>Choose Your Songs 🎵</h1>
+<p>Pick <strong>2 songs</strong> to perform today. Tap to mark your choices:</p>
+<div class="song-card">
+<div class="song-num">1</div>
+<strong>Ode to Joy</strong> (Lesson 9) — C D E F G<br>
+<div class="star-row" id="stars1">⭐⭐⭐⭐⭐</div>
+</div>
+<div class="song-card">
+<div class="song-num">2</div>
+<strong>Twinkle Twinkle</strong> (Lesson 10) — C D E F G A<br>
+<div class="star-row" id="stars2">⭐⭐⭐⭐⭐</div>
+</div>
+<div class="song-card">
+<div class="song-num">3</div>
+<strong>Merrily We Roll Along</strong> (Lesson 11) — C D E<br>
+<div class="star-row" id="stars3">⭐⭐⭐⭐⭐</div>
+</div>
+<div class="song-card">
+<div class="song-num">4</div>
+<strong>Mary Had a Little Lamb</strong> (Lesson 12) — E D C G<br>
+<div class="star-row" id="stars4">⭐⭐⭐⭐⭐</div>
+</div>
+<div class="song-card">
+<div class="song-num">5</div>
+<strong>Michael Row the Boat</strong> (Lesson 13) — E D G A<br>
+<div class="star-row" id="stars5">⭐⭐⭐⭐⭐</div>
+</div>
+<div class="song-card">
+<div class="song-num">6</div>
+<strong>Happy Birthday</strong> (Lesson 15) — C D F G<br>
+<div class="star-row" id="stars6">⭐⭐⭐⭐⭐</div>
+</div>
+<div class="asd-box">
+💡 Tap the stars below each song to rate how well you know it!
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(0)">← Back</button>
+<button class="btn" onclick="goTo(2)">Theory Check →</button>
+</div>
+</div>
+
+<!-- Screen 2: Theory Check -->
+<div class="screen" id="s2">
+<h1>Theory Checkpoint 📚</h1>
+<p>Can you explain these? Tap each one when you feel confident:</p>
+<ul class="checklist" id="theory-list">
+<li onclick="toggle(this)">I know what a <strong>treble clef</strong> is</li>
+<li onclick="toggle(this)">I can name the lines: <strong>Every Good Boy Deserves Food</strong></li>
+<li onclick="toggle(this)">I know what <strong>legato</strong> means (smooth)</li>
+<li onclick="toggle(this)">I know what <strong>staccato</strong> means (short/bouncy)</li>
+<li onclick="toggle(this)">I can count in <strong>3/4 waltz time</strong></li>
+<li onclick="toggle(this)">I know what a <strong>bar line</strong> is</li>
+<li onclick="toggle(this)">I can name at least <strong>5 notes</strong> on the keyboard</li>
+</ul>
+<div class="score-box">
+<div id="theory-score" class="score-big">0/7</div>
+<div style="color:#aaa;margin-top:6px;">theory concepts</div>
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(1)">← Back</button>
+<button class="btn" onclick="goTo(3)">Performance →</button>
+</div>
+</div>
+
+<!-- Screen 3: Performance Checklist -->
+<div class="screen" id="s3">
+<h1>Performance Checklist 🎬</h1>
+<p>Play your chosen songs. After each one, rate yourself:</p>
+<div class="asd-box">
+<strong>🎯 What to check as you play:</strong>
+</div>
+<ul class="checklist" id="perf-list">
+<li onclick="toggle(this)">I played the right notes</li>
+<li onclick="toggle(this)">I kept a steady beat</li>
+<li onclick="toggle(this)">I used the correct fingers</li>
+<li onclick="toggle(this)">I played all the way through without stopping</li>
+<li onclick="toggle(this)">I used dynamics (loud/soft) if I could</li>
+<li onclick="toggle(this)">I felt the difference between legato and staccato</li>
+<li onclick="toggle(this)">I smiled and enjoyed it! 😊</li>
+</ul>
+<div class="score-box">
+<div id="perf-score" class="score-big">0/7</div>
+<div style="color:#aaa;margin-top:6px;">performance points</div>
+</div>
+<div class="tip-box">
+💡 Even if you made mistakes, you're still a brilliant musician for trying!
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(2)">← Back</button>
+<button class="btn" onclick="goTo(4)">Celebrate! →</button>
+</div>
+</div>
+
+<!-- Screen 4: Celebration -->
+<div class="screen" id="s4">
+<h1>Phase 2 Complete! 🌟</h1>
+<div class="trophy">🎉🏆🎉</div>
+<div class="score-box">
+<div class="score-big" id="total-score">⭐</div>
+<div style="color:#aaa;margin-top:8px;">You completed Phase 2!</div>
+</div>
+<div class="tip-box">
+<strong>🚀 What's next — Phase 3:</strong><br>
+• Dynamics (loud and soft)<br>
+• Minor scales (A minor, D minor)<br>
+• More complex rhythms<br>
+• Hands together practice!
+</div>
+<div class="asd-box">
+<strong>🎯 You should be proud because:</strong><br>
+✅ You learned to read music (treble clef!)<br>
+✅ You can play 6+ songs<br>
+✅ You understand waltz time<br>
+✅ You know legato and staccato<br>
+✅ You're on the way to Grade 1!
+</div>
+<div style="margin-top:16px;">
+<button class="btn" onclick="window.open('https://www.youtube.com/results?search_query=piano+grade+1+pieces+abrsm')">▶ Preview Grade 1 pieces</button>
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(3)">← Back</button>
+<button class="btn" onclick="goTo(0)">↩ Start</button>
+</div>
+</div>
+
+<script>
+function goTo(idx){document.querySelectorAll('.screen').forEach((s,i)=>s.classList.toggle('active',i===idx));document.querySelectorAll('.dot').forEach((d,i)=>{d.classList.remove('on','done');if(i<idx)d.classList.add('done');if(i===idx)d.classList.add('on');});window.scrollTo(0,0);}
+function toggle(el){el.classList.toggle('done');updateScores();}
+function updateScores(){
+const tItems=document.querySelectorAll('#theory-list li.done').length;
+const pItems=document.querySelectorAll('#perf-list li.done').length;
+const ts=document.getElementById('theory-score');
+const ps=document.getElementById('perf-score');
+if(ts)ts.textContent=tItems+'/7';
+if(ps)ps.textContent=pItems+'/7';
+const tot=document.getElementById('total-score');
+if(tot){const total=tItems+pItems;const stars=total>=12?'⭐⭐⭐':total>=8?'⭐⭐':'⭐';tot.textContent=stars;}
+}
+// Star rating
+document.querySelectorAll('.star-row').forEach(row=>{
+row.addEventListener('click',e=>{
+const stars=row.querySelectorAll?row.textContent:'';
+// Simple toggle stars
+row.dataset.rated=(row.dataset.rated==='1')?'0':'1';
+row.style.color=row.dataset.rated==='1'?'#f1c40f':'#666';
+});
+});
+window.addEventListener('DOMContentLoaded',()=>{document.querySelector('.dot').classList.add('on');});
+</script>
+</body>
+</html>

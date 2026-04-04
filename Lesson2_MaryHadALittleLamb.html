@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 2 – Mary Had a Little Lamb</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4ff; color: #222; min-height: 100vh; }
+  header { background: linear-gradient(135deg, #4a90d9, #7b5ea7); color: white; padding: 18px 24px; display: flex; align-items: center; gap: 16px; }
+  header .logo { font-size: 2rem; }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: 0.9rem; opacity: 0.85; }
+
+  .progress-bar { display: flex; background: #dde3f0; padding: 12px 20px; gap: 8px; flex-wrap: wrap; }
+  .step-btn { flex: 1; min-width: 100px; padding: 10px 8px; border: none; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; background: #c5cfe0; color: #555; transition: all 0.2s; }
+  .step-btn.active { background: #4a90d9; color: white; box-shadow: 0 3px 8px rgba(74,144,217,0.4); }
+  .step-btn.done { background: #5cb85c; color: white; }
+
+  .screen { display: none; padding: 24px 20px; max-width: 700px; margin: 0 auto; }
+  .screen.active { display: block; }
+
+  .card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+  h2 { font-size: 1.3rem; color: #4a90d9; margin-bottom: 12px; }
+  h3 { font-size: 1.05rem; color: #555; margin-bottom: 10px; }
+  p, li { font-size: 0.95rem; line-height: 1.6; color: #333; }
+  ul { padding-left: 20px; margin-top: 6px; }
+  li { margin-bottom: 6px; }
+
+  .objective-list { list-style: none; padding: 0; }
+  .objective-list li { padding: 8px 12px; background: #f0f4ff; border-left: 4px solid #4a90d9; border-radius: 0 8px 8px 0; margin-bottom: 8px; }
+
+  /* Piano keyboard */
+  .piano-wrap { overflow-x: auto; padding: 10px 0 20px; }
+  .piano { display: flex; position: relative; height: 140px; width: max-content; margin: 0 auto; }
+  .white-key { width: 44px; height: 130px; background: white; border: 2px solid #bbb; border-radius: 0 0 8px 8px; position: relative; cursor: pointer; transition: all 0.1s; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px; font-size: 0.7rem; font-weight: 700; z-index: 1; }
+  .white-key:hover, .white-key.pressed { filter: brightness(0.88); transform: scaleY(1.02); }
+  .black-key { width: 28px; height: 82px; background: #222; border-radius: 0 0 6px 6px; position: absolute; top: 0; z-index: 2; cursor: pointer; transition: all 0.1s; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 5px; font-size: 0.6rem; color: white; font-weight: 700; }
+  .black-key:hover, .black-key.pressed { background: #444; }
+
+  /* Note colours */
+  .note-C { background: #4a90d9 !important; color: white !important; }
+  .note-D { background: #9b59b6 !important; color: white !important; }
+  .note-E { background: #f1c40f !important; color: #222 !important; }
+  .note-F { background: #e67e22 !important; color: white !important; }
+  .note-G { background: #e74c3c !important; color: white !important; }
+  .note-A { background: #e67e22 !important; color: white !important; }
+  .note-B { background: #2ecc71 !important; color: white !important; }
+
+  .note-legend { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 600; }
+  .legend-dot { width: 22px; height: 22px; border-radius: 50%; display: inline-block; }
+
+  /* Finger warmup */
+  .finger-display { display: flex; justify-content: center; gap: 6px; margin: 16px 0; }
+  .finger-circle { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; text-align: center; line-height: 1.1; cursor: pointer; transition: all 0.15s; border: 3px solid transparent; }
+  .finger-circle:hover { transform: scale(1.1); }
+  .finger-circle.active { border-color: #222; transform: scale(1.15); box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+
+  /* Melody display */
+  .melody-display { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; justify-content: center; }
+  .note-pill { min-width: 44px; padding: 10px 8px; border-radius: 10px; text-align: center; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.15s; border: 3px solid transparent; }
+  .note-pill.playing { border-color: #222; transform: scale(1.18); box-shadow: 0 4px 14px rgba(0,0,0,0.3); }
+
+  .tempo-row { display: flex; gap: 10px; justify-content: center; margin: 14px 0; flex-wrap: wrap; }
+  .tempo-btn { padding: 9px 18px; border: 2px solid #4a90d9; border-radius: 20px; background: white; color: #4a90d9; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+  .tempo-btn.selected { background: #4a90d9; color: white; }
+  .play-btn { padding: 12px 32px; background: linear-gradient(135deg, #4a90d9, #7b5ea7); color: white; border: none; border-radius: 24px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s; width: 100%; margin-top: 8px; }
+  .play-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(74,144,217,0.4); }
+  .play-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .youtube-btn { display: block; width: 100%; padding: 12px; background: #ff0000; color: white; border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; margin-top: 12px; transition: all 0.2s; }
+  .youtube-btn:hover { background: #cc0000; transform: translateY(-2px); }
+
+  /* Checklist */
+  .checklist-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px; border-radius: 10px; margin-bottom: 8px; background: #f8f9ff; border: 2px solid #e0e4f0; cursor: pointer; transition: all 0.2s; }
+  .checklist-item.checked { background: #e8f8e8; border-color: #5cb85c; }
+  .check-circle { width: 28px; height: 28px; min-width: 28px; border-radius: 50%; border: 3px solid #bbb; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all 0.2s; }
+  .checklist-item.checked .check-circle { background: #5cb85c; border-color: #5cb85c; color: white; }
+  .checklist-text { font-size: 0.9rem; line-height: 1.5; }
+
+  .nav-row { display: flex; gap: 12px; margin-top: 20px; }
+  .nav-btn { flex: 1; padding: 13px; border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .btn-back { background: #e0e4f0; color: #555; }
+  .btn-next { background: linear-gradient(135deg, #4a90d9, #7b5ea7); color: white; box-shadow: 0 3px 10px rgba(74,144,217,0.35); }
+  .btn-back:hover { background: #cdd3e5; }
+  .btn-next:hover { transform: translateY(-2px); }
+
+  .theory-box { background: #fff8e6; border: 2px solid #f0c040; border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+  .asd-tip { background: #e8f4ff; border-left: 5px solid #4a90d9; border-radius: 0 12px 12px 0; padding: 14px; margin-top: 14px; }
+  .asd-tip strong { color: #4a90d9; }
+
+  .week-badge { display: inline-block; background: #7b5ea7; color: white; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🎹</div>
+  <div>
+    <h1>Lesson 2 – Mary Had a Little Lamb</h1>
+    <p>Phase 1 · Week 2 · Three Notes: C, D, E</p>
+  </div>
+</header>
+
+<div class="progress-bar" id="progressBar">
+  <button class="step-btn active" onclick="goTo(0)">1 Welcome</button>
+  <button class="step-btn" onclick="goTo(1)">2 Find Notes</button>
+  <button class="step-btn" onclick="goTo(2)">3 Warm-Up</button>
+  <button class="step-btn" onclick="goTo(3)">4 The Song</button>
+  <button class="step-btn" onclick="goTo(4)">5 Practice Tips</button>
+</div>
+
+<!-- SCREEN 0: WELCOME -->
+<div class="screen active" id="screen-0">
+  <div class="card">
+    <span class="week-badge">Week 2</span>
+    <h2>Welcome to Lesson 2! 👋</h2>
+    <p>Last week you played <strong>Hot Cross Buns</strong> — brilliant work! This week we learn a brand-new song with three special notes.</p>
+  </div>
+  <div class="card">
+    <h2>🎯 What You'll Learn</h2>
+    <ul class="objective-list">
+      <li>📍 Find three notes: <strong>C, D, E</strong> on your keyboard</li>
+      <li>☝️ Use fingers <strong>1, 2, 3</strong> (thumb = 1) on your right hand</li>
+      <li>🎵 Play <strong>Mary Had a Little Lamb</strong> all the way through</li>
+      <li>📖 Learn what a <strong>quarter note</strong> looks like</li>
+    </ul>
+  </div>
+  <div class="card asd-tip">
+    <strong>💡 Tip:</strong> We'll go one step at a time — no rush! Each step has its own page. When you're ready, press <strong>Next →</strong>
+  </div>
+  <div class="nav-row">
+    <button class="nav-btn btn-next" onclick="goTo(1)">Next → Find Your Notes</button>
+  </div>
+</div>
+
+<!-- SCREEN 1: FIND NOTES -->
+<div class="screen" id="screen-1">
+  <div class="card">
+    <h2>🎹 Finding C, D and E</h2>
+    <p>These three notes are right next to each other. <strong>C</strong> is just to the left of the group of <strong>two black keys</strong>.</p>
+    <div class="theory-box" style="margin-top:14px">
+      <strong>Right Hand Fingers:</strong><br>
+      Thumb = 1 · Index = 2 · Middle = 3 · Ring = 4 · Pinky = 5
+    </div>
+    <div class="piano-wrap">
+      <div class="piano" id="piano1"></div>
+    </div>
+    <div class="note-legend" id="legend1"></div>
+  </div>
+  <div class="card">
+    <h2>📖 Quarter Notes</h2>
+    <div class="theory-box">
+      A <strong>quarter note (♩)</strong> lasts for <strong>1 beat</strong>.<br>
+      Count: 1 – 2 – 3 – 4 and each note gets one count.<br>
+      Middle C sits on a <strong>ledger line</strong> just below the treble clef staff.
+    </div>
+    <div class="asd-tip">
+      <strong>💡 Tip:</strong> Look at your keyboard stickers! <span style="color:#4a90d9;font-weight:700">C is blue</span>, <span style="color:#9b59b6;font-weight:700">D is purple</span>, <span style="color:#c9a800;font-weight:700">E is yellow</span>. Press each key and listen — can you hear them going higher?
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="nav-btn btn-back" onclick="goTo(0)">← Back</button>
+    <button class="nav-btn btn-next" onclick="goTo(2)">Next → Warm-Up</button>
+  </div>
+</div>
+
+<!-- SCREEN 2: WARM-UP -->
+<div class="screen" id="screen-2">
+  <div class="card">
+    <h2>🖐️ Finger Warm-Up</h2>
+    <p>Before playing the song, let's warm up all three fingers. Play: <strong>C → D → E → D → C</strong></p>
+    <p style="margin-top:8px;color:#888;font-size:0.88rem">Finger numbers: 1 → 2 → 3 → 2 → 1</p>
+    <div class="finger-display" id="warmupDisplay"></div>
+    <p style="text-align:center;color:#888;font-size:0.85rem;margin-bottom:10px">Press play to hear it:</p>
+    <button class="play-btn" id="warmupBtn" onclick="playWarmup()">▶ Play Warm-Up</button>
+  </div>
+  <div class="card">
+    <h3>🎯 Try it yourself:</h3>
+    <ul>
+      <li>Sit up straight, wrists level with the keys</li>
+      <li>Curve your fingers gently — like holding a soft ball</li>
+      <li>Play slowly — one note at a time</li>
+      <li>Go up <strong>C D E</strong>, then back down <strong>E D C</strong></li>
+    </ul>
+    <div class="asd-tip">
+      <strong>💡 Tip:</strong> Play it 3 times slowly before moving on. Three times is the magic number!
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="nav-btn btn-back" onclick="goTo(1)">← Back</button>
+    <button class="nav-btn btn-next" onclick="goTo(3)">Next → The Song</button>
+  </div>
+</div>
+
+<!-- SCREEN 3: THE SONG -->
+<div class="screen" id="screen-3">
+  <div class="card">
+    <h2>🎵 Mary Had a Little Lamb</h2>
+    <p style="margin-bottom:6px">Watch the notes light up as they play. Each note is colour-coded to its key!</p>
+    <div class="melody-display" id="melodyDisplay"></div>
+    <div class="tempo-row">
+      <button class="tempo-btn selected" onclick="setTempo(60,this)">🐢 Slow (♩=60)</button>
+      <button class="tempo-btn" onclick="setTempo(80,this)">🚶 Medium (♩=80)</button>
+      <button class="tempo-btn" onclick="setTempo(100,this)">🐇 Fast (♩=100)</button>
+    </div>
+    <button class="play-btn" id="playBtn" onclick="playMelody()">▶ Play Melody</button>
+    <a class="youtube-btn" id="ytBtn" href="#" target="_blank">▶ Watch on YouTube</a>
+  </div>
+  <div class="card">
+    <h2>🎹 Play Along!</h2>
+    <div class="piano-wrap">
+      <div class="piano" id="piano2"></div>
+    </div>
+    <div class="note-legend" id="legend2"></div>
+    <p style="margin-top:14px;font-size:0.88rem;color:#666">Use fingers 1–2–3 on your right hand. Start on <strong>E (yellow)</strong>.</p>
+  </div>
+  <div class="nav-row">
+    <button class="nav-btn btn-back" onclick="goTo(2)">← Back</button>
+    <button class="nav-btn btn-next" onclick="goTo(4)">Next → Practice Tips</button>
+  </div>
+</div>
+
+<!-- SCREEN 4: PRACTICE TIPS -->
+<div class="screen" id="screen-4">
+  <div class="card">
+    <h2>✅ Practice Checklist</h2>
+    <p style="margin-bottom:14px;color:#666">Tick each one when you've done it — aim to do this every day!</p>
+    <div id="checklist"></div>
+  </div>
+  <div class="card">
+    <h2>📅 This Week's Plan</h2>
+    <ul>
+      <li><strong>Day 1:</strong> Find C, D, E — play them slowly one by one</li>
+      <li><strong>Day 2:</strong> Warm-up exercise × 3, then try the melody</li>
+      <li><strong>Day 3:</strong> Play Mary Had a Little Lamb slowly — no mistakes better than fast with mistakes!</li>
+      <li><strong>Day 4:</strong> Play it again — try a little faster</li>
+      <li><strong>Day 5:</strong> Play for someone in your family 🎉</li>
+    </ul>
+    <div class="asd-tip" style="margin-top:14px">
+      <strong>💡 Remember:</strong> 5 minutes of focused practice beats 30 minutes of distracted practice every time!
+    </div>
+  </div>
+  <div class="card" style="text-align:center;background:linear-gradient(135deg,#e8f4ff,#f0e8ff)">
+    <div style="font-size:2.5rem;margin-bottom:8px">⭐</div>
+    <h2 style="color:#7b5ea7">Lesson 2 Complete!</h2>
+    <p>Great work today. Next week: <strong>Lesson 3 – Ode to Joy</strong> (two new notes: F and G!)</p>
+  </div>
+  <div class="nav-row">
+    <button class="nav-btn btn-back" onclick="goTo(3)">← Back</button>
+  </div>
+</div>
+
+<script>
+const FREQS = {
+  C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392.00,A4:440.00,B4:493.88,
+  C5:523.25,D5:587.33,E5:659.25
+};
+
+const KEY_COLOURS = {C:'note-C',D:'note-D',E:'note-E',F:'note-F',G:'note-G',A:'note-A',B:'note-B'};
+const LEGEND_COLOURS = {C:'#4a90d9',D:'#9b59b6',E:'#f1c40f'};
+
+// Mary Had a Little Lamb: E D C D E E E | D D D | E G G | E D C D E E E E | D D E D C
+const MELODY = [
+  {note:'E4',label:'E',finger:'3'},{note:'D4',label:'D',finger:'2'},{note:'C4',label:'C',finger:'1'},{note:'D4',label:'D',finger:'2'},
+  {note:'E4',label:'E',finger:'3'},{note:'E4',label:'E',finger:'3'},{note:'E4',label:'E',finger:'3'},
+  {note:'D4',label:'D',finger:'2'},{note:'D4',label:'D',finger:'2'},{note:'D4',label:'D',finger:'2'},
+  {note:'E4',label:'E',finger:'3'},{note:'G4',label:'G',finger:'5'},{note:'G4',label:'G',finger:'5'},
+  {note:'E4',label:'E',finger:'3'},{note:'D4',label:'D',finger:'2'},{note:'C4',label:'C',finger:'1'},{note:'D4',label:'D',finger:'2'},
+  {note:'E4',label:'E',finger:'3'},{note:'E4',label:'E',finger:'3'},{note:'E4',label:'E',finger:'3'},{note:'E4',label:'E',finger:'3'},
+  {note:'D4',label:'D',finger:'2'},{note:'D4',label:'D',finger:'2'},{note:'E4',label:'E',finger:'3'},{note:'D4',label:'D',finger:'2'},{note:'C4',label:'C',finger:'1'}
+];
+
+const WARMUP = [
+  {note:'C4',label:'C'},{note:'D4',label:'D'},{note:'E4',label:'E'},{note:'D4',label:'D'},{note:'C4',label:'C'}
+];
+
+let tempo = 60;
+let audioCtx = null;
+let isPlaying = false;
+let stopFlag = false;
+let currentStep = 0;
+
+function getAudioCtx(){
+  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playNote(freq, duration, startTime){
+  const ctx = getAudioCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(freq, startTime);
+  gain.gain.setValueAtTime(0, startTime);
+  gain.gain.linearRampToValueAtTime(0.4, startTime + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration * 0.9);
+  osc.start(startTime); osc.stop(startTime + duration);
+}
+
+function setTempo(t, btn){
+  tempo = t;
+  document.querySelectorAll('.tempo-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function buildPiano(containerId, highlightNotes){
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  const whites = ['C','D','E','F','G','A','B','C5','D5','E5'];
+  const freqMap = {'C':261.63,'D':293.66,'E':329.63,'F':349.23,'G':392.00,'A':440.00,'B':493.88,'C5':523.25,'D5':587.33,'E5':659.25};
+  const blacks = [
+    {pos:1,name:'Cs',freq:277.18,label:'C#/D♭'},
+    {pos:2,name:'Ds',freq:311.13,label:'D#/E♭'},
+    {pos:4,name:'Fs',freq:369.99,label:'F#/G♭'},
+    {pos:5,name:'Gs',freq:415.30,label:'G#/A♭'},
+    {pos:6,name:'As',freq:466.16,label:'A#/B♭'}
+  ];
+  const pianoWrap = document.createElement('div');
+  pianoWrap.style.cssText = 'display:flex;position:relative;height:140px;width:max-content;margin:0 auto;';
+
+  whites.forEach((w,i)=>{
+    const key = document.createElement('div');
+    key.className = 'white-key';
+    const noteLetter = w.replace('5','');
+    if(highlightNotes && highlightNotes.includes(noteLetter)){
+      key.classList.add(KEY_COLOURS[noteLetter]);
+    }
+    key.innerHTML = `<span>${w}</span>`;
+    key.setAttribute('data-note', w);
+    key.addEventListener('mousedown',()=>{
+      const f = freqMap[w];
+      if(f){ playNote(f, 0.6, getAudioCtx().currentTime); key.classList.add('pressed'); }
+    });
+    key.addEventListener('mouseup',()=>key.classList.remove('pressed'));
+    key.addEventListener('mouseleave',()=>key.classList.remove('pressed'));
+    pianoWrap.appendChild(key);
+  });
+
+  blacks.forEach(b=>{
+    const key = document.createElement('div');
+    key.className = 'black-key';
+    key.style.left = (b.pos * 44 - 14) + 'px';
+    key.innerHTML = `<span style="font-size:0.55rem;color:#ccc">${b.label}</span>`;
+    key.addEventListener('mousedown',()=>{
+      playNote(b.freq, 0.6, getAudioCtx().currentTime);
+      key.style.background='#444';
+    });
+    key.addEventListener('mouseup',()=>key.style.background='#222');
+    key.addEventListener('mouseleave',()=>key.style.background='#222');
+    pianoWrap.appendChild(key);
+  });
+
+  container.appendChild(pianoWrap);
+}
+
+function buildLegend(containerId, notes){
+  const container = document.getElementById(containerId);
+  container.innerHTML = '';
+  const seen = new Set();
+  notes.forEach(n=>{
+    if(!seen.has(n)){
+      seen.add(n);
+      const col = LEGEND_COLOURS[n] || '#999';
+      container.innerHTML += `<div class="legend-item"><span class="legend-dot" style="background:${col}"></span>${n}</div>`;
+    }
+  });
+}
+
+function buildMelodyDisplay(){
+  const container = document.getElementById('melodyDisplay');
+  container.innerHTML = '';
+  MELODY.forEach((m,i)=>{
+    const pill = document.createElement('div');
+    pill.className = 'note-pill ' + KEY_COLOURS[m.label];
+    pill.id = 'pill'+i;
+    pill.innerHTML = `${m.label}<br><small style="font-size:0.7rem">${m.finger}</small>`;
+    container.appendChild(pill);
+  });
+}
+
+function buildWarmupDisplay(){
+  const container = document.getElementById('warmupDisplay');
+  container.innerHTML = '';
+  WARMUP.forEach((w,i)=>{
+    const col = LEGEND_COLOURS[w.label] || '#999';
+    const div = document.createElement('div');
+    div.className = 'finger-circle';
+    div.id = 'wf'+i;
+    div.style.background = col;
+    div.style.color = w.label==='E'?'#222':'white';
+    div.innerHTML = `${w.label}<br><small style="font-size:0.7rem">${i===0||i===4?'1':i===1||i===3?'2':'3'}</small>`;
+    container.appendChild(div);
+  });
+}
+
+async function playMelody(){
+  if(isPlaying){ stopFlag=true; return; }
+  stopFlag=false; isPlaying=true;
+  const btn=document.getElementById('playBtn');
+  btn.textContent='⏹ Stop';btn.disabled=false;
+  const ctx=getAudioCtx();
+  const beatDur = 60/tempo;
+  let t=ctx.currentTime+0.1;
+  MELODY.forEach((m,i)=>{
+    playNote(FREQS[m.note],beatDur*0.85,t);
+    const delay=(t-ctx.currentTime)*1000;
+    setTimeout(()=>{
+      if(stopFlag) return;
+      document.querySelectorAll('.note-pill').forEach(p=>p.classList.remove('playing'));
+      const pill=document.getElementById('pill'+i);
+      if(pill) pill.classList.add('playing');
+      highlightPianoKey('piano2',m.label);
+    },delay);
+    t+=beatDur;
+  });
+  const total=(t-ctx.currentTime)*1000;
+  setTimeout(()=>{
+    document.querySelectorAll('.note-pill').forEach(p=>p.classList.remove('playing'));
+    clearPianoHighlight('piano2');
+    isPlaying=false;btn.textContent='▶ Play Melody';
+  },total);
+}
+
+async function playWarmup(){
+  const btn=document.getElementById('warmupBtn');
+  btn.disabled=true;
+  const ctx=getAudioCtx();
+  const beatDur=60/70;
+  let t=ctx.currentTime+0.1;
+  WARMUP.forEach((w,i)=>{
+    playNote(FREQS[w.note],beatDur*0.85,t);
+    const delay=(t-ctx.currentTime)*1000;
+    setTimeout(()=>{
+      document.querySelectorAll('.finger-circle').forEach(f=>f.classList.remove('active'));
+      const fc=document.getElementById('wf'+i);
+      if(fc) fc.classList.add('active');
+    },delay);
+    t+=beatDur;
+  });
+  setTimeout(()=>{
+    document.querySelectorAll('.finger-circle').forEach(f=>f.classList.remove('active'));
+    btn.disabled=false;
+  },(t-ctx.currentTime)*1000);
+}
+
+function highlightPianoKey(pianoId, noteLetter){
+  const piano = document.getElementById(pianoId);
+  if(!piano) return;
+  piano.querySelectorAll('.white-key').forEach(k=>{
+    const n=k.getAttribute('data-note');
+    if(n && n.replace('5','')===noteLetter){
+      k.classList.add('pressed');
+      setTimeout(()=>k.classList.remove('pressed'),200);
+    }
+  });
+}
+
+function clearPianoHighlight(pianoId){
+  const piano = document.getElementById(pianoId);
+  if(!piano) return;
+  piano.querySelectorAll('.white-key,.black-key').forEach(k=>k.classList.remove('pressed'));
+}
+
+const CHECKS = [
+  'I found C, D, E on the keyboard',
+  'I know which finger plays which note (1=C, 2=D, 3=E)',
+  'I played the warm-up exercise C-D-E-D-C',
+  'I listened to Mary Had a Little Lamb',
+  'I played Mary Had a Little Lamb slowly by myself',
+  'I can name a quarter note (♩ = 1 beat)',
+];
+
+function buildChecklist(){
+  const c=document.getElementById('checklist');
+  c.innerHTML='';
+  CHECKS.forEach((text,i)=>{
+    const div=document.createElement('div');
+    div.className='checklist-item';
+    div.id='check'+i;
+    div.innerHTML=`<div class="check-circle" id="cc${i}"></div><div class="checklist-text">${text}</div>`;
+    div.onclick=()=>toggleCheck(i);
+    c.appendChild(div);
+  });
+}
+
+function toggleCheck(i){
+  const item=document.getElementById('check'+i);
+  const circle=document.getElementById('cc'+i);
+  const isChecked=item.classList.toggle('checked');
+  circle.textContent=isChecked?'✓':'';
+}
+
+function goTo(step){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+step).classList.add('active');
+  document.querySelectorAll('.step-btn').forEach((b,i)=>{
+    b.classList.remove('active','done');
+    if(i<step) b.classList.add('done');
+    else if(i===step) b.classList.add('active');
+  });
+  currentStep=step;
+  window.scrollTo(0,0);
+}
+
+// Set YouTube search link
+document.getElementById('ytBtn').href='https://www.youtube.com/results?search_query=Mary+Had+a+Little+Lamb+piano+tutorial+easy+beginner';
+
+// Build on load
+buildPiano('piano1',['C','D','E']);
+buildPiano('piano2',['C','D','E','G']);
+buildLegend('legend1',['C','D','E']);
+buildLegend('legend2',['C','D','E','G']);
+buildMelodyDisplay();
+buildWarmupDisplay();
+buildChecklist();
+</script>
+</body>
+</html>

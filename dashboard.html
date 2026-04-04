@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎹 Piano Programme – Dashboard</title>
+<style>
+  :root {
+    --phase1: #7c3aed;
+    --phase2: #0891b2;
+    --phase3: #059669;
+    --phase4: #d97706;
+    --bg: #f8f7ff;
+    --card: #ffffff;
+    --text: #1e1b4b;
+    --muted: #6b7280;
+    --recital: #be185d;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4c1d95 100%);
+    color: white;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+  }
+
+  header h1 { font-size: 2rem; letter-spacing: -0.5px; }
+  header p { opacity: 0.75; margin-top: 0.4rem; font-size: 0.95rem; }
+
+  .progress-bar-wrap {
+    margin: 1.2rem auto 0;
+    max-width: 360px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 99px;
+    height: 14px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #a78bfa, #c4b5fd);
+    border-radius: 99px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+  .progress-label {
+    font-size: 0.82rem;
+    opacity: 0.7;
+    margin-top: 0.4rem;
+    text-align: center;
+  }
+
+  .reset-btn {
+    margin-top: 0.8rem;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: white;
+    border-radius: 6px;
+    padding: 0.3rem 0.9rem;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .reset-btn:hover { background: rgba(255,255,255,0.22); }
+
+  main { max-width: 900px; margin: 0 auto; padding: 2rem 1rem 3rem; }
+
+  .phase-block { margin-bottom: 2.5rem; }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid currentColor;
+  }
+
+  .phase-header h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .phase-header .phase-count {
+    margin-left: auto;
+    font-size: 0.78rem;
+    font-weight: 600;
+    opacity: 0.55;
+  }
+
+  .lessons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .lesson-card {
+    background: var(--card);
+    border-radius: 12px;
+    border: 2px solid #e5e7eb;
+    padding: 0.9rem 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .lesson-card:hover {
+    border-color: var(--phase-color);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transform: translateY(-1px);
+  }
+
+  .lesson-card.done {
+    background: #f0fdf4;
+    border-color: #86efac;
+  }
+
+  .lesson-card.recital {
+    background: #fff0f6;
+  }
+  .lesson-card.recital.done {
+    background: #fce7f3;
+    border-color: #f9a8d4;
+  }
+
+  .lesson-num {
+    min-width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--phase-color);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+
+  .lesson-card.done .lesson-num {
+    background: #16a34a;
+  }
+
+  .lesson-card.recital .lesson-num {
+    background: var(--recital);
+  }
+  .lesson-card.recital.done .lesson-num {
+    background: #16a34a;
+  }
+
+  .lesson-info { flex: 1; min-width: 0; }
+
+  .lesson-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .lesson-tags {
+    display: flex;
+    gap: 0.3rem;
+    margin-top: 0.35rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 0.1rem 0.45rem;
+    border-radius: 99px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .tag-recital { background: #fce7f3; color: #9d174d; }
+  .tag-audio   { background: #eff6ff; color: #1d4ed8; }
+  .tag-theory  { background: #f0fdf4; color: #166534; }
+  .tag-scale   { background: #fefce8; color: #854d0e; }
+
+  .done-check {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-size: 1.1rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .lesson-card.done .done-check { opacity: 1; }
+
+  .open-link {
+    display: inline-block;
+    margin-top: 0.45rem;
+    font-size: 0.73rem;
+    color: var(--phase-color);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .open-link:hover { text-decoration: underline; }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.78rem;
+    padding-bottom: 2rem;
+  }
+
+  /* Phase colour helpers applied via inline style */
+  .phase1 { --phase-color: var(--phase1); color: var(--phase1); }
+  .phase2 { --phase-color: var(--phase2); color: var(--phase2); }
+  .phase3 { --phase-color: var(--phase3); color: var(--phase3); }
+  .phase4 { --phase-color: var(--phase4); color: var(--phase4); }
+
+  @media (max-width: 480px) {
+    header h1 { font-size: 1.5rem; }
+    .lessons-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎹 Piano Programme</h1>
+  <p>ABRSM Grade 1 · 36 Lessons · Ages 7–9</p>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">0 of 36 lessons completed</div>
+  <button class="reset-btn" onclick="resetProgress()">Reset progress</button>
+</header>
+
+<main>
+
+<!-- ═══════════════════════════════════════════ PHASE 1 -->
+<div class="phase-block">
+  <div class="phase-header phase1">
+    <span>🟣</span>
+    <h2>Phase 1 — Foundations</h2>
+    <span class="phase-count">Lessons 1–8</span>
+  </div>
+  <div class="lessons-grid" id="phase1Grid"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════ PHASE 2 -->
+<div class="phase-block">
+  <div class="phase-header phase2">
+    <span>🔵</span>
+    <h2>Phase 2 — Scales &amp; Technique</h2>
+    <span class="phase-count">Lessons 9–16</span>
+  </div>
+  <div class="lessons-grid" id="phase2Grid"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════ PHASE 3 -->
+<div class="phase-block">
+  <div class="phase-header phase3">
+    <span>🟢</span>
+    <h2>Phase 3 — Expression &amp; Musicianship</h2>
+    <span class="phase-count">Lessons 17–24</span>
+  </div>
+  <div class="lessons-grid" id="phase3Grid"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════ PHASE 4 -->
+<div class="phase-block">
+  <div class="phase-header phase4">
+    <span>🟡</span>
+    <h2>Phase 4 — Exam Preparation</h2>
+    <span class="phase-count">Lessons 25–36</span>
+  </div>
+  <div class="lessons-grid" id="phase4Grid"></div>
+</div>
+
+</main>
+
+<footer>
+  Click any lesson to open it · Click the circle to mark as done
+</footer>
+
+<script>
+const LESSONS = [
+  { n:1,  file:'Lesson1_HotCrossBuns.html',         title:'Hot Cross Buns',              tags:['audio'],             phase:1 },
+  { n:2,  file:'Lesson2_MaryHadALittleLamb.html',   title:'Mary Had a Little Lamb',      tags:['audio'],             phase:1 },
+  { n:3,  file:'Lesson3_OdeToJoySimplified.html',   title:'Ode to Joy (Simplified)',     tags:['audio'],             phase:1 },
+  { n:4,  file:'Lesson4_MerrilyWeRollAlong.html',   title:'Merrily We Roll Along',       tags:['audio'],             phase:1 },
+  { n:5,  file:'Lesson5_LondonBridge.html',         title:'London Bridge',               tags:['audio'],             phase:1 },
+  { n:6,  file:'Lesson6_JingleBells.html',          title:'Jingle Bells',                tags:['audio'],             phase:1 },
+  { n:7,  file:'Lesson7_OdeToJoyFull.html',         title:'Ode to Joy (Full)',           tags:['audio'],             phase:1 },
+  { n:8,  file:'Lesson8_Phase1Recital.html',        title:'Phase 1 Mini Recital',        tags:['recital'],           phase:1, recital:true },
+
+  { n:9,  file:'Lesson9_CMajorScale.html',          title:'C Major Scale & Twinkle',     tags:['audio','scale'],     phase:2 },
+  { n:10, file:'Lesson10_FrereJacques.html',        title:'Frère Jacques',               tags:['audio'],             phase:2 },
+  { n:11, file:'Lesson11_GMajorScale.html',         title:'G Major Scale',               tags:['audio','scale'],     phase:2 },
+  { n:12, file:'Lesson12_FMajorScale.html',         title:'F Major Scale',               tags:['audio','scale'],     phase:2 },
+  { n:13, file:'Lesson13_GrandStaff.html',          title:'Grand Staff',                 tags:['theory'],            phase:2 },
+  { n:14, file:'Lesson14_LegatoStaccato.html',      title:'Legato & Staccato',           tags:['audio','theory'],    phase:2 },
+  { n:15, file:'Lesson15_WaltzTime.html',           title:'Waltz Time',                  tags:['audio'],             phase:2 },
+  { n:16, file:'Lesson16_Phase2Recital.html',       title:'Phase 2 Recital',             tags:['recital'],           phase:2, recital:true },
+
+  { n:17, file:'Lesson17_Dynamics.html',            title:'Dynamics',                    tags:['theory'],            phase:3 },
+  { n:18, file:'Lesson18_AMinorScale.html',         title:'A Minor Scale',               tags:['audio','scale'],     phase:3 },
+  { n:19, file:'Lesson19_DMinorScale.html',         title:'D Minor Scale',               tags:['audio','scale'],     phase:3 },
+  { n:20, file:'Lesson20_ContraryMotion.html',      title:'Contrary Motion',             tags:['audio'],             phase:3 },
+  { n:21, file:'Lesson21_Arpeggios.html',           title:'Arpeggios',                   tags:['audio'],             phase:3 },
+  { n:22, file:'Lesson22_DottedNotes.html',         title:'Dotted Notes',                tags:['theory'],            phase:3 },
+  { n:23, file:'Lesson23_SightReading.html',        title:'Sight Reading',               tags:['theory'],            phase:3 },
+  { n:24, file:'Lesson24_Phase3Recital.html',       title:'Phase 3 Recital',             tags:['recital'],           phase:3, recital:true },
+
+  { n:25, file:'Lesson25_ListA.html',               title:'Exam Pieces: List A',          tags:['audio'],            phase:4 },
+  { n:26, file:'Lesson26_ListAPerformance.html',    title:'List A: Phrasing & Dynamics', tags:['recital'],           phase:4, recital:true },
+  { n:27, file:'Lesson27_ListB.html',               title:'Exam Pieces: List B',          tags:['audio'],            phase:4 },
+  { n:28, file:'Lesson28_ListBVoicing.html',        title:'List B: Expressive Voicing',  tags:['recital'],           phase:4, recital:true },
+  { n:29, file:'Lesson29_ListC.html',               title:'Exam Pieces: List C',          tags:['audio'],            phase:4 },
+  { n:30, file:'Lesson30_FullRunThrough.html',      title:'Full Exam Run-Through',        tags:['recital'],          phase:4, recital:true },
+  { n:31, file:'Lesson31_ScalesDrill.html',         title:'Scales Drill',                 tags:['audio','scale'],    phase:4 },
+  { n:32, file:'Lesson32_AuralTraining.html',       title:'Aural Training',               tags:['theory'],           phase:4 },
+  { n:33, file:'Lesson33_SightReadingExam.html',    title:'Sight Reading',                tags:['theory'],           phase:4 },
+  { n:34, file:'Lesson34_MockExam1.html',           title:'Mock Exam 1',                  tags:['recital'],          phase:4, recital:true },
+  { n:35, file:'Lesson35_MockExam2.html',           title:'Mock Exam 2',                  tags:['recital'],          phase:4, recital:true },
+  { n:36, file:'Lesson36_Celebration.html',         title:'🎉 You Did It!',               tags:['recital'],          phase:4, recital:true },
+];
+
+const PHASE_COLOR = { 1:'var(--phase1)', 2:'var(--phase2)', 3:'var(--phase3)', 4:'var(--phase4)' };
+const TAG_CLASS   = { audio:'tag-audio', recital:'tag-recital', theory:'tag-theory', scale:'tag-scale' };
+const TAG_LABEL   = { audio:'🎵 Audio', recital:'🎤 Recital', theory:'📖 Theory', scale:'🎼 Scale' };
+
+function getKey(n) { return 'lesson_done_' + n; }
+function isDone(n)  { return localStorage.getItem(getKey(n)) === '1'; }
+function toggle(n)  {
+  const was = isDone(n);
+  localStorage.setItem(getKey(n), was ? '0' : '1');
+  renderAll();
+}
+function resetProgress() {
+  if (!confirm('Reset all lesson progress?')) return;
+  LESSONS.forEach(l => localStorage.removeItem(getKey(l.n)));
+  renderAll();
+}
+
+function makeCard(lesson) {
+  const done = isDone(lesson.n);
+  const pc   = PHASE_COLOR[lesson.phase];
+
+  const card = document.createElement('div');
+  card.className = 'lesson-card' + (done ? ' done' : '') + (lesson.recital ? ' recital' : '');
+  card.style.setProperty('--phase-color', pc);
+
+  // Number bubble (clicking marks done)
+  const numEl = document.createElement('div');
+  numEl.className = 'lesson-num';
+  numEl.textContent = lesson.n;
+  numEl.title = done ? 'Mark as not done' : 'Mark as done';
+  numEl.addEventListener('click', e => { e.stopPropagation(); toggle(lesson.n); });
+
+  // Info block
+  const info = document.createElement('div');
+  info.className = 'lesson-info';
+
+  const titleEl = document.createElement('div');
+  titleEl.className = 'lesson-title';
+  titleEl.textContent = lesson.title;
+
+  const tagsEl = document.createElement('div');
+  tagsEl.className = 'lesson-tags';
+  lesson.tags.forEach(t => {
+    const span = document.createElement('span');
+    span.className = 'tag ' + (TAG_CLASS[t] || '');
+    span.textContent = TAG_LABEL[t] || t;
+    tagsEl.appendChild(span);
+  });
+
+  const link = document.createElement('a');
+  link.className = 'open-link';
+  link.href = lesson.file;
+  link.target = '_blank';
+  link.rel = 'noopener';
+  link.textContent = 'Open lesson →';
+  link.style.color = pc;
+  link.addEventListener('click', e => e.stopPropagation());
+
+  info.appendChild(titleEl);
+  info.appendChild(tagsEl);
+  info.appendChild(link);
+
+  // Tick
+  const tick = document.createElement('div');
+  tick.className = 'done-check';
+  tick.textContent = '✅';
+
+  card.appendChild(numEl);
+  card.appendChild(info);
+  card.appendChild(tick);
+
+  // Clicking the card opens the lesson
+  card.addEventListener('click', () => { window.open(lesson.file, '_blank'); });
+
+  return card;
+}
+
+function renderAll() {
+  [1,2,3,4].forEach(p => {
+    const grid = document.getElementById('phase' + p + 'Grid');
+    grid.innerHTML = '';
+    LESSONS.filter(l => l.phase === p).forEach(l => grid.appendChild(makeCard(l)));
+  });
+
+  const total = LESSONS.length;
+  const done  = LESSONS.filter(l => isDone(l.n)).length;
+  const pct   = Math.round((done / total) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent =
+    done === 0   ? 'No lessons completed yet — let\'s go! 🎹' :
+    done === total ? '🎉 All 36 lessons complete! Amazing!' :
+    done + ' of ' + total + ' lessons completed (' + pct + '%)';
+}
+
+renderAll();
+</script>
+</body>
+</html>

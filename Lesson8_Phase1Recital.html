@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 8 – Phase 1 Mini Recital</title>
+<style>
+  :root { --primary:#f39c12; --grad:#d68910; --accent:#e59866; }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:#fdfaf0;color:#2c3e50;min-height:100vh;}
+  header{background:linear-gradient(135deg,var(--primary),var(--grad));color:#fff;padding:20px 24px 16px;box-shadow:0 3px 10px rgba(0,0,0,.2);}
+  header h1{font-size:1.5rem;margin-bottom:4px;}
+  header p{font-size:.9rem;opacity:.9;}
+  .progress-bar{display:flex;justify-content:center;gap:12px;padding:16px;background:#fff;border-bottom:2px solid #fdebd0;}
+  .prog-dot{width:36px;height:36px;border-radius:50%;background:#d5d8dc;border:none;cursor:pointer;font-size:.8rem;font-weight:700;color:#fff;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+  .prog-dot.active{background:var(--primary);transform:scale(1.2);}
+  .prog-dot.done{background:#27ae60;}
+  .prog-dot.done::after{content:'✓';}
+  section{display:none;padding:20px;max-width:700px;margin:0 auto;}
+  section.active{display:block;}
+  .card{background:#fff;border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+  .card h2{color:var(--primary);margin-bottom:12px;font-size:1.2rem;}
+  .asd-box{background:#fff8f0;border-left:4px solid #e67e22;border-radius:8px;padding:14px;margin:12px 0;}
+  .asd-box strong{color:#e67e22;}
+  .tip-box{background:#f0faf4;border-left:4px solid #27ae60;border-radius:8px;padding:14px;margin:12px 0;}
+  .tip-box strong{color:#27ae60;}
+  .btn{display:inline-block;padding:10px 22px;border-radius:8px;border:none;cursor:pointer;font-size:.95rem;font-weight:600;margin:6px 4px;transition:all .2s;}
+  .btn-primary{background:var(--primary);color:#fff;}
+  .btn-primary:hover{background:var(--grad);}
+  .btn-secondary{background:#ecf0f1;color:#2c3e50;}
+  .btn-secondary:hover{background:#d5dbdb;}
+  .btn-small{padding:6px 14px;font-size:.85rem;}
+  .nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:20px;}
+  .piece-card{border:2px solid #fdebd0;border-radius:10px;padding:14px;margin:8px 0;cursor:pointer;transition:all .2s;}
+  .piece-card:hover{border-color:var(--primary);background:#fffbf4;}
+  .piece-card.selected{border-color:var(--primary);background:#fef9e7;box-shadow:0 0 0 3px rgba(243,156,18,.2);}
+  .piece-card h3{color:var(--primary);font-size:1rem;margin-bottom:4px;}
+  .piece-card p{font-size:.85rem;color:#666;}
+  .recital-steps{counter-reset:step;}
+  .recital-step{display:flex;align-items:flex-start;gap:12px;margin:10px 0;padding:10px;background:#fdfaf0;border-radius:8px;}
+  .recital-step-num{background:var(--primary);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;}
+  .certificate{background:linear-gradient(135deg,#fef9e7,#fdebd0);border:3px solid var(--primary);border-radius:16px;padding:24px;text-align:center;margin:16px 0;}
+  .certificate h2{color:var(--primary);font-size:1.4rem;margin-bottom:8px;}
+  .certificate p{font-size:.95rem;line-height:1.7;}
+  .cert-name{font-size:1.2rem;color:var(--grad);font-weight:700;border-bottom:2px solid var(--primary);display:inline-block;min-width:200px;padding:4px 12px;margin:8px 0;}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎹 Lesson 8 – Phase 1 Mini Recital</h1>
+  <p>Phase 1 · Week 8 · Your first performance milestone!</p>
+</header>
+<div class="progress-bar">
+  <button class="prog-dot active" onclick="goTo(0)" title="Welcome">1</button>
+  <button class="prog-dot" onclick="goTo(1)" title="Choose Piece">2</button>
+  <button class="prog-dot" onclick="goTo(2)" title="Warm Up">3</button>
+  <button class="prog-dot" onclick="goTo(3)" title="Perform">4</button>
+  <button class="prog-dot" onclick="goTo(4)" title="Certificate">5</button>
+</div>
+
+<!-- Section 0: Welcome -->
+<section class="active">
+  <div class="card">
+    <h2>🌟 You Made It — Phase 1 Complete!</h2>
+    <p>Over 7 weeks you have learned <strong>7 pieces</strong> and all the notes in the 5-finger C position. Today is your <strong>Mini Recital Day</strong>!</p>
+    <div class="asd-box">
+      <strong>🌟 What is a recital?</strong> A recital is when you play music for an audience. It does not matter how perfectly you play — what matters is that you <em>do it</em>. Every professional musician started exactly where you are now.
+    </div>
+    <p style="margin-top:12px;">You will choose your <strong>favourite piece</strong> from Phase 1, warm up, then perform it. This is a real musical milestone!</p>
+  </div>
+  <div class="card">
+    <h2>📋 Phase 1 Review — What You've Learned</h2>
+    <ul style="margin:8px 0 8px 20px;line-height:1.9;font-size:.95rem;">
+      <li>Notes C, D, E, F, G in the right hand</li>
+      <li>Quarter, half, and whole note values</li>
+      <li>4/4 time signature and bar lines</li>
+      <li>Musical phrases (Ode to Joy)</li>
+      <li>Pieces: Hot Cross Buns, Mary Had a Little Lamb, Ode to Joy × 2, Merrily We Roll Along, London Bridge, Jingle Bells</li>
+    </ul>
+    <div class="tip-box">
+      <strong>🏆 That is Grade 1 foundation level!</strong> You are building on solid ground.
+    </div>
+  </div>
+  <div class="nav-row">
+    <span></span>
+    <button class="btn btn-primary" onclick="goTo(1)">Choose Your Piece →</button>
+  </div>
+</section>
+
+<!-- Section 1: Choose Piece -->
+<section>
+  <div class="card">
+    <h2>🎵 Choose Your Recital Piece</h2>
+    <p>Tap the piece you want to perform today:</p>
+    <div class="piece-card" onclick="selectPiece(this,'Hot Cross Buns','Lesson 1 · E D C')">
+      <h3>🥐 Hot Cross Buns</h3>
+      <p>Lesson 1 · 3 notes (E, D, C) · A great starter!</p>
+    </div>
+    <div class="piece-card" onclick="selectPiece(this,'Mary Had a Little Lamb','Lesson 2 · E D C')">
+      <h3>🐑 Mary Had a Little Lamb</h3>
+      <p>Lesson 2 · 4 notes (E, D, C, B-ish) · A classic melody</p>
+    </div>
+    <div class="piece-card" onclick="selectPiece(this,'Ode to Joy (Simplified)','Lesson 3 · E F G D')">
+      <h3>🎶 Ode to Joy (Short)</h3>
+      <p>Lesson 3 · 4 bars · Beethoven!</p>
+    </div>
+    <div class="piece-card" onclick="selectPiece(this,'Merrily We Roll Along','Lesson 4 · E D C G')">
+      <h3>🚤 Merrily We Roll Along</h3>
+      <p>Lesson 4 · Left hand · Bass clef</p>
+    </div>
+    <div class="piece-card" onclick="selectPiece(this,'London Bridge','Lesson 5 · G A B C')">
+      <h3>🌉 London Bridge</h3>
+      <p>Lesson 5 · 3/4 feel · High notes!</p>
+    </div>
+    <div class="piece-card" onclick="selectPiece(this,'Jingle Bells','Lesson 6 · C D E G')">
+      <h3>🔔 Jingle Bells</h3>
+      <p>Lesson 6 · 4/4 · Fun and fast!</p>
+    </div>
+    <div class="piece-card" onclick="selectPiece(this,'Ode to Joy (Full)','Lesson 7 · C D E F G · 8 bars')">
+      <h3>🎼 Ode to Joy (Full 8 Bars)</h3>
+      <p>Lesson 7 · Most advanced · 8 bars · Best for showing off!</p>
+    </div>
+    <div class="asd-box" style="margin-top:12px;">
+      <strong>💡 Tip:</strong> Pick the piece you enjoy playing most — not the hardest. Enjoyment makes for the best performance.
+    </div>
+    <p id="selected-piece" style="margin-top:10px;font-weight:700;color:var(--primary);min-height:20px;"></p>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-secondary" onclick="goTo(0)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(2)">Warm Up →</button>
+  </div>
+</section>
+
+<!-- Section 2: Warm Up -->
+<section>
+  <div class="card">
+    <h2>🤸 Warm Up (5 minutes)</h2>
+    <p>Before every performance, musicians warm up their hands and mind. Follow these steps:</p>
+    <div class="recital-steps">
+      <div class="recital-step">
+        <div class="recital-step-num">1</div>
+        <div><strong>Shake hands loose</strong> — hang arms by your sides and shake gently for 10 seconds.</div>
+      </div>
+      <div class="recital-step">
+        <div class="recital-step-num">2</div>
+        <div><strong>Scale walk</strong> — play C D E F G F E D C slowly, saying each note name.</div>
+      </div>
+      <div class="recital-step">
+        <div class="recital-step-num">3</div>
+        <div><strong>Play your piece once slowly</strong> — ♩=60, no rushing.</div>
+      </div>
+      <div class="recital-step">
+        <div class="recital-step-num">4</div>
+        <div><strong>Play it again at performance tempo</strong> — however fast feels comfortable.</div>
+      </div>
+      <div class="recital-step">
+        <div class="recital-step-num">5</div>
+        <div><strong>Take 3 deep breaths</strong> — in for 4 counts, out for 4 counts.</div>
+      </div>
+    </div>
+    <div class="asd-box">
+      <strong>💡 Feeling nervous?</strong> That is completely normal and okay — even professional concert pianists feel nervous. Nerves mean you care, which is a good thing.
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-secondary" onclick="goTo(1)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(3)">I'm Ready →</button>
+  </div>
+</section>
+
+<!-- Section 3: Perform -->
+<section>
+  <div class="card">
+    <h2>🎤 Performance Time!</h2>
+    <p id="perform-piece" style="font-size:1.1rem;font-weight:700;color:var(--primary);margin-bottom:16px;"></p>
+    <p>Ask your audience to sit down and be ready to listen. When you are ready:</p>
+    <div class="recital-steps">
+      <div class="recital-step">
+        <div class="recital-step-num">1</div>
+        <div>Walk to the keyboard and <strong>sit up straight</strong></div>
+      </div>
+      <div class="recital-step">
+        <div class="recital-step-num">2</div>
+        <div>Place your hands in position but <strong>do not play yet</strong></div>
+      </div>
+      <div class="recital-step">
+        <div class="recital-step-num">3</div>
+        <div>Take one <strong>slow breath</strong> in and out</div>
+      </div>
+      <div class="recital-step">
+        <div class="recital-step-num">4</div>
+        <div><strong>Play from start to finish</strong> — even if you make a mistake, keep going!</div>
+      </div>
+      <div class="recital-step">
+        <div class="recital-step-num">5</div>
+        <div>When you finish, <strong>take a bow</strong> 🎩</div>
+      </div>
+    </div>
+    <div class="tip-box">
+      <strong>🎯 The golden rule:</strong> If you make a mistake, <em>do not stop</em>. Professional musicians keep going. The audience almost never notices a small mistake — they just hear the music.
+    </div>
+    <div style="margin-top:16px;">
+      <button class="btn btn-primary" onclick="goTo(4)">✅ I performed it!</button>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-secondary" onclick="goTo(2)">← Back</button>
+    <span></span>
+  </div>
+</section>
+
+<!-- Section 4: Certificate -->
+<section>
+  <div class="card">
+    <h2>🎉 Congratulations!</h2>
+    <div class="certificate">
+      <div style="font-size:2rem;margin-bottom:8px;">🏆</div>
+      <h2>Phase 1 Certificate of Achievement</h2>
+      <p style="margin:12px 0;">This certifies that</p>
+      <div class="cert-name">________________________</div>
+      <p style="margin:12px 0;">has successfully completed <strong>Phase 1</strong> of the Piano Learning Programme<br>mastering 7 pieces and the 5-finger C position</p>
+      <p style="font-size:.85rem;color:#888;margin-top:8px;">Date: _______________</p>
+    </div>
+    <div class="tip-box">
+      <strong>🚀 What's next — Phase 2:</strong> Full C Major scale, hands-together playing, Twinkle Twinkle, new musical keys and much more. You are ready!
+    </div>
+    <div class="asd-box">
+      <strong>🌟 Be proud:</strong> You completed 8 weeks of piano lessons. Not everyone does this. You worked hard and made real music. That is something to celebrate.
+    </div>
+    <div style="margin-top:16px;text-align:center;">
+      <button class="btn btn-primary" onclick="window.print()">🖨️ Print Certificate</button>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-secondary" onclick="goTo(0)">↺ Start Again</button>
+    <span style="font-size:.9rem;color:#888;">Next: Lesson 9 — C Major Scale!</span>
+  </div>
+</section>
+
+<script>
+let selectedPieceName='your chosen piece';
+function selectPiece(el,name,detail){
+  document.querySelectorAll('.piece-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPieceName=name;
+  document.getElementById('selected-piece').textContent='✅ Selected: '+name+' ('+detail+')';
+}
+function goTo(idx){
+  const secs=document.querySelectorAll('section');
+  const dots=document.querySelectorAll('.prog-dot');
+  secs.forEach((s,i)=>s.classList.toggle('active',i===idx));
+  dots.forEach((d,i)=>{d.classList.remove('active','done');if(i===idx)d.classList.add('active');else if(i<idx)d.classList.add('done');});
+  if(idx===3){const p=document.getElementById('perform-piece');if(p)p.textContent='Your piece: '+selectedPieceName;}
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>

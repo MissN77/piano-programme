@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 3 – Ode to Joy (Simplified)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4ff; color: #222; min-height: 100vh; }
+  header { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; padding: 18px 24px; display: flex; align-items: center; gap: 16px; }
+  header .logo { font-size: 2rem; }
+  header h1 { font-size: 1.4rem; font-weight: 700; }
+  header p { font-size: 0.9rem; opacity: 0.85; }
+  .progress-bar { display: flex; background: #dde3f0; padding: 12px 20px; gap: 8px; flex-wrap: wrap; }
+  .step-btn { flex: 1; min-width: 100px; padding: 10px 8px; border: none; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; background: #c5cfe0; color: #555; transition: all 0.2s; }
+  .step-btn.active { background: #e74c3c; color: white; box-shadow: 0 3px 8px rgba(231,76,60,0.4); }
+  .step-btn.done { background: #5cb85c; color: white; }
+  .screen { display: none; padding: 24px 20px; max-width: 700px; margin: 0 auto; }
+  .screen.active { display: block; }
+  .card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+  h2 { font-size: 1.3rem; color: #e74c3c; margin-bottom: 12px; }
+  h3 { font-size: 1.05rem; color: #555; margin-bottom: 10px; }
+  p, li { font-size: 0.95rem; line-height: 1.6; color: #333; }
+  ul { padding-left: 20px; margin-top: 6px; }
+  li { margin-bottom: 6px; }
+  .objective-list { list-style: none; padding: 0; }
+  .objective-list li { padding: 8px 12px; background: #fff5f5; border-left: 4px solid #e74c3c; border-radius: 0 8px 8px 0; margin-bottom: 8px; }
+  .piano-wrap { overflow-x: auto; padding: 10px 0 20px; }
+  .piano { display: flex; position: relative; height: 140px; width: max-content; margin: 0 auto; }
+  .white-key { width: 44px; height: 130px; background: white; border: 2px solid #bbb; border-radius: 0 0 8px 8px; position: relative; cursor: pointer; transition: all 0.1s; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px; font-size: 0.7rem; font-weight: 700; z-index: 1; }
+  .white-key:hover, .white-key.pressed { filter: brightness(0.88); transform: scaleY(1.02); }
+  .black-key { width: 28px; height: 82px; background: #222; border-radius: 0 0 6px 6px; position: absolute; top: 0; z-index: 2; cursor: pointer; transition: all 0.1s; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 5px; font-size: 0.6rem; color: white; font-weight: 700; }
+  .black-key:hover, .black-key.pressed { background: #444; }
+  .note-C { background: #4a90d9 !important; color: white !important; }
+  .note-D { background: #9b59b6 !important; color: white !important; }
+  .note-E { background: #f1c40f !important; color: #222 !important; }
+  .note-F { background: #e67e22 !important; color: white !important; }
+  .note-G { background: #e74c3c !important; color: white !important; }
+  .note-legend { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 600; }
+  .legend-dot { width: 22px; height: 22px; border-radius: 50%; display: inline-block; }
+  .finger-display { display: flex; justify-content: center; gap: 6px; margin: 16px 0; flex-wrap: wrap; }
+  .finger-circle { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; text-align: center; line-height: 1.1; cursor: pointer; transition: all 0.15s; border: 3px solid transparent; }
+  .finger-circle.active { border-color: #222; transform: scale(1.15); box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+  .melody-display { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; justify-content: center; }
+  .note-pill { min-width: 44px; padding: 10px 8px; border-radius: 10px; text-align: center; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.15s; border: 3px solid transparent; }
+  .note-pill.playing { border-color: #222; transform: scale(1.18); box-shadow: 0 4px 14px rgba(0,0,0,0.3); }
+  .tempo-row { display: flex; gap: 10px; justify-content: center; margin: 14px 0; flex-wrap: wrap; }
+  .tempo-btn { padding: 9px 18px; border: 2px solid #e74c3c; border-radius: 20px; background: white; color: #e74c3c; font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+  .tempo-btn.selected { background: #e74c3c; color: white; }
+  .play-btn { padding: 12px 32px; background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; border: none; border-radius: 24px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s; width: 100%; margin-top: 8px; }
+  .play-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(231,76,60,0.4); }
+  .play-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .youtube-btn { display: block; width: 100%; padding: 12px; background: #ff0000; color: white; border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; margin-top: 12px; transition: all 0.2s; }
+  .youtube-btn:hover { background: #cc0000; transform: translateY(-2px); }
+  .checklist-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px; border-radius: 10px; margin-bottom: 8px; background: #f8f9ff; border: 2px solid #e0e4f0; cursor: pointer; transition: all 0.2s; }
+  .checklist-item.checked { background: #e8f8e8; border-color: #5cb85c; }
+  .check-circle { width: 28px; height: 28px; min-width: 28px; border-radius: 50%; border: 3px solid #bbb; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: all 0.2s; }
+  .checklist-item.checked .check-circle { background: #5cb85c; border-color: #5cb85c; color: white; }
+  .checklist-text { font-size: 0.9rem; line-height: 1.5; }
+  .nav-row { display: flex; gap: 12px; margin-top: 20px; }
+  .nav-btn { flex: 1; padding: 13px; border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .btn-back { background: #e0e4f0; color: #555; }
+  .btn-next { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; box-shadow: 0 3px 10px rgba(231,76,60,0.35); }
+  .btn-back:hover { background: #cdd3e5; }
+  .btn-next:hover { transform: translateY(-2px); }
+  .theory-box { background: #fff8e6; border: 2px solid #f0c040; border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+  .asd-tip { background: #fff5f5; border-left: 5px solid #e74c3c; border-radius: 0 12px 12px 0; padding: 14px; margin-top: 14px; }
+  .asd-tip strong { color: #e74c3c; }
+  .week-badge { display: inline-block; background: #c0392b; color: white; padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-bottom: 10px; }
+  .finger-map { display: flex; justify-content: center; gap: 4px; margin: 14px 0; }
+  .fm-item { text-align: center; }
+  .fm-key { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
+  .fm-num { font-size: 0.75rem; color: #666; font-weight: 700; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">🎹</div>
+  <div>
+    <h1>Lesson 3 – Ode to Joy (Simplified)</h1>
+    <p>Phase 1 · Week 3 · Five-Finger Position: C D E F G</p>
+  </div>
+</header>
+<div class="progress-bar" id="progressBar">
+  <button class="step-btn active" onclick="goTo(0)">1 Welcome</button>
+  <button class="step-btn" onclick="goTo(1)">2 Find Notes</button>
+  <button class="step-btn" onclick="goTo(2)">3 Warm-Up</button>
+  <button class="step-btn" onclick="goTo(3)">4 The Song</button>
+  <button class="step-btn" onclick="goTo(4)">5 Practice Tips</button>
+</div>
+
+<!-- SCREEN 0: WELCOME -->
+<div class="screen active" id="screen-0">
+  <div class="card">
+    <span class="week-badge">Week 3</span>
+    <h2>Welcome to Lesson 3! 🎶</h2>
+    <p>You already know C, D, E — this week we add <strong>F and G</strong> to make your full five-finger position. Then we play Beethoven's famous <strong>Ode to Joy</strong>!</p>
+  </div>
+  <div class="card">
+    <h2>🎯 What You'll Learn</h2>
+    <ul class="objective-list">
+      <li>🖐️ The complete <strong>five-finger position</strong>: C–D–E–F–G (fingers 1–2–3–4–5)</li>
+      <li>🎵 Play <strong>Ode to Joy</strong> (simplified first phrase)</li>
+      <li>📍 Find <strong>F</strong> and <strong>G</strong> on the keyboard</li>
+    </ul>
+  </div>
+  <div class="asd-tip card">
+    <strong>💡 Tip:</strong> Five fingers, five notes — one finger for each note. We'll build up slowly!
+  </div>
+  <div class="nav-row">
+    <button class="nav-btn btn-next" onclick="goTo(1)">Next → Find Your Notes</button>
+  </div>
+</div>
+
+<!-- SCREEN 1: FIND NOTES -->
+<div class="screen" id="screen-1">
+  <div class="card">
+    <h2>🎹 Five-Finger Position: C to G</h2>
+    <p>Place your right hand so each finger rests on one note:</p>
+    <div class="finger-map" id="fingerMap"></div>
+    <div class="piano-wrap">
+      <div class="piano" id="piano1"></div>
+    </div>
+    <div class="note-legend" id="legend1"></div>
+  </div>
+  <div class="card">
+    <div class="theory-box">
+      <strong>New Notes This Week:</strong><br>
+      <strong>F</strong> = just to the right of E (the note before the group of 3 black keys)<br>
+      <strong>G</strong> = one step above F
+    </div>
+    <div class="asd-tip">
+      <strong>💡 Tip:</strong> Don't move your hand — all five notes can be played without moving your thumb or pinky. That's the magic of five-finger position!
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="nav-btn btn-back" onclick="goTo(0)">← Back</button>
+    <button class="nav-btn btn-next" onclick="goTo(2)">Next → Warm-Up</button>
+  </div>
+</div>
+
+<!-- SCREEN 2: WARM-UP -->
+<div class="screen" id="screen-2">
+  <div class="card">
+    <h2>🖐️ Five-Finger Warm-Up</h2>
+    <p>Play each finger in order, up then down: <strong>C–D–E–F–G–F–E–D–C</strong></p>
+    <p style="margin-top:6px;color:#888;font-size:0.88rem">Fingers: 1–2–3–4–5–4–3–2–1</p>
+    <div class="finger-display" id="warmupDisplay"></div>
+    <button class="play-btn" id="warmupBtn" onclick="playWarmup()">▶ Play Warm-Up</button>
+  </div>
+  <div class="card">
+    <ul>
+      <li>Place all five fingers before you start</li>
+      <li>Press each key gently — don't press hard!</li>
+      <li>Keep your wrist relaxed (not stiff)</li>
+      <li>Try 3 times — up and back each time</li>
+    </ul>
+    <div class="asd-tip">
+      <strong>💡 Tip:</strong> The warm-up is a bit like a ladder — go up the steps, then come back down!
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="nav-btn btn-back" onclick="goTo(1)">← Back</button>
+    <button class="nav-btn btn-next" onclick="goTo(3)">Next → The Song</button>
+  </div>
+</div>
+
+<!-- SCREEN 3: THE SONG -->
+<div class="screen" id="screen-3">
+  <div class="card">
+    <h2>🎵 Ode to Joy – First Phrase</h2>
+    <p style="margin-bottom:6px">Composed by <strong>Beethoven</strong>. This is the most famous melody ever written! We play the first phrase today.</p>
+    <p style="font-size:0.85rem;color:#888;margin-bottom:10px">Notes: E–E–F–G–G–F–E–D–C–C–D–E–E–D–D</p>
+    <div class="melody-display" id="melodyDisplay"></div>
+    <div class="tempo-row">
+      <button class="tempo-btn selected" onclick="setTempo(60,this)">🐢 Slow (♩=60)</button>
+      <button class="tempo-btn" onclick="setTempo(80,this)">🚶 Medium (♩=80)</button>
+      <button class="tempo-btn" onclick="setTempo(100,this)">🐇 Fast (♩=100)</button>
+    </div>
+    <button class="play-btn" id="playBtn" onclick="playMelody()">▶ Play Melody</button>
+    <a class="youtube-btn" href="https://www.youtube.com/results?search_query=Ode+to+Joy+piano+tutorial+easy+beginner" target="_blank">▶ Watch on YouTube</a>
+  </div>
+  <div class="card">
+    <h2>🎹 Play Along!</h2>
+    <div class="piano-wrap">
+      <div class="piano" id="piano2"></div>
+    </div>
+    <div class="note-legend" id="legend2"></div>
+    <p style="margin-top:12px;font-size:0.88rem;color:#666">Start on <strong>E (yellow)</strong> with finger 3. Your hand stays in the same position the whole time!</p>
+  </div>
+  <div class="nav-row">
+    <button class="nav-btn btn-back" onclick="goTo(2)">← Back</button>
+    <button class="nav-btn btn-next" onclick="goTo(4)">Next → Practice Tips</button>
+  </div>
+</div>
+
+<!-- SCREEN 4: PRACTICE TIPS -->
+<div class="screen" id="screen-4">
+  <div class="card">
+    <h2>✅ Practice Checklist</h2>
+    <div id="checklist"></div>
+  </div>
+  <div class="card">
+    <h2>📅 This Week's Plan</h2>
+    <ul>
+      <li><strong>Day 1:</strong> Find all 5 notes — play each one by name</li>
+      <li><strong>Day 2:</strong> Five-finger warm-up × 3 (up and down)</li>
+      <li><strong>Day 3:</strong> Listen to Ode to Joy, then try the first 4 notes</li>
+      <li><strong>Day 4:</strong> Play the whole phrase slowly</li>
+      <li><strong>Day 5:</strong> Play it for someone 🎉</li>
+    </ul>
+  </div>
+  <div class="card" style="text-align:center;background:linear-gradient(135deg,#fff5f5,#ffe0e0)">
+    <div style="font-size:2.5rem;margin-bottom:8px">🎼</div>
+    <h2 style="color:#c0392b">Lesson 3 Complete!</h2>
+    <p>Next week: <strong>Lesson 4 – Left Hand and Merrily We Roll Along</strong></p>
+  </div>
+  <div class="nav-row">
+    <button class="nav-btn btn-back" onclick="goTo(3)">← Back</button>
+  </div>
+</div>
+
+<script>
+const FREQS={C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392.00,A4:440.00,B4:493.88,C5:523.25};
+const KEY_COLOURS={C:'note-C',D:'note-D',E:'note-E',F:'note-F',G:'note-G',A:'note-A',B:'note-B'};
+const LEGEND_COLOURS={C:'#4a90d9',D:'#9b59b6',E:'#f1c40f',F:'#e67e22',G:'#e74c3c'};
+
+// Ode to Joy first phrase: E E F G G F E D C C D E E D D
+const MELODY=[
+  {note:'E4',label:'E',finger:'3'},{note:'E4',label:'E',finger:'3'},{note:'F4',label:'F',finger:'4'},{note:'G4',label:'G',finger:'5'},
+  {note:'G4',label:'G',finger:'5'},{note:'F4',label:'F',finger:'4'},{note:'E4',label:'E',finger:'3'},{note:'D4',label:'D',finger:'2'},
+  {note:'C4',label:'C',finger:'1'},{note:'C4',label:'C',finger:'1'},{note:'D4',label:'D',finger:'2'},{note:'E4',label:'E',finger:'3'},
+  {note:'E4',label:'E',finger:'3'},{note:'D4',label:'D',finger:'2'},{note:'D4',label:'D',finger:'2'}
+];
+
+const WARMUP=[
+  {note:'C4',label:'C',f:'1'},{note:'D4',label:'D',f:'2'},{note:'E4',label:'E',f:'3'},{note:'F4',label:'F',f:'4'},{note:'G4',label:'G',f:'5'},
+  {note:'F4',label:'F',f:'4'},{note:'E4',label:'E',f:'3'},{note:'D4',label:'D',f:'2'},{note:'C4',label:'C',f:'1'}
+];
+
+let tempo=60,audioCtx=null,isPlaying=false,stopFlag=false;
+
+function getAC(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function playNote(freq,dur,start){
+  const ctx=getAC();const o=ctx.createOscillator();const g=ctx.createGain();
+  o.connect(g);g.connect(ctx.destination);o.type='triangle';
+  o.frequency.setValueAtTime(freq,start);
+  g.gain.setValueAtTime(0,start);g.gain.linearRampToValueAtTime(0.4,start+0.02);
+  g.gain.exponentialRampToValueAtTime(0.001,start+dur*0.9);
+  o.start(start);o.stop(start+dur);
+}
+function setTempo(t,btn){tempo=t;document.querySelectorAll('.tempo-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
+
+function buildPiano(id,highlightNotes){
+  const cont=document.getElementById(id);cont.innerHTML='';
+  const whites=['C','D','E','F','G','A','B','C5'];
+  const fmap={'C':261.63,'D':293.66,'E':329.63,'F':349.23,'G':392.00,'A':440.00,'B':493.88,'C5':523.25};
+  const blacks=[{pos:1,freq:277.18,lbl:'C#'},{pos:2,freq:311.13,lbl:'D#'},{pos:4,freq:369.99,lbl:'F#'},{pos:5,freq:415.30,lbl:'G#'},{pos:6,freq:466.16,lbl:'A#'}];
+  const wrap=document.createElement('div');
+  wrap.style.cssText='display:flex;position:relative;height:140px;width:max-content;margin:0 auto;';
+  whites.forEach((w,i)=>{
+    const k=document.createElement('div');k.className='white-key';
+    const nl=w.replace('5','');
+    if(highlightNotes&&highlightNotes.includes(nl))k.classList.add(KEY_COLOURS[nl]);
+    k.innerHTML=`<span>${w}</span>`;k.setAttribute('data-note',w);
+    k.addEventListener('mousedown',()=>{playNote(fmap[w],0.6,getAC().currentTime);k.classList.add('pressed');});
+    k.addEventListener('mouseup',()=>k.classList.remove('pressed'));
+    k.addEventListener('mouseleave',()=>k.classList.remove('pressed'));
+    wrap.appendChild(k);
+  });
+  blacks.forEach(b=>{
+    const k=document.createElement('div');k.className='black-key';k.style.left=(b.pos*44-14)+'px';
+    k.innerHTML=`<span style="font-size:0.55rem;color:#ccc">${b.lbl}</span>`;
+    k.addEventListener('mousedown',()=>{playNote(b.freq,0.6,getAC().currentTime);k.style.background='#444';});
+    k.addEventListener('mouseup',()=>k.style.background='#222');k.addEventListener('mouseleave',()=>k.style.background='#222');
+    wrap.appendChild(k);
+  });
+  cont.appendChild(wrap);
+}
+
+function buildLegend(id,notes){
+  const c=document.getElementById(id);c.innerHTML='';
+  const seen=new Set();
+  notes.forEach(n=>{if(!seen.has(n)){seen.add(n);const col=LEGEND_COLOURS[n]||'#999';c.innerHTML+=`<div class="legend-item"><span class="legend-dot" style="background:${col}"></span>${n}</div>`;}});
+}
+
+function buildMelodyDisplay(){
+  const c=document.getElementById('melodyDisplay');c.innerHTML='';
+  MELODY.forEach((m,i)=>{
+    const p=document.createElement('div');p.className='note-pill '+KEY_COLOURS[m.label];p.id='pill'+i;
+    p.innerHTML=`${m.label}<br><small style="font-size:0.7rem">${m.finger}</small>`;c.appendChild(p);
+  });
+}
+
+function buildWarmupDisplay(){
+  const c=document.getElementById('warmupDisplay');c.innerHTML='';
+  WARMUP.forEach((w,i)=>{
+    const col=LEGEND_COLOURS[w.label]||'#999';
+    const d=document.createElement('div');d.className='finger-circle';d.id='wf'+i;
+    d.style.background=col;d.style.color=w.label==='E'?'#222':'white';
+    d.innerHTML=`${w.label}<br><small style="font-size:0.65rem">${w.f}</small>`;c.appendChild(d);
+  });
+}
+
+function buildFingerMap(){
+  const c=document.getElementById('fingerMap');c.innerHTML='';
+  const notes=[{n:'C',f:'1'},{n:'D',f:'2'},{n:'E',f:'3'},{n:'F',f:'4'},{n:'G',f:'5'}];
+  notes.forEach(n=>{
+    const col=LEGEND_COLOURS[n.n];const d=document.createElement('div');d.className='fm-item';
+    d.innerHTML=`<div class="fm-key" style="background:${col};color:${n.n==='E'?'#222':'white'}">${n.n}</div><div class="fm-num">Finger ${n.f}</div>`;
+    c.appendChild(d);
+  });
+}
+
+async function playMelody(){
+  if(isPlaying){stopFlag=true;return;}
+  stopFlag=false;isPlaying=true;
+  const btn=document.getElementById('playBtn');btn.textContent='⏹ Stop';
+  const ctx=getAC();const bd=60/tempo;let t=ctx.currentTime+0.1;
+  MELODY.forEach((m,i)=>{
+    playNote(FREQS[m.note],bd*0.85,t);
+    const delay=(t-ctx.currentTime)*1000;
+    setTimeout(()=>{
+      if(stopFlag)return;
+      document.querySelectorAll('.note-pill').forEach(p=>p.classList.remove('playing'));
+      const pill=document.getElementById('pill'+i);if(pill)pill.classList.add('playing');
+      hlKey('piano2',m.label);
+    },delay);
+    t+=bd;
+  });
+  setTimeout(()=>{
+    document.querySelectorAll('.note-pill').forEach(p=>p.classList.remove('playing'));
+    isPlaying=false;btn.textContent='▶ Play Melody';
+  },(t-ctx.currentTime)*1000);
+}
+
+async function playWarmup(){
+  const btn=document.getElementById('warmupBtn');btn.disabled=true;
+  const ctx=getAC();const bd=60/70;let t=ctx.currentTime+0.1;
+  WARMUP.forEach((w,i)=>{
+    playNote(FREQS[w.note],bd*0.85,t);
+    const delay=(t-ctx.currentTime)*1000;
+    setTimeout(()=>{
+      document.querySelectorAll('.finger-circle').forEach(f=>f.classList.remove('active'));
+      const fc=document.getElementById('wf'+i);if(fc)fc.classList.add('active');
+    },delay);
+    t+=bd;
+  });
+  setTimeout(()=>{document.querySelectorAll('.finger-circle').forEach(f=>f.classList.remove('active'));btn.disabled=false;},(t-ctx.currentTime)*1000);
+}
+
+function hlKey(pid,note){
+  const p=document.getElementById(pid);if(!p)return;
+  p.querySelectorAll('.white-key').forEach(k=>{
+    if(k.getAttribute('data-note')&&k.getAttribute('data-note').replace('5','')===note){
+      k.classList.add('pressed');setTimeout(()=>k.classList.remove('pressed'),200);
+    }
+  });
+}
+
+const CHECKS=[
+  'I found all 5 notes: C, D, E, F, G',
+  'I placed my hand in five-finger position',
+  'I played the five-finger warm-up (up and down)',
+  'I listened to Ode to Joy',
+  'I played the first phrase of Ode to Joy',
+  'I can name my five fingers (1=thumb, 5=pinky)',
+];
+
+function buildChecklist(){
+  const c=document.getElementById('checklist');c.innerHTML='';
+  CHECKS.forEach((text,i)=>{
+    const d=document.createElement('div');d.className='checklist-item';d.id='check'+i;
+    d.innerHTML=`<div class="check-circle" id="cc${i}"></div><div class="checklist-text">${text}</div>`;
+    d.onclick=()=>toggleCheck(i);c.appendChild(d);
+  });
+}
+
+function toggleCheck(i){
+  const item=document.getElementById('check'+i);const circle=document.getElementById('cc'+i);
+  const checked=item.classList.toggle('checked');circle.textContent=checked?'✓':'';
+}
+
+function goTo(step){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+step).classList.add('active');
+  document.querySelectorAll('.step-btn').forEach((b,i)=>{
+    b.classList.remove('active','done');
+    if(i<step)b.classList.add('done');else if(i===step)b.classList.add('active');
+  });
+  window.scrollTo(0,0);
+}
+
+buildPiano('piano1',['C','D','E','F','G']);
+buildPiano('piano2',['C','D','E','F','G']);
+buildLegend('legend1',['C','D','E','F','G']);
+buildLegend('legend2',['C','D','E','F','G']);
+buildMelodyDisplay();
+buildWarmupDisplay();
+buildFingerMap();
+buildChecklist();
+</script>
+</body>
+</html>

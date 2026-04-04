@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lesson 35 – Mock Exam 2</title>
+<style>
+:root{--accent:#006064;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',sans-serif;background:#0d1117;color:#eee;min-height:100vh;}
+.screen{display:none;padding:20px;max-width:700px;margin:0 auto;}
+.screen.active{display:block;}
+h1{font-size:1.6rem;color:#80deea;margin-bottom:8px;}
+h2{font-size:1.2rem;color:#80deea;margin:16px 0 8px;}
+p{line-height:1.6;margin-bottom:10px;font-size:1rem;}
+.asd-box{background:#002629;border-left:4px solid #e67e22;border-radius:8px;padding:14px;margin:12px 0;}
+.tip-box{background:#1e3a2e;border-left:4px solid #27ae60;border-radius:8px;padding:14px;margin:12px 0;}
+.btn{display:inline-block;background:#006064;color:#fff;border:none;border-radius:24px;padding:10px 24px;font-size:1rem;cursor:pointer;margin:6px 4px;border:2px solid #80deea;}
+.btn:hover{background:#00838f;}
+.btn-outline{background:transparent;color:#80deea;}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;}
+.dots{display:flex;gap:8px;}
+.dot{width:12px;height:12px;border-radius:50%;background:#444;cursor:pointer;transition:.2s;}
+.dot.on{background:#80deea;transform:scale(1.3);}
+.dot.done{background:#888;}
+.phase-badge{display:inline-block;background:#006064;color:#80deea;border:2px solid #80deea;border-radius:20px;padding:4px 14px;font-size:.85rem;margin-bottom:10px;}
+.checklist{list-style:none;margin:12px 0;}
+.checklist li{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#002629;border-radius:8px;margin-bottom:8px;font-size:1rem;cursor:pointer;border:2px solid transparent;transition:.2s;}
+.checklist li.done{border-color:#27ae60;background:#1e3a2e;}
+.checklist li:before{content:'⬜';font-size:1.2rem;}
+.checklist li.done:before{content:'✅';}
+.score-box{background:#002629;border-radius:12px;padding:20px;margin:16px 0;text-align:center;}
+.score-big{font-size:3rem;font-weight:bold;color:#f1c40f;}
+.section-card{background:#002629;border-radius:10px;padding:14px;margin:10px 0;border-left:4px solid #80deea;}
+.timer-box{background:#002629;border-radius:12px;padding:20px;margin:16px 0;text-align:center;}
+.timer-display{font-size:3.5rem;font-weight:bold;color:#80deea;font-family:monospace;}
+.timer-btns{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap;}
+.compare-box{background:#002629;border-radius:10px;padding:14px;margin:10px 0;border-left:4px solid #80deea;}
+</style>
+</head>
+<body>
+<div style="padding:12px 20px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.3);position:fixed;top:0;left:0;right:0;z-index:10;">
+<span style="color:#80deea;font-weight:bold;">🎹 Lesson 35</span>
+<div class="dots">
+<div class="dot" onclick="goTo(0)"></div>
+<div class="dot" onclick="goTo(1)"></div>
+<div class="dot" onclick="goTo(2)"></div>
+<div class="dot" onclick="goTo(3)"></div>
+<div class="dot" onclick="goTo(4)"></div>
+</div>
+</div>
+<div style="height:50px;"></div>
+
+<!-- Screen 0: Welcome -->
+<div class="screen active" id="s0">
+<br>
+<span class="phase-badge">Phase 4 · Week 35</span>
+<h1>Mock Exam 2 🎓</h1>
+<p>This is your second full mock exam. You've done this before — use everything you learnt from Mock Exam 1 and aim even higher. Same order, same timing, same focus.</p>
+<div class="asd-box">
+<strong>🎯 Mock exam includes:</strong><br>
+✅ All three pieces (List A, B and C) in order<br>
+✅ Scales — C, G and A minor, hands separately<br>
+✅ Sight reading — use your 5-question look-through strategy<br>
+✅ Aural tests — pulse, dynamics, sing back
+</div>
+<div class="tip-box">
+💡 Compare your score to Mock Exam 1. Any improvement — even one more tick — is real progress. You're almost at the exam!
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(0)">↩</button>
+<button class="btn" onclick="goTo(1)">Exam Order →</button>
+</div>
+</div>
+
+<!-- Screen 1: Exam Order + Timer -->
+<div class="screen" id="s1">
+<h1>Exam Order 📋</h1>
+<p>Follow this exact order. Use the timer — aim to finish within 15 minutes:</p>
+<div class="section-card">
+<strong>1. Pieces</strong> — approx. 9 minutes<br>
+List A → List B → List C (or your preferred order)<br>
+<span style="color:#80deea;font-size:.9rem;">Play each piece all the way through. Keep going if you make a mistake — no stopping!</span>
+</div>
+<div class="section-card">
+<strong>2. Scales</strong> — approx. 2 minutes<br>
+C major → G major → A minor harmonic<br>
+<span style="color:#80deea;font-size:.9rem;">Hands separately. Think of the sharps before you start each one.</span>
+</div>
+<div class="section-card">
+<strong>3. Sight Reading</strong> — approx. 1 minute<br>
+30-second look-through → play it once<br>
+<span style="color:#80deea;font-size:.9rem;">Clef · time · key · rhythm · first note. Five questions in 30 seconds.</span>
+</div>
+<div class="section-card">
+<strong>4. Aural Tests</strong> — approx. 3 minutes<br>
+Clap pulse → identify changes → sing back phrase<br>
+<span style="color:#80deea;font-size:.9rem;">Take a breath before each test. You've practised this — trust yourself.</span>
+</div>
+<div class="timer-box">
+<div class="timer-display" id="timer-display">15:00</div>
+<div style="color:#aaa;margin-top:6px;font-size:.9rem;">mock exam timer</div>
+<div class="timer-btns">
+<button class="btn" onclick="startTimer()">▶ Start Timer</button>
+<button class="btn btn-outline" onclick="resetTimer()">↺ Reset</button>
+</div>
+</div>
+<div class="asd-box">
+💡 <strong>ASD tip:</strong> You already know this format inside out. The predictability is your strength — use it. Breathe, begin, keep going.
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(0)">← Back</button>
+<button class="btn" onclick="goTo(2)">Pieces Score →</button>
+</div>
+</div>
+
+<!-- Screen 2: Pieces Checklist -->
+<div class="screen" id="s2">
+<h1>Pieces Run-Through ✅</h1>
+<p>Play all three pieces now, one after the other. Tick each item you achieve:</p>
+<ul class="checklist" id="theory-list">
+<li onclick="toggle(this)">List A — played all the way through without stopping</li>
+<li onclick="toggle(this)">List A — had energy, crisp articulation and a steady pulse</li>
+<li onclick="toggle(this)">List B — played all the way through without stopping</li>
+<li onclick="toggle(this)">List B — had a singing, expressive tone and shaped phrases</li>
+<li onclick="toggle(this)">List C — played all the way through without stopping</li>
+<li onclick="toggle(this)">List C — had clear character and personality</li>
+<li onclick="toggle(this)">All three pieces — I kept going through any small mistakes</li>
+</ul>
+<div class="score-box">
+<div id="theory-score" class="score-big">0/7</div>
+<div style="color:#aaa;margin-top:6px;">pieces score</div>
+</div>
+<div class="compare-box">
+💡 <strong>Compare with Mock Exam 1:</strong> Did your pieces score improve? Even one extra tick shows real progress. If a piece still drops ticks, play it five straight-through runs before the real exam.
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(1)">← Back</button>
+<button class="btn" onclick="goTo(3)">Scales &amp; Aural →</button>
+</div>
+</div>
+
+<!-- Screen 3: Scales & Aural -->
+<div class="screen" id="s3">
+<h1>Scales, Sight Reading &amp; Aural ✅</h1>
+<p>Complete scales, sight reading and aural. Tick each one you do well:</p>
+<ul class="checklist" id="perf-list">
+<li onclick="toggle2(this)">C major — both hands separately, smooth and even</li>
+<li onclick="toggle2(this)">G major — both hands separately, F# every time</li>
+<li onclick="toggle2(this)">A minor — both hands separately, G# every time</li>
+<li onclick="toggle2(this)">Sight reading — I used my 30-second look-through strategy</li>
+<li onclick="toggle2(this)">Aural — I clapped a steady pulse to the music</li>
+<li onclick="toggle2(this)">Aural — I identified the dynamic or tempo change correctly</li>
+<li onclick="toggle2(this)">Aural — I sang back the short phrase reasonably well</li>
+</ul>
+<div class="score-box">
+<div id="perf-score" class="score-big">0/7</div>
+<div style="color:#aaa;margin-top:6px;">scales, sight reading &amp; aural score</div>
+</div>
+<div class="score-box" style="margin-top:8px;">
+<div id="total-score" class="score-big">⭐</div>
+<div style="color:#aaa;margin-top:6px;">overall mock exam rating</div>
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(2)">← Back</button>
+<button class="btn" onclick="goTo(4)">Results &amp; Tips →</button>
+</div>
+</div>
+
+<!-- Screen 4: Results & Tips -->
+<div class="screen" id="s4">
+<h1>Mock Exam 2 Results 💡</h1>
+<div class="tip-box">
+<strong>⭐⭐⭐ (12–14 ticks):</strong> You are exam-ready! You've done the work — now trust yourself and go enjoy the real thing.<br><br>
+<strong>⭐⭐ (8–11 ticks):</strong> You're in great shape. Pick the two areas with the fewest ticks and do a focused 10-minute drill on each one.<br><br>
+<strong>⭐ (0–7 ticks):</strong> Keep going — you've improved since Mock 1. Identify your single weakest area and give it your full attention before exam day.
+</div>
+<div class="compare-box">
+<strong>🏆 How did Mock 2 compare to Mock 1?</strong><br>
+If you scored more ticks this time — brilliant, that's the whole point of mock exams.<br>
+If your score stayed the same — identify the ticks you're still missing and focus there.<br>
+If any section improved — celebrate that! Progress is progress.
+</div>
+<div class="tip-box">
+<strong>🎯 Final exam preparation:</strong><br>
+1. Do a calm, full run-through the day before — not to drill, just to feel at home<br>
+2. Sleep well the night before — your brain consolidates learning during sleep<br>
+3. Eat breakfast on exam day — your concentration depends on it<br>
+4. Arrive early, find a quiet spot, breathe slowly before you go in<br>
+5. Remember: the examiner wants you to do well. They're on your side!
+</div>
+<div class="asd-box">
+<strong>💡 ASD tip:</strong><br>
+Exams can feel unpredictable — but the ABRSM Grade 1 format is actually very structured and short (about 15 minutes). You know exactly what will happen, in what order. Use that certainty as your anchor. You've prepared brilliantly.
+</div>
+<div style="margin:16px 0;">
+<button class="btn" onclick="window.open('https://www.youtube.com/results?search_query=abrsm+grade+1+piano+exam+day+tips+preparation')">▶ Exam Day Tips</button>
+<button class="btn" onclick="window.open('https://www.youtube.com/results?search_query=abrsm+grade+1+piano+full+mock+exam+walkthrough')">▶ Full Mock Exam Walkthrough</button>
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(3)">← Back</button>
+<button class="btn" onclick="goTo(0)">↩ Start</button>
+</div>
+</div>
+
+<script>
+let timerInterval=null,timerSeconds=900;
+function formatTime(s){const m=Math.floor(s/60);const sec=s%60;return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');}
+function startTimer(){
+  if(timerInterval)return;
+  timerInterval=setInterval(()=>{
+    if(timerSeconds<=0){clearInterval(timerInterval);timerInterval=null;document.getElementById('timer-display').textContent='00:00';return;}
+    timerSeconds--;
+    document.getElementById('timer-display').textContent=formatTime(timerSeconds);
+  },1000);
+}
+function resetTimer(){clearInterval(timerInterval);timerInterval=null;timerSeconds=900;document.getElementById('timer-display').textContent='15:00';}
+function goTo(idx){document.querySelectorAll('.screen').forEach((s,i)=>s.classList.toggle('active',i===idx));document.querySelectorAll('.dot').forEach((d,i)=>{d.classList.remove('on','done');if(i<idx)d.classList.add('done');if(i===idx)d.classList.add('on');});window.scrollTo(0,0);}
+function toggle(el){el.classList.toggle('done');updateScores();}
+function toggle2(el){el.classList.toggle('done');updateScores();}
+function updateScores(){
+  const t=document.querySelectorAll('#theory-list li.done').length;
+  const p=document.querySelectorAll('#perf-list li.done').length;
+  const ts=document.getElementById('theory-score');
+  const ps=document.getElementById('perf-score');
+  if(ts)ts.textContent=t+'/7';
+  if(ps)ps.textContent=p+'/7';
+  const tot=document.getElementById('total-score');
+  if(tot){const total=t+p;tot.textContent=total>=12?'⭐⭐⭐':total>=8?'⭐⭐':'⭐';}
+}
+window.addEventListener('DOMContentLoaded',()=>{document.querySelector('.dot').classList.add('on');});
+</script>
+</body>
+</html>

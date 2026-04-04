@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 9 – C Major Scale & Twinkle Twinkle</title>
+<style>
+:root{--accent:#8e44ad;--accent-light:#d7bde2;--bg:#faf8ff;--card:#fff;--text:#2c3e50;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+header{background:var(--accent);color:#fff;padding:16px 24px;display:flex;align-items:center;gap:16px;}
+header h1{font-size:1.3rem;}
+.badge{background:rgba(255,255,255,0.25);border-radius:20px;padding:4px 12px;font-size:0.85rem;}
+.prog-bar{display:flex;gap:8px;padding:16px 24px;background:#fff;border-bottom:2px solid var(--accent-light);}
+.prog-dot{width:36px;height:36px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.75rem;cursor:pointer;background:#fff;color:var(--accent);transition:all 0.2s;}
+.prog-dot.active{background:var(--accent);color:#fff;}
+.prog-dot.done{background:var(--accent-light);border-color:var(--accent-light);color:var(--accent);}
+section{display:none;padding:24px;max-width:800px;margin:0 auto;}
+section.active{display:block;}
+.card{background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.08);}
+h2{color:var(--accent);margin-bottom:12px;}
+h3{margin-bottom:8px;color:#444;}
+.asd-box{border-left:4px solid #e67e22;background:#fff8f0;padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0;}
+.tip-box{border-left:4px solid #27ae60;background:#f0fff4;padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0;}
+.asd-box strong,.tip-box strong{display:block;margin-bottom:4px;}
+.btn{display:inline-block;padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-size:1rem;font-weight:600;transition:all 0.2s;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover{opacity:0.9;}
+.btn-secondary{background:#eee;color:#333;}
+.btn-secondary:hover{background:#ddd;}
+.nav-row{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;}
+/* Piano */
+.piano-wrap{position:relative;height:120px;margin:16px 0;user-select:none;}
+.white-key{position:absolute;width:44px;height:110px;background:#fff;border:2px solid #ccc;border-radius:0 0 6px 6px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;font-size:0.75rem;cursor:pointer;transition:background 0.1s;}
+.white-key:hover{background:#f0e6ff;}
+.white-key.key-highlight{background:var(--accent-light);border-color:var(--accent);}
+.black-key{position:absolute;width:28px;height:70px;background:#222;border-radius:0 0 4px 4px;z-index:2;cursor:pointer;top:0;transition:background 0.1s;}
+.black-key:hover{background:#555;}
+/* Melody */
+.melody-row{display:flex;align-items:flex-end;gap:4px;flex-wrap:wrap;padding:12px;background:#f8f4ff;border-radius:8px;min-height:80px;margin:12px 0;}
+.mel-note{border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:700;cursor:pointer;transition:all 0.15s;position:relative;}
+.mel-note.q{width:40px;height:50px;}
+.mel-note.h{width:72px;height:50px;}
+.mel-note.wh{width:100px;height:50px;}
+.mel-note.flash{transform:scale(1.15);box-shadow:0 0 12px 4px rgba(0,0,0,0.3);}
+.note-label{font-size:0.85rem;}
+.beat-label{font-size:0.6rem;opacity:0.85;}
+.bar-line{width:3px;height:56px;background:#888;border-radius:2px;margin:0 4px;align-self:flex-end;}
+.tempo-row{display:flex;gap:8px;margin:8px 0;}
+.tempo-btn{padding:6px 14px;border-radius:6px;border:2px solid var(--accent);background:#fff;color:var(--accent);cursor:pointer;font-weight:600;}
+.tempo-btn.active{background:var(--accent);color:#fff;}
+/* Scale */
+.scale-row{display:flex;gap:6px;margin:12px 0;flex-wrap:wrap;}
+.scale-note{width:48px;height:48px;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:0.8rem;}
+.fingering-row{display:flex;gap:6px;margin:4px 0;}
+.fing{width:48px;text-align:center;font-size:0.85rem;color:#666;}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="badge">Lesson 9 · Phase 2</div>
+    <h1>C Major Scale &amp; Twinkle Twinkle</h1>
+  </div>
+</header>
+<div class="prog-bar">
+  <div class="prog-dot active" onclick="goTo(0)">👋</div>
+  <div class="prog-dot" onclick="goTo(1)">🎹</div>
+  <div class="prog-dot" onclick="goTo(2)">📖</div>
+  <div class="prog-dot" onclick="goTo(3)">🎵</div>
+  <div class="prog-dot" onclick="goTo(4)">⭐</div>
+</div>
+
+<!-- 0: Welcome -->
+<section class="active">
+  <div class="card">
+    <h2>Welcome to Lesson 9!</h2>
+    <p style="font-size:1.1rem;margin-bottom:12px;">Today we learn the full <strong>C Major Scale</strong> — all 8 notes from C to C — and play Twinkle Twinkle Little Star using the whole scale.</p>
+    <div class="asd-box"><strong>🌟 Today's Focus</strong>Thumb-under technique: when your thumb crosses under finger 3, your hand keeps moving smoothly along the keyboard.</div>
+    <p style="margin:12px 0;"><strong>What you'll need:</strong> Your keyboard, note stickers on, both hands ready.</p>
+  </div>
+  <div class="card">
+    <h3>Today's Notes</h3>
+    <div class="scale-row" id="scale-display"></div>
+    <p style="margin-top:8px;color:#666;font-size:0.9rem;">All 8 notes of the C Major Scale — C D E F G A B C</p>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-primary" onclick="goTo(1)">Let's find the notes →</button>
+  </div>
+</section>
+
+<!-- 1: Find Notes -->
+<section>
+  <div class="card">
+    <h2>🎹 The C Major Scale on Your Keyboard</h2>
+    <p>All white notes from C to C. Click each one to hear it!</p>
+    <div class="piano-wrap" id="piano1"></div>
+    <div class="asd-box" style="margin-top:120px;"><strong>🤲 Finger Numbers (Right Hand)</strong>C=1 · D=2 · E=3 · F=1 · G=2 · A=3 · B=4 · C=5<br>Thumb crosses <em>under</em> after E (finger 3 → thumb 1).</div>
+    <div class="fingering-row" id="fingering"></div>
+  </div>
+  <div class="card">
+    <h3>Thumb-Under Practice</h3>
+    <ol style="padding-left:20px;line-height:2;">
+      <li>Play C–D–E with fingers 1–2–3</li>
+      <li>While finger 3 plays E, slide thumb (1) under to land on F</li>
+      <li>Continue 1–2–3–4–5 up to C</li>
+      <li>Come back down: 5–4–3–2–1, then 3–2–1 crossing over</li>
+    </ol>
+    <div class="tip-box"><strong>💡 Slow is fast</strong>Practise this movement very slowly at first. Speed comes later!</div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-secondary" onclick="goTo(0)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(2)">Theory →</button>
+  </div>
+</section>
+
+<!-- 2: Theory -->
+<section>
+  <div class="card">
+    <h2>📖 What is a Scale?</h2>
+    <p>A <strong>scale</strong> is a set of notes that belong to a key. The <strong>C Major Scale</strong> uses only white keys and has a particular pattern of steps:</p>
+    <p style="margin:12px 0;font-size:1.1rem;text-align:center;letter-spacing:4px;"><strong>W – W – H – W – W – W – H</strong></p>
+    <p>(W = whole step, H = half step)</p>
+    <div class="tip-box"><strong>💡 Why does it matter?</strong>Every song in Grade 1 uses notes from a scale. Knowing your scales means you already know most of the notes in a piece before you start!</div>
+    <div class="asd-box"><strong>📋 Scale Checklist</strong>
+      <label><input type="checkbox"> I can name all 8 notes: C D E F G A B C</label><br>
+      <label><input type="checkbox"> I know the finger numbers: 1 2 3 1 2 3 4 5</label><br>
+      <label><input type="checkbox"> I can play the scale slowly RH alone</label>
+    </div>
+  </div>
+  <div class="card">
+    <h3>YouTube — Watch &amp; Listen</h3>
+    <button class="btn btn-secondary" onclick="window.open('https://www.youtube.com/results?search_query=C+major+scale+piano+beginner+thumb+under','_blank')">🎬 C Major Scale Tutorial</button>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-secondary" onclick="goTo(1)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(3)">The Song →</button>
+  </div>
+</section>
+
+<!-- 3: The Song -->
+<section>
+  <div class="card">
+    <h2>🎵 Twinkle Twinkle Little Star</h2>
+    <p>This classic song uses mostly C, D, E, F, G, A — all from your new scale!</p>
+    <div class="tempo-row">
+      <button class="tempo-btn active" onclick="setTempo(60,this)">♩=60</button>
+      <button class="tempo-btn" onclick="setTempo(80,this)">♩=80</button>
+      <button class="tempo-btn" onclick="setTempo(100,this)">♩=100</button>
+    </div>
+    <div class="melody-row" id="mel-row"></div>
+    <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="playMelody()">▶ Play</button>
+      <button class="btn btn-secondary" onclick="stopMelody()">■ Stop</button>
+    </div>
+    <div class="piano-wrap" id="piano2"></div>
+    <div class="asd-box" style="margin-top:120px;"><strong>🎯 Playing Tips</strong>Start with just the first line (C C G G A A). Get that smooth before adding more.</div>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-secondary" onclick="goTo(2)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(4)">Practice Tips →</button>
+  </div>
+</section>
+
+<!-- 4: Practice Tips -->
+<section>
+  <div class="card">
+    <h2>⭐ Practice Plan</h2>
+    <div class="tip-box"><strong>This week (10–15 mins per day)</strong>
+      <p><strong>Days 1–2:</strong> Scale RH slowly — C to C and back. Thumb-under focus.</p>
+      <p><strong>Days 3–4:</strong> Twinkle first phrase (C C G G A A G) hands separate.</p>
+      <p><strong>Days 5–6:</strong> Try Twinkle all the way through RH. Add LH (C only on beat 1) if ready.</p>
+      <p><strong>Day 7:</strong> Play scale + Twinkle for an audience (teddy bear counts!).</p>
+    </div>
+    <div class="asd-box"><strong>🏆 Well done!</strong>Learning the C Major Scale is a massive milestone. Every piece you learn from now on builds on this foundation.</div>
+  </div>
+  <div class="card">
+    <h3>✅ Lesson Checklist</h3>
+    <label><input type="checkbox"> I can play C Major Scale RH with correct fingering</label><br><br>
+    <label><input type="checkbox"> I can sing the note names while I play: C D E F G A B C</label><br><br>
+    <label><input type="checkbox"> I can play Twinkle Twinkle RH slowly</label><br><br>
+    <label><input type="checkbox"> I know what "thumb-under" means</label>
+  </div>
+  <div class="nav-row">
+    <button class="btn btn-secondary" onclick="goTo(3)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(0)">Start Again 🔄</button>
+  </div>
+</section>
+
+<script>
+const FREQS={'C4':261.63,'Cs4':277.18,'D4':293.66,'Ds4':311.13,'E4':329.63,'F4':349.23,'Fs4':369.99,'G4':392.00,'Gs4':415.30,'A4':440.00,'As4':466.16,'B4':493.88,'C5':523.25,'D5':587.33,'E5':659.25,'F5':698.46,'Fs5':739.99,'G5':783.99};
+const NCOLORS={'C4':'#4a90d9','D4':'#16a085','E4':'#27ae60','F4':'#8e44ad','G4':'#e74c3c','A4':'#e67e22','B4':'#f1c40f','C5':'#4a90d9','D5':'#16a085','E5':'#27ae60','Cs4':'#2c7fb8','Ds4':'#1a6b5a','Fs4':'#6c3483','Gs4':'#8b0000','As4':'#b7770d'};
+const BEAT_LABELS={1:'♩',2:'♩♩',3:'♩♩♩',4:'♩♩♩♩'};
+const MELODY=[['C4',1],['C4',1],['G4',1],['G4',1],['A4',1],['A4',1],['G4',2],['F4',1],['F4',1],['E4',1],['E4',1],['D4',1],['D4',1],['C4',2]];
+const barPattern=[4,3,4,3];
+const todayNotes=['C4','D4','E4','F4','G4','A4','B4','C5'];
+const scaleNotes=['C4','D4','E4','F4','G4','A4','B4','C5'];
+const scaleLabels=['C','D','E','F','G','A','B','C'];
+const fingerNums=[1,2,3,1,2,3,4,5];
+let tempo=60,melodyTimeout=null,audioCtx=null;
+
+function getAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function playNote(note,dur=0.5){const ctx=getAudio();const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='triangle';o.frequency.value=FREQS[note]||440;const now=ctx.currentTime;g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(0.4,now+0.02);g.gain.exponentialRampToValueAtTime(0.001,now+dur);o.start(now);o.stop(now+dur);}
+function flashKey(note){document.querySelectorAll('[data-note="'+note+'"]').forEach(k=>{k.style.filter='brightness(1.5)';setTimeout(()=>k.style.filter='',300)});}
+function buildPiano(id){const wrap=document.getElementById(id);if(!wrap)return;const whites=['C4','D4','E4','F4','G4','A4','B4','C5'];const blackMap={0:'Cs4',1:'Ds4',3:'Fs4',4:'Gs4',5:'As4'};whites.forEach((note,i)=>{const key=document.createElement('div');key.className='white-key';key.dataset.note=note;if(todayNotes.includes(note))key.classList.add('key-highlight');key.style.left=(i*48)+'px';key.innerHTML=note.replace(/\d/,'');key.addEventListener('click',()=>playNote(note));wrap.appendChild(key);});Object.entries(blackMap).forEach(([idx,note])=>{const key=document.createElement('div');key.className='black-key';key.dataset.note=note;key.style.left=(parseInt(idx)*48+32)+'px';key.addEventListener('click',(e)=>{e.stopPropagation();playNote(note);});wrap.appendChild(key);});}
+function buildMelodyRow(){const row=document.getElementById('mel-row');if(!row)return;row.innerHTML='';let noteIdx=0;for(let b=0;b<barPattern.length;b++){for(let n=0;n<barPattern[b];n++){if(noteIdx>=MELODY.length)break;const[note,beats]=MELODY[noteIdx];const cls=beats===1?'q':beats===2?'h':'wh';const div=document.createElement('div');div.className='mel-note '+cls;div.dataset.idx=noteIdx;div.dataset.note=note;div.style.background=NCOLORS[note]||'#888';div.innerHTML='<span class="note-label">'+note.replace(/\d/,'')+'</span><span class="beat-label">'+BEAT_LABELS[beats]+'</span>';row.appendChild(div);noteIdx++;}if(b<barPattern.length-1){const bl=document.createElement('div');bl.className='bar-line';row.appendChild(bl);}}}
+function setTempo(t,btn){tempo=t;document.querySelectorAll('.tempo-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function stopMelody(){if(melodyTimeout){clearTimeout(melodyTimeout);melodyTimeout=null;}document.querySelectorAll('.mel-note').forEach(n=>n.classList.remove('flash'));}
+function playMelody(){stopMelody();const spb=60/tempo;let t=0;MELODY.forEach(([note,beats],i)=>{melodyTimeout=setTimeout(()=>{document.querySelectorAll('.mel-note').forEach(n=>n.classList.remove('flash'));const el=document.querySelector('.mel-note[data-idx="'+i+'"]');if(el)el.classList.add('flash');playNote(note,beats*spb*0.9);flashKey(note);},t*1000);t+=beats*spb;});}
+function goTo(idx){const secs=document.querySelectorAll('section');const dots=document.querySelectorAll('.prog-dot');secs.forEach((s,i)=>s.classList.toggle('active',i===idx));dots.forEach((d,i)=>{d.classList.remove('active','done');if(i===idx)d.classList.add('active');else if(i<idx)d.classList.add('done');});if(idx===3)buildMelodyRow();window.scrollTo(0,0);}
+function buildScaleDisplay(){const el=document.getElementById('scale-display');if(!el)return;scaleNotes.forEach((note,i)=>{const d=document.createElement('div');d.className='scale-note';d.style.background=NCOLORS[note]||'#888';d.innerHTML=scaleLabels[i]+'<small style="display:block;font-size:0.65rem;opacity:0.8;">'+fingerNums[i]+'</small>';el.appendChild(d);});}
+function buildFingering(){const el=document.getElementById('fingering');if(!el)return;scaleNotes.forEach((note,i)=>{const d=document.createElement('div');d.className='fing';d.textContent=fingerNums[i];el.appendChild(d);});}
+buildScaleDisplay();
+buildFingering();
+buildPiano('piano1');
+buildPiano('piano2');
+</script>
+</body>
+</html>

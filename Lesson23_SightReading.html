@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lesson 23 – Sight Reading</title>
+<style>
+:root{--accent:#212121;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',sans-serif;background:#0d1117;color:#eee;min-height:100vh;}
+.screen{display:none;padding:20px;max-width:700px;margin:0 auto;}
+.screen.active{display:block;}
+h1{font-size:1.6rem;color:#9e9e9e;margin-bottom:8px;}
+h2{font-size:1.2rem;color:#9e9e9e;margin:16px 0 8px;}
+p{line-height:1.6;margin-bottom:10px;font-size:1rem;}
+.asd-box{background:#1e1e1e;border-left:4px solid #e67e22;border-radius:8px;padding:14px;margin:12px 0;}
+.tip-box{background:#1e3a2e;border-left:4px solid #27ae60;border-radius:8px;padding:14px;margin:12px 0;}
+.btn{display:inline-block;background:#212121;color:#fff;border:none;border-radius:24px;padding:10px 24px;font-size:1rem;cursor:pointer;margin:6px 4px;border:2px solid #9e9e9e;}
+.btn:hover{background:#333;}
+.btn-outline{background:transparent;color:#9e9e9e;}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;}
+.dots{display:flex;gap:8px;}
+.dot{width:12px;height:12px;border-radius:50%;background:#444;cursor:pointer;transition:.2s;}
+.dot.on{background:#9e9e9e;transform:scale(1.3);}
+.dot.done{background:#666;}
+.phase-badge{display:inline-block;background:#212121;color:#9e9e9e;border:2px solid #9e9e9e;border-radius:20px;padding:4px 14px;font-size:.85rem;margin-bottom:10px;}
+.piano-wrap{overflow-x:auto;padding:10px 0;}
+.piano{position:relative;display:flex;height:120px;gap:2px;width:fit-content;margin:0 auto;}
+.wk{width:40px;height:110px;background:#f5f5f5;border-radius:0 0 6px 6px;border:1px solid #999;cursor:pointer;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;font-size:.65rem;font-weight:bold;color:#333;position:relative;transition:.1s;}
+.wk:active,.wk.lit{background:#e0e0e0;}
+.bk{width:26px;height:70px;background:#222;border-radius:0 0 5px 5px;cursor:pointer;position:absolute;z-index:2;top:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font-size:.55rem;color:#aaa;transition:.1s;}
+.bk:active,.bk.lit{background:#9e9e9e;}
+.note-grid{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;}
+.mn{padding:8px 14px;border-radius:20px;font-weight:bold;cursor:pointer;border:2px solid transparent;transition:.1s;font-size:.95rem;}
+.mn:active{opacity:.7;}
+.melody-line{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;}
+.bar-group{display:flex;gap:4px;background:#1e1e1e;border-radius:8px;padding:6px 8px;}
+.step-box{background:#1e1e1e;border-radius:10px;padding:14px;margin:10px 0;border-left:4px solid #9e9e9e;}
+.step-num{font-size:1.8rem;color:#9e9e9e;font-weight:bold;float:left;margin-right:12px;}
+</style>
+</head>
+<body>
+<div style="padding:12px 20px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.3);position:fixed;top:0;left:0;right:0;z-index:10;">
+<span style="color:#9e9e9e;font-weight:bold;">🎹 Lesson 23</span>
+<div class="dots">
+<div class="dot" onclick="goTo(0)"></div>
+<div class="dot" onclick="goTo(1)"></div>
+<div class="dot" onclick="goTo(2)"></div>
+<div class="dot" onclick="goTo(3)"></div>
+<div class="dot" onclick="goTo(4)"></div>
+</div>
+</div>
+<div style="height:50px;"></div>
+
+<!-- Screen 0: Welcome -->
+<div class="screen active" id="s0">
+<br>
+<span class="phase-badge">Phase 3 · Week 23</span>
+<h1>Sight Reading 👁️</h1>
+<p>Sight reading means playing a piece of music <strong>you've never seen before</strong>. It's a key skill for the ABRSM Grade 1 exam!</p>
+<div class="asd-box">
+<strong>🎯 Today you'll learn:</strong><br>
+✅ What sight reading is<br>
+✅ The 3-step method: SCAN → SPOT → PLAY<br>
+✅ How to keep going even if you make a mistake<br>
+✅ Practise on a short unseen melody
+</div>
+<div class="tip-box">
+💡 In the ABRSM exam you get <strong>30 seconds</strong> to look at the piece before playing. Use it wisely!
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(0)">↩</button>
+<button class="btn" onclick="goTo(1)">The Method →</button>
+</div>
+</div>
+
+<!-- Screen 1: The 3-Step Method -->
+<div class="screen" id="s1">
+<h1>The 3-Step Method 🔍</h1>
+<p>Before you play a single note, spend your 30 seconds doing this:</p>
+<div class="step-box">
+<div class="step-num">1</div>
+<strong>SCAN the piece</strong><br>
+Look at the time signature (3/4? 4/4?), the key signature (any sharps or flats?), and how long the piece is.
+</div>
+<div class="step-box">
+<div class="step-num">2</div>
+<strong>SPOT the tricky bits</strong><br>
+Find any jumps, dotted rhythms, or unfamiliar patterns. Tap the rhythm on your knee first.
+</div>
+<div class="step-box">
+<div class="step-num">3</div>
+<strong>PLAY and keep going</strong><br>
+Once you start, <em>never stop</em>. If you miss a note, skip it and keep the beat going. The examiner rewards continuity!
+</div>
+<div class="asd-box">
+💡 <strong>ASD tip:</strong> It's OK to make mistakes — the rule is: KEEP. GOING. Even professionals play wrong notes; they just carry on!
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(0)">← Back</button>
+<button class="btn" onclick="goTo(2)">Find the Notes →</button>
+</div>
+</div>
+
+<!-- Screen 2: Find the Notes -->
+<div class="screen" id="s2">
+<h1>Find the Notes 🎹</h1>
+<p>Today's sight reading uses these notes. Tap to hear each one:</p>
+<div class="note-grid" id="note-grid"></div>
+<div class="piano-wrap"><div class="piano" id="piano"></div></div>
+<div class="asd-box">
+💡 <strong>Landmark notes:</strong> Middle C is your anchor. D is just to the right, E is next, F and G follow on. All white keys today — no surprises!
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(1)">← Back</button>
+<button class="btn" onclick="goTo(3)">Sight Read It →</button>
+</div>
+</div>
+
+<!-- Screen 3: The Sight Reading Piece -->
+<div class="screen" id="s3">
+<h1>Now Sight Read It! 👁️🎹</h1>
+<p>Here is a short piece. Take 30 seconds to SCAN and SPOT, then press Play to hear it — or try playing it yourself first!</p>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0;">
+<button class="btn" onclick="playMelody()">▶ Hear It</button>
+<button class="btn btn-outline" onclick="stopMelody()">■ Stop</button>
+</div>
+<div class="melody-line" id="melody-disp"></div>
+<div class="piano-wrap"><div class="piano" id="piano2"></div></div>
+<div class="tip-box">
+💡 <strong>Challenge:</strong> Try to play it before pressing "Hear It". Then compare — how many notes did you get right?
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(2)">← Back</button>
+<button class="btn" onclick="goTo(4)">Practice Tips →</button>
+</div>
+</div>
+
+<!-- Screen 4: Practice Tips -->
+<div class="screen" id="s4">
+<h1>Practice Tips 💡</h1>
+<div class="tip-box">
+<strong>🎯 This week, practise:</strong><br>
+1. Use the 3-step method every time you see new music<br>
+2. Tap rhythms on your knee before playing<br>
+3. Try playing familiar songs with one hand only — to build note-reading speed<br>
+4. Look ahead — your eyes should always be one beat ahead of your hands!
+</div>
+<div class="asd-box">
+<strong>💡 ASD tip:</strong><br>
+Sight reading gets easier with repetition. The more NEW pieces you try, the faster your brain learns to decode notes. It's like reading — you got better at words by reading lots of them!
+</div>
+<div style="margin:16px 0;">
+<button class="btn" onclick="window.open('https://www.youtube.com/results?search_query=piano+sight+reading+grade+1+tips+beginners')">▶ Sight Reading Tips on YouTube</button>
+<button class="btn" onclick="window.open('https://www.youtube.com/results?search_query=abrsm+grade+1+piano+sight+reading+examples')">▶ ABRSM Sight Reading Examples</button>
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(3)">← Back</button>
+<button class="btn" onclick="goTo(0)">↩ Start</button>
+</div>
+</div>
+
+<script>
+const FREQS={'C4':261.63,'Cs4':277.18,'D4':293.66,'Ds4':311.13,'E4':329.63,'F4':349.23,'Fs4':369.99,'G4':392.00,'Gs4':415.30,'A4':440.00,'As4':466.16,'B4':493.88,'C5':523.25,'D5':587.33,'E5':659.25,'F5':698.46,'Fs5':739.99,'G5':783.99,'Gs5':830.61,'A5':880.00};
+const NCOLORS={'C4':'#4a90d9','D4':'#16a085','E4':'#27ae60','F4':'#8e44ad','G4':'#e74c3c','A4':'#e67e22','B4':'#f1c40f','C5':'#4a90d9','D5':'#16a085','E5':'#27ae60','Cs4':'#2c7fb8','Ds4':'#1a6b5a','Fs4':'#6c3483','Gs4':'#8b0000','As4':'#b7770d','F5':'#6c3483','Gs5':'#8b0000','A5':'#e67e22'};
+const todayNotes=['C4','D4','E4','F4','G4'];
+const MELODY=[['C4',1],['D4',1],['E4',1],['F4',1],['G4',2],['E4',2],['F4',1],['E4',1],['D4',1],['C4',1],['E4',1],['C4',3]];
+const barPattern=[4,2,4,2];
+const tempo=70;
+let actx=null,stopReq=false;
+function getCtx(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();return actx;}
+function playNote(n,vol){
+  const f=FREQS[n];if(!f)return;
+  const ctx=getCtx();const g=ctx.createGain();const o=ctx.createOscillator();
+  const v=vol||0.4;
+  o.type='triangle';o.frequency.value=f;
+  g.gain.setValueAtTime(0,ctx.currentTime);
+  g.gain.linearRampToValueAtTime(v,ctx.currentTime+0.02);
+  g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.8);
+  o.connect(g);g.connect(ctx.destination);
+  o.start();o.stop(ctx.currentTime+0.9);
+}
+function labelFor(n){const b=n.replace(/\d/,'').replace('s','#');return n==='As4'?'Bb':b;}
+function buildNoteGrid(id){
+  const el=document.getElementById(id);if(!el)return;
+  todayNotes.forEach(n=>{
+    const d=document.createElement('div');d.className='mn';
+    d.textContent=labelFor(n);d.style.background=NCOLORS[n]||'#555';d.style.color='#fff';
+    d.onclick=()=>playNote(n);el.appendChild(d);
+  });
+}
+function buildPiano(id){
+  const el=document.getElementById(id);if(!el)return;
+  const whites=['C4','D4','E4','F4','G4','A4','B4','C5'];
+  const blacks={Cs4:1,Ds4:2,Fs4:4,Gs4:5,As4:6};
+  whites.forEach((n,i)=>{
+    const d=document.createElement('div');d.className='wk';
+    d.innerHTML=labelFor(n);d.dataset.note=n;
+    d.style.borderBottom='4px solid '+(todayNotes.includes(n)?NCOLORS[n]:'transparent');
+    d.onclick=()=>playNote(n);el.appendChild(d);
+  });
+  Object.entries(blacks).forEach(([n,pos])=>{
+    const d=document.createElement('div');d.className='bk';
+    d.innerHTML=labelFor(n);d.dataset.note=n;
+    d.style.left=(pos*42-13)+'px';
+    d.style.borderBottom='4px solid '+(todayNotes.includes(n)?NCOLORS[n]:'transparent');
+    d.onclick=()=>playNote(n);el.appendChild(d);
+  });
+}
+function buildMelodyDisplay(){
+  const el=document.getElementById('melody-disp');if(!el)return;
+  let ni=0;
+  barPattern.forEach(cnt=>{
+    const bg=document.createElement('div');bg.className='bar-group';
+    for(let i=0;i<cnt&&ni<MELODY.length;i++,ni++){
+      const [n,dur]=MELODY[ni];
+      const d=document.createElement('div');d.className='mn';
+      d.id='ml'+ni;d.textContent=labelFor(n);
+      d.style.background=NCOLORS[n]||'#555';d.style.color='#fff';
+      if(dur>1)d.style.minWidth=(dur*28)+'px';
+      d.onclick=()=>playNote(n);
+      bg.appendChild(d);
+    }
+    el.appendChild(bg);
+  });
+}
+function flashKey(id,note){
+  const piano=document.getElementById(id);if(!piano)return;
+  const k=piano.querySelector('[data-note="'+note+'"]');
+  if(k){k.classList.add('lit');setTimeout(()=>k.classList.remove('lit'),300);}
+}
+async function playMelody(){
+  stopReq=false;
+  const bps=tempo/60;
+  let ni=0;
+  for(const [n,dur] of MELODY){
+    if(stopReq)break;
+    const el=document.getElementById('ml'+ni);
+    if(el){el.style.outline='3px solid #fff';}
+    playNote(n);flashKey('piano2',n);
+    await new Promise(r=>setTimeout(r,(dur/bps)*1000*0.95));
+    if(el){el.style.outline='';}
+    ni++;
+  }
+}
+function stopMelody(){stopReq=true;}
+function goTo(idx){
+  document.querySelectorAll('.screen').forEach((s,i)=>s.classList.toggle('active',i===idx));
+  document.querySelectorAll('.dot').forEach((d,i)=>{d.classList.remove('on','done');if(i<idx)d.classList.add('done');if(i===idx)d.classList.add('on');});
+  window.scrollTo(0,0);
+}
+window.addEventListener('DOMContentLoaded',()=>{
+  buildNoteGrid('note-grid');buildPiano('piano');
+  buildPiano('piano2');buildMelodyDisplay();
+  document.querySelector('.dot').classList.add('on');
+});
+</script>
+</body>
+</html>

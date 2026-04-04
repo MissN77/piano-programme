@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lesson 22 – Dotted Notes</title>
+<style>
+:root{--accent:#4e342e;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',sans-serif;background:#0d1117;color:#eee;min-height:100vh;}
+.screen{display:none;padding:20px;max-width:700px;margin:0 auto;}
+.screen.active{display:block;}
+h1{font-size:1.6rem;color:#bcaaa4;margin-bottom:8px;}
+h2{font-size:1.2rem;color:#bcaaa4;margin:16px 0 8px;}
+p{line-height:1.6;margin-bottom:10px;font-size:1rem;}
+.asd-box{background:#2a1a14;border-left:4px solid #e67e22;border-radius:8px;padding:14px;margin:12px 0;}
+.tip-box{background:#1e3a2e;border-left:4px solid #27ae60;border-radius:8px;padding:14px;margin:12px 0;}
+.btn{display:inline-block;background:#4e342e;color:#fff;border:none;border-radius:24px;padding:10px 24px;font-size:1rem;cursor:pointer;margin:6px 4px;border:2px solid #bcaaa4;}
+.btn:hover{background:#6d4c41;}
+.btn-outline{background:transparent;color:#bcaaa4;}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;}
+.dots{display:flex;gap:8px;}
+.dot{width:12px;height:12px;border-radius:50%;background:#444;cursor:pointer;transition:.2s;}
+.dot.on{background:#bcaaa4;transform:scale(1.3);}
+.dot.done{background:#888;}
+.phase-badge{display:inline-block;background:#4e342e;color:#bcaaa4;border:2px solid #bcaaa4;border-radius:20px;padding:4px 14px;font-size:.85rem;margin-bottom:10px;}
+.piano-wrap{overflow-x:auto;padding:10px 0;}
+.piano{position:relative;display:flex;height:120px;gap:2px;width:fit-content;margin:0 auto;}
+.wk{width:40px;height:110px;background:#f5f5f5;border-radius:0 0 6px 6px;border:1px solid #999;cursor:pointer;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;font-size:.65rem;font-weight:bold;color:#333;position:relative;transition:.1s;}
+.wk:active,.wk.lit{background:#d7ccc8;}
+.bk{width:26px;height:70px;background:#222;border-radius:0 0 5px 5px;cursor:pointer;position:absolute;z-index:2;top:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font-size:.55rem;color:#aaa;transition:.1s;}
+.bk:active,.bk.lit{background:#bcaaa4;}
+.note-grid{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;}
+.mn{padding:8px 14px;border-radius:20px;font-weight:bold;cursor:pointer;border:2px solid transparent;transition:.1s;font-size:.95rem;}
+.mn:active{opacity:.7;}
+.melody-line{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;}
+.bar-group{display:flex;gap:4px;background:#2a1a14;border-radius:8px;padding:6px 8px;}
+.rhythm-box{background:#2a1a14;border-radius:10px;padding:16px;margin:12px 0;text-align:center;}
+.rhythm-row{display:flex;justify-content:center;align-items:flex-end;gap:16px;margin:10px 0;}
+.note-shape{text-align:center;font-size:2rem;cursor:pointer;}
+.note-label{font-size:.75rem;color:#bcaaa4;margin-top:4px;}
+.dot-note{position:relative;display:inline-block;}
+.dot-note::after{content:'•';position:absolute;top:-4px;right:-8px;font-size:1rem;color:#e67e22;}
+</style>
+</head>
+<body>
+<div style="padding:12px 20px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.3);position:fixed;top:0;left:0;right:0;z-index:10;">
+<span style="color:#bcaaa4;font-weight:bold;">🎹 Lesson 22</span>
+<div class="dots">
+<div class="dot" onclick="goTo(0)"></div>
+<div class="dot" onclick="goTo(1)"></div>
+<div class="dot" onclick="goTo(2)"></div>
+<div class="dot" onclick="goTo(3)"></div>
+<div class="dot" onclick="goTo(4)"></div>
+</div>
+</div>
+<div style="height:50px;"></div>
+
+<!-- Screen 0: Welcome -->
+<div class="screen active" id="s0">
+<br>
+<span class="phase-badge">Phase 3 · Week 22</span>
+<h1>Dotted Notes 🎵</h1>
+<p>You've learned crotchets (1 beat) and quavers (½ beat). Now meet the <strong>dotted crotchet</strong> — a note worth 1½ beats!</p>
+<div class="asd-box">
+<strong>🎯 Today you'll learn:</strong><br>
+✅ What a dot after a note means<br>
+✅ The dotted crotchet (1½ beats)<br>
+✅ How dotted rhythms feel "skippy"<br>
+✅ Play a melody using dotted rhythms
+</div>
+<div class="tip-box">
+💡 Dotted rhythms appear in ABRSM Grade 1 pieces — and they're what make many tunes sound lively and fun!
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(0)">↩</button>
+<button class="btn" onclick="goTo(1)">Find the Notes →</button>
+</div>
+</div>
+
+<!-- Screen 1: Find the Notes -->
+<div class="screen" id="s1">
+<h1>Find the Notes 🎹</h1>
+<p>Today's melody uses these notes. Tap to hear each one:</p>
+<div class="note-grid" id="note-grid"></div>
+<div class="piano-wrap"><div class="piano" id="piano"></div></div>
+<h2>Feel the Dotted Rhythm</h2>
+<p>Tap the shapes to hear how a dotted crotchet (LONG) + quaver (short) feel together:</p>
+<div class="rhythm-box">
+<div class="rhythm-row">
+<div>
+<div class="note-shape dot-note" onclick="playLong()">♩</div>
+<div class="note-label">Dotted crotchet<br>LONG (1½ beats)</div>
+</div>
+<div>
+<div class="note-shape" onclick="playShort()">♪</div>
+<div class="note-label">Quaver<br>short (½ beat)</div>
+</div>
+</div>
+<button class="btn" onclick="playDotted()">▶ Hear LONG-short pattern</button>
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(0)">← Back</button>
+<button class="btn" onclick="goTo(2)">Theory →</button>
+</div>
+</div>
+
+<!-- Screen 2: Theory -->
+<div class="screen" id="s2">
+<h1>Theory: The Dot Rule 📚</h1>
+<div class="asd-box">
+<strong>🎵 The dot rule:</strong><br>
+A dot after a note adds <strong>half its value</strong> to it.<br><br>
+♩ Crotchet = 1 beat<br>
+♩. Dotted crotchet = 1 + ½ = <strong>1½ beats</strong><br>
+♪ Quaver = ½ beat
+</div>
+<h2>Dotted Crotchet + Quaver</h2>
+<p>These two notes together fill exactly 2 beats — one bar of 2/4 time, or half a bar of 4/4.</p>
+<div class="tip-box">
+💡 <strong>Say it aloud:</strong> "LONG-short, LONG-short" while clapping. The LONG is 3× as long as the short — that's what gives dotted rhythms their distinctive bounce!
+</div>
+<div class="asd-box">
+<strong>💡 Where you'll hear this:</strong><br>
+Dotted rhythms appear in marches, jigs, and many Grade 1 exam pieces. Once you hear it, you'll notice it everywhere!
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(1)">← Back</button>
+<button class="btn" onclick="goTo(3)">The Song →</button>
+</div>
+</div>
+
+<!-- Screen 3: The Song -->
+<div class="screen" id="s3">
+<h1>Dotted Melody 🎵</h1>
+<p>This melody uses the LONG-short dotted rhythm. Listen first, then play along:</p>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0;">
+<button class="btn" onclick="playMelody()">▶ Play Melody</button>
+<button class="btn btn-outline" onclick="stopMelody()">■ Stop</button>
+</div>
+<div class="melody-line" id="melody-disp"></div>
+<div class="piano-wrap"><div class="piano" id="piano2"></div></div>
+<div class="asd-box">
+💡 Notice the LONG-short feel? That's the dotted rhythm in action — it gives the melody its lively character!
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(2)">← Back</button>
+<button class="btn" onclick="goTo(4)">Practice Tips →</button>
+</div>
+</div>
+
+<!-- Screen 4: Practice Tips -->
+<div class="screen" id="s4">
+<h1>Practice Tips 💡</h1>
+<div class="tip-box">
+<strong>🎯 This week, practise:</strong><br>
+1. Clap "LONG-short, LONG-short" before playing<br>
+2. Say the rhythm aloud as you play: "LONG-short"<br>
+3. Play slowly first, then speed up<br>
+4. Listen for dotted rhythms in music you hear!
+</div>
+<div class="asd-box">
+<strong>💡 ASD tip:</strong><br>
+Dotted rhythms can feel tricky at first because of the uneven feel. Clapping first then playing helps your body learn the pattern before your fingers have to do it.
+</div>
+<div style="margin:16px 0;">
+<button class="btn" onclick="window.open('https://www.youtube.com/results?search_query=dotted+rhythm+piano+beginners+grade+1')">▶ Dotted Rhythms on YouTube</button>
+<button class="btn" onclick="window.open('https://www.youtube.com/results?search_query=piano+dotted+note+exercises+grade+1+abrsm')">▶ Grade 1 dotted examples</button>
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(3)">← Back</button>
+<button class="btn" onclick="goTo(0)">↩ Start</button>
+</div>
+</div>
+
+<script>
+const FREQS={'C4':261.63,'Cs4':277.18,'D4':293.66,'Ds4':311.13,'E4':329.63,'F4':349.23,'Fs4':369.99,'G4':392.00,'Gs4':415.30,'A4':440.00,'As4':466.16,'B4':493.88,'C5':523.25,'D5':587.33,'E5':659.25,'F5':698.46,'Fs5':739.99,'G5':783.99,'Gs5':830.61,'A5':880.00};
+const NCOLORS={'C4':'#4a90d9','D4':'#16a085','E4':'#27ae60','F4':'#8e44ad','G4':'#e74c3c','A4':'#e67e22','B4':'#f1c40f','C5':'#4a90d9','D5':'#16a085','E5':'#27ae60','Cs4':'#2c7fb8','Ds4':'#1a6b5a','Fs4':'#6c3483','Gs4':'#8b0000','As4':'#b7770d','F5':'#6c3483','Gs5':'#8b0000','A5':'#e67e22'};
+const todayNotes=['C4','D4','E4','G4'];
+const MELODY=[['C4',1.5],['D4',0.5],['E4',1],['G4',1],['G4',1.5],['E4',0.5],['D4',2],['C4',1.5],['D4',0.5],['E4',1],['D4',1],['C4',2]];
+const barPattern=[4,2,4,2];
+const tempo=80;
+let actx=null,stopReq=false;
+function getCtx(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();return actx;}
+function playNote(n,vol){
+  const f=FREQS[n];if(!f)return;
+  const ctx=getCtx();const g=ctx.createGain();const o=ctx.createOscillator();
+  const v=vol||0.4;
+  o.type='triangle';o.frequency.value=f;
+  g.gain.setValueAtTime(0,ctx.currentTime);
+  g.gain.linearRampToValueAtTime(v,ctx.currentTime+0.02);
+  g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.8);
+  o.connect(g);g.connect(ctx.destination);
+  o.start();o.stop(ctx.currentTime+0.9);
+}
+function labelFor(n){const b=n.replace(/\d/,'').replace('s','#');return n==='As4'?'Bb':b;}
+function buildNoteGrid(id){
+  const el=document.getElementById(id);if(!el)return;
+  todayNotes.forEach(n=>{
+    const d=document.createElement('div');d.className='mn';
+    d.textContent=labelFor(n);d.style.background=NCOLORS[n]||'#555';d.style.color='#fff';
+    d.onclick=()=>playNote(n);el.appendChild(d);
+  });
+}
+function buildPiano(id){
+  const el=document.getElementById(id);if(!el)return;
+  const whites=['C4','D4','E4','F4','G4','A4','B4','C5'];
+  const blacks={Cs4:1,Ds4:2,Fs4:4,Gs4:5,As4:6};
+  whites.forEach((n,i)=>{
+    const d=document.createElement('div');d.className='wk';
+    d.innerHTML=labelFor(n);d.dataset.note=n;
+    d.style.borderBottom='4px solid '+(todayNotes.includes(n)?NCOLORS[n]:'transparent');
+    d.onclick=()=>playNote(n);el.appendChild(d);
+  });
+  Object.entries(blacks).forEach(([n,pos])=>{
+    const d=document.createElement('div');d.className='bk';
+    d.innerHTML=labelFor(n);d.dataset.note=n;
+    d.style.left=(pos*42-13)+'px';
+    d.style.borderBottom='4px solid '+(todayNotes.includes(n)?NCOLORS[n]:'transparent');
+    d.onclick=()=>playNote(n);el.appendChild(d);
+  });
+}
+function buildMelodyDisplay(){
+  const el=document.getElementById('melody-disp');if(!el)return;
+  let ni=0;
+  barPattern.forEach(cnt=>{
+    const bg=document.createElement('div');bg.className='bar-group';
+    for(let i=0;i<cnt&&ni<MELODY.length;i++,ni++){
+      const [n,dur]=MELODY[ni];
+      const d=document.createElement('div');d.className='mn';
+      d.id='ml'+ni;d.textContent=labelFor(n);
+      d.style.background=NCOLORS[n]||'#555';d.style.color='#fff';
+      if(dur>1)d.style.minWidth=(dur*28)+'px';
+      d.onclick=()=>playNote(n);
+      bg.appendChild(d);
+    }
+    el.appendChild(bg);
+  });
+}
+function flashKey(id,note){
+  const piano=document.getElementById(id);if(!piano)return;
+  const k=piano.querySelector('[data-note="'+note+'"]');
+  if(k){k.classList.add('lit');setTimeout(()=>k.classList.remove('lit'),300);}
+}
+async function playMelody(){
+  stopReq=false;
+  const bps=tempo/60;
+  let ni=0;
+  for(const [n,dur] of MELODY){
+    if(stopReq)break;
+    const el=document.getElementById('ml'+ni);
+    if(el){el.style.outline='3px solid #fff';}
+    playNote(n);flashKey('piano2',n);
+    await new Promise(r=>setTimeout(r,(dur/bps)*1000*0.95));
+    if(el){el.style.outline='';}
+    ni++;
+  }
+}
+function stopMelody(){stopReq=true;}
+async function playLong(){playNote('C4',0.4);await new Promise(r=>setTimeout(r,600));}
+async function playShort(){playNote('E4',0.4);}
+async function playDotted(){
+  stopReq=false;
+  const pairs=[['C4',1.5],['E4',0.5],['C4',1.5],['E4',0.5]];
+  const bps=tempo/60;
+  for(const [n,dur] of pairs){
+    if(stopReq)break;
+    playNote(n,0.4);
+    await new Promise(r=>setTimeout(r,(dur/bps)*1000));
+  }
+}
+function goTo(idx){
+  document.querySelectorAll('.screen').forEach((s,i)=>s.classList.toggle('active',i===idx));
+  document.querySelectorAll('.dot').forEach((d,i)=>{d.classList.remove('on','done');if(i<idx)d.classList.add('done');if(i===idx)d.classList.add('on');});
+  window.scrollTo(0,0);
+}
+window.addEventListener('DOMContentLoaded',()=>{
+  buildNoteGrid('note-grid');buildPiano('piano');
+  buildPiano('piano2');buildMelodyDisplay();
+  document.querySelector('.dot').classList.add('on');
+});
+</script>
+</body>
+</html>

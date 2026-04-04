@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lesson 32 – Aural Training</title>
+<style>
+:root{--accent:#311b92;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',sans-serif;background:#0d1117;color:#eee;min-height:100vh;}
+.screen{display:none;padding:20px;max-width:700px;margin:0 auto;}
+.screen.active{display:block;}
+h1{font-size:1.6rem;color:#9575cd;margin-bottom:8px;}
+h2{font-size:1.2rem;color:#9575cd;margin:16px 0 8px;}
+p{line-height:1.6;margin-bottom:10px;font-size:1rem;}
+.asd-box{background:#1a0e40;border-left:4px solid #e67e22;border-radius:8px;padding:14px;margin:12px 0;}
+.tip-box{background:#1e3a2e;border-left:4px solid #27ae60;border-radius:8px;padding:14px;margin:12px 0;}
+.btn{display:inline-block;background:#311b92;color:#fff;border:none;border-radius:24px;padding:10px 24px;font-size:1rem;cursor:pointer;margin:6px 4px;border:2px solid #9575cd;}
+.btn:hover{background:#4527a0;}
+.btn-outline{background:transparent;color:#9575cd;}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px;}
+.dots{display:flex;gap:8px;}
+.dot{width:12px;height:12px;border-radius:50%;background:#444;cursor:pointer;transition:.2s;}
+.dot.on{background:#9575cd;transform:scale(1.3);}
+.dot.done{background:#888;}
+.phase-badge{display:inline-block;background:#311b92;color:#9575cd;border:2px solid #9575cd;border-radius:20px;padding:4px 14px;font-size:.85rem;margin-bottom:10px;}
+.checklist{list-style:none;margin:12px 0;}
+.checklist li{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#1a0e40;border-radius:8px;margin-bottom:8px;font-size:1rem;cursor:pointer;border:2px solid transparent;transition:.2s;}
+.checklist li.done{border-color:#27ae60;background:#1e3a2e;}
+.checklist li:before{content:'⬜';font-size:1.2rem;}
+.checklist li.done:before{content:'✅';}
+.score-box{background:#1a0e40;border-radius:12px;padding:20px;margin:16px 0;text-align:center;}
+.score-big{font-size:3rem;font-weight:bold;color:#f1c40f;}
+.aural-card{background:#1a0e40;border-radius:10px;padding:14px;margin:10px 0;border-left:4px solid #9575cd;}
+.pulse-row{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0;}
+.pbtn{padding:12px 22px;border-radius:10px;background:#311b92;border:2px solid #9575cd;color:#9575cd;cursor:pointer;font-size:1rem;min-width:130px;text-align:center;}
+.pbtn:hover{background:#4527a0;}
+.pulse-info{min-height:52px;background:#1a0e40;border-radius:8px;padding:14px;margin:10px 0;font-size:1rem;color:#9575cd;line-height:1.5;}
+.quiz-box{background:#1a0e40;border-radius:10px;padding:16px;margin:14px 0;}
+.quiz-q{font-size:1.1rem;margin-bottom:12px;color:#eee;}
+.quiz-opts{display:flex;flex-wrap:wrap;gap:8px;}
+.qbtn{padding:10px 20px;border-radius:20px;background:#311b92;border:2px solid #9575cd;color:#9575cd;cursor:pointer;font-size:.95rem;transition:.2s;}
+.qbtn:hover{background:#4527a0;}
+.qbtn.correct{background:#1e3a2e;border-color:#27ae60;color:#27ae60;}
+.qbtn.wrong{background:#3a1a1a;border-color:#e74c3c;color:#e74c3c;}
+.feedback{margin-top:10px;font-size:1rem;min-height:24px;color:#9575cd;}
+</style>
+</head>
+<body>
+<div style="padding:12px 20px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.3);position:fixed;top:0;left:0;right:0;z-index:10;">
+<span style="color:#9575cd;font-weight:bold;">🎹 Lesson 32</span>
+<div class="dots">
+<div class="dot" onclick="goTo(0)"></div>
+<div class="dot" onclick="goTo(1)"></div>
+<div class="dot" onclick="goTo(2)"></div>
+<div class="dot" onclick="goTo(3)"></div>
+<div class="dot" onclick="goTo(4)"></div>
+</div>
+</div>
+<div style="height:50px;"></div>
+
+<!-- Screen 0: Welcome -->
+<div class="screen active" id="s0">
+<br>
+<span class="phase-badge">Phase 4 · Week 32</span>
+<h1>Aural Training 👂</h1>
+<p>The aural section of the ABRSM Grade 1 exam tests what your ears can do — not just your fingers. It's actually one of the most approachable parts once you know what to expect.</p>
+<div class="asd-box">
+<strong>🎯 Today you'll practise:</strong><br>
+✅ Clapping a steady pulse<br>
+✅ Identifying changes in tempo (faster / slower)<br>
+✅ Identifying changes in dynamics (louder / softer)<br>
+✅ Singing back a short two-note phrase
+</div>
+<div class="tip-box">
+💡 The examiner plays the music — you listen and respond. No piano needed for this part!
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(0)">↩</button>
+<button class="btn" onclick="goTo(1)">What to Expect →</button>
+</div>
+</div>
+
+<!-- Screen 1: What to Expect -->
+<div class="screen" id="s1">
+<h1>What to Expect 📋</h1>
+<p>The ABRSM Grade 1 aural test takes about 3 minutes. Here's exactly what happens:</p>
+<div class="aural-card">
+<strong>Test A — Pulse Clapping</strong><br>
+The examiner plays a short piece. You clap along with the steady beat. That's it!<br>
+<span style="color:#9575cd;font-size:.9rem;">Key: find the regular pulse first, then clap with it — not every single note.</span>
+</div>
+<div class="aural-card">
+<strong>Test B — Changes in Character</strong><br>
+The examiner plays a piece twice. You identify what changed — was it louder or softer? Faster or slower?<br>
+<span style="color:#9575cd;font-size:.9rem;">Key: listen to the overall feel, not individual notes.</span>
+</div>
+<div class="aural-card">
+<strong>Test C — Sing Back</strong><br>
+The examiner plays a 2-note phrase. You sing it back on any vowel (like "la").<br>
+<span style="color:#9575cd;font-size:.9rem;">Key: you don't need to name the notes — just match the pitch.</span>
+</div>
+<div class="asd-box">
+💡 <strong>ASD tip:</strong> Knowing the exact structure means no surprises. These three tests are always in the same order and always very short.
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(0)">← Back</button>
+<button class="btn" onclick="goTo(2)">Pulse Practice →</button>
+</div>
+</div>
+
+<!-- Screen 2: Pulse & Dynamics Practice -->
+<div class="screen" id="s2">
+<h1>Pulse &amp; Dynamics Practice 🎵</h1>
+<p>Press a button to hear a short musical phrase. Then answer the question below:</p>
+<div class="pulse-row">
+<div class="pbtn" onclick="playPulse('steady')">▶ Steady Pulse</div>
+<div class="pbtn" onclick="playPulse('loud')">▶ Loud Phrase</div>
+<div class="pbtn" onclick="playPulse('soft')">▶ Soft Phrase</div>
+<div class="pbtn" onclick="playPulse('fast')">▶ Fast Phrase</div>
+<div class="pbtn" onclick="playPulse('slow')">▶ Slow Phrase</div>
+</div>
+<div class="pulse-info" id="pulse-info">Press a button above to hear a phrase.</div>
+<div class="quiz-box">
+<div class="quiz-q">🎧 After listening: was the second phrase <em>louder</em> or <em>softer</em> than the first?</div>
+<div class="quiz-opts">
+<div class="qbtn" onclick="answerQ('louder',this)">Louder</div>
+<div class="qbtn" onclick="answerQ('softer',this)">Softer</div>
+<div class="qbtn" onclick="answerQ('same',this)">Same</div>
+</div>
+<div class="feedback" id="q-feedback"></div>
+</div>
+<div class="tip-box">
+💡 When clapping a pulse in the exam — tap your hand gently on your knee. Find the heartbeat of the music and stay with it!
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(1)">← Back</button>
+<button class="btn" onclick="goTo(3)">Checklist →</button>
+</div>
+</div>
+
+<!-- Screen 3: Checklist -->
+<div class="screen" id="s3">
+<h1>Aural Checklist ✅</h1>
+<p>Try each aural skill below. Tick what you can do:</p>
+<ul class="checklist" id="theory-list">
+<li onclick="toggle(this)">Pulse — I can clap a steady beat while music plays</li>
+<li onclick="toggle(this)">Pulse — I found the heartbeat, not every single note</li>
+<li onclick="toggle(this)">Dynamics — I can tell if music gets louder or softer</li>
+<li onclick="toggle(this)">Tempo — I can tell if music gets faster or slower</li>
+<li onclick="toggle(this)">Sing back — I can sing a 2-note phrase back when I hear it</li>
+<li onclick="toggle(this)">Sing back — I matched the pitch (higher or lower) correctly</li>
+<li onclick="toggle(this)">I stayed calm — aural doesn't feel scary any more</li>
+</ul>
+<div class="score-box">
+<div id="theory-score" class="score-big">0/7</div>
+<div style="color:#aaa;margin-top:6px;">aural score</div>
+</div>
+<div class="asd-box">
+💡 5/7 or more means you're in great shape for the aural section. If singing back feels hard, just hum instead — it counts!
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(2)">← Back</button>
+<button class="btn" onclick="goTo(4)">Practice Tips →</button>
+</div>
+</div>
+
+<!-- Screen 4: Practice Tips -->
+<div class="screen" id="s4">
+<h1>Practice Tips 💡</h1>
+<div class="tip-box">
+<strong>🎯 This week, practise:</strong><br>
+1. Clap along to any song you like — find the steady pulse<br>
+2. Listen to music and describe it: is it louder now? Faster?<br>
+3. Ask someone to hum two notes — try to sing them back<br>
+4. Practise on a YouTube Grade 1 aural test video
+</div>
+<div class="asd-box">
+<strong>💡 ASD tip:</strong><br>
+If singing out loud feels uncomfortable, try humming very quietly to yourself. In the exam, any vocal response counts — even a whisper. You can also ask to try again if you didn't hear the phrase clearly.
+</div>
+<div style="margin:16px 0;">
+<button class="btn" onclick="window.open('https://www.youtube.com/results?search_query=abrsm+grade+1+aural+tests+practice+pulse+dynamics')">▶ Aural Test Practice</button>
+<button class="btn" onclick="window.open('https://www.youtube.com/results?search_query=abrsm+grade+1+piano+aural+singing+back+tutorial')">▶ Singing Back Tutorial</button>
+</div>
+<div class="nav">
+<button class="btn btn-outline" onclick="goTo(3)">← Back</button>
+<button class="btn" onclick="goTo(0)">↩ Start</button>
+</div>
+</div>
+
+<script>
+const FREQS={'C4':261.63,'D4':293.66,'E4':329.63,'F4':349.23,'G4':392.00,'A4':440.00,'B4':493.88,'C5':523.25};
+let actx=null;
+function getCtx(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();return actx;}
+function playTone(f,start,dur,vol){
+  const ctx=getCtx();const g=ctx.createGain();const o=ctx.createOscillator();
+  const v=vol||0.35;
+  o.type='triangle';o.frequency.value=f;
+  g.gain.setValueAtTime(0,ctx.currentTime+start);
+  g.gain.linearRampToValueAtTime(v,ctx.currentTime+start+0.02);
+  g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+start+dur);
+  o.connect(g);g.connect(ctx.destination);
+  o.start(ctx.currentTime+start);o.stop(ctx.currentTime+start+dur+0.05);
+}
+const PHRASES={
+  steady:{notes:[[392,0,0.4],[392,0.5,0.4],[392,1.0,0.4],[392,1.5,0.4]],vol:0.35,desc:'🎵 Steady pulse — four even beats. Clap along: 1–2–3–4!'},
+  loud:{notes:[[392,0,0.5],[440,0.6,0.5],[392,1.2,0.5],[523,1.8,0.7]],vol:0.6,desc:'🔊 Loud phrase — strong, confident tone. This is forte (f).'},
+  soft:{notes:[[392,0,0.5],[440,0.6,0.5],[392,1.2,0.5],[523,1.8,0.7]],vol:0.15,desc:'🤫 Soft phrase — gentle, quiet tone. This is piano (p).'},
+  fast:{notes:[[392,0,0.25],[440,0.3,0.25],[523,0.6,0.25],[440,0.9,0.25],[392,1.2,0.25],[440,1.5,0.25]],vol:0.35,desc:'⚡ Fast phrase — quick, energetic tempo. This is allegro.'},
+  slow:{notes:[[392,0,0.7],[440,0.9,0.7],[523,1.8,0.9]],vol:0.35,desc:'🐢 Slow phrase — relaxed, unhurried tempo. This is adagio.'}
+};
+function playPulse(type){
+  const p=PHRASES[type];if(!p)return;
+  p.notes.forEach(([f,s,d])=>playTone(f,s,d,p.vol));
+  document.getElementById('pulse-info').textContent=p.desc;
+  document.querySelectorAll('.qbtn').forEach(b=>{b.classList.remove('correct','wrong');});
+  document.getElementById('q-feedback').textContent='';
+}
+function answerQ(ans,el){
+  document.querySelectorAll('.qbtn').forEach(b=>b.classList.remove('correct','wrong'));
+  const fb=document.getElementById('q-feedback');
+  if(ans==='louder'){el.classList.add('correct');fb.textContent='✅ Right! Loud phrases have more weight and volume.'}
+  else if(ans==='softer'){el.classList.add('correct');fb.textContent='✅ Right! Soft phrases are quieter and more gentle.'}
+  else{el.classList.add('wrong');fb.textContent='Try listening again — is it louder or softer?';}
+}
+function goTo(idx){document.querySelectorAll('.screen').forEach((s,i)=>s.classList.toggle('active',i===idx));document.querySelectorAll('.dot').forEach((d,i)=>{d.classList.remove('on','done');if(i<idx)d.classList.add('done');if(i===idx)d.classList.add('on');});window.scrollTo(0,0);}
+function toggle(el){el.classList.toggle('done');updateScores();}
+function updateScores(){
+  const t=document.querySelectorAll('#theory-list li.done').length;
+  const ts=document.getElementById('theory-score');
+  if(ts)ts.textContent=t+'/7';
+}
+window.addEventListener('DOMContentLoaded',()=>{document.querySelector('.dot').classList.add('on');});
+</script>
+</body>
+</html>

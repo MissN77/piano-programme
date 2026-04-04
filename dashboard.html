@@ -36,6 +36,33 @@
   header h1 { font-size: 2rem; letter-spacing: -0.5px; }
   header p { opacity: 0.75; margin-top: 0.4rem; font-size: 0.95rem; }
 
+  /* Child toggle tabs */
+  .child-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  .child-tab {
+    padding: 0.45rem 1.4rem;
+    border-radius: 99px;
+    border: 2px solid rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.08);
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .child-tab:hover {
+    background: rgba(255,255,255,0.18);
+  }
+  .child-tab.active {
+    background: rgba(255,255,255,0.95);
+    color: #312e81;
+    border-color: transparent;
+  }
+
   .progress-bar-wrap {
     margin: 1.2rem auto 0;
     max-width: 360px;
@@ -70,6 +97,118 @@
     transition: background 0.2s;
   }
   .reset-btn:hover { background: rgba(255,255,255,0.22); }
+
+  /* This Week banner */
+  .this-week-banner {
+    max-width: 900px;
+    margin: 1.5rem auto 0;
+    padding: 1.2rem 1.5rem;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-radius: 14px;
+    text-align: center;
+    border: 2px solid #f59e0b;
+  }
+  .this-week-banner .week-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #92400e;
+    margin-bottom: 0.3rem;
+  }
+  .this-week-banner .week-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #78350f;
+  }
+  .this-week-banner .week-desc {
+    font-size: 0.88rem;
+    color: #92400e;
+    margin-top: 0.25rem;
+  }
+  .this-week-banner.complete {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    border-color: #10b981;
+  }
+  .this-week-banner.complete .week-label,
+  .this-week-banner.complete .week-desc { color: #065f46; }
+  .this-week-banner.complete .week-title { color: #064e3b; }
+  .this-week-banner.not-started {
+    background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+    border-color: #8b5cf6;
+  }
+  .this-week-banner.not-started .week-label,
+  .this-week-banner.not-started .week-desc { color: #5b21b6; }
+  .this-week-banner.not-started .week-title { color: #4c1d95; }
+
+  /* Full schedule collapsible */
+  .schedule-section {
+    max-width: 900px;
+    margin: 1rem auto 0;
+    padding: 0 1rem;
+  }
+  .schedule-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--card);
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 0.7rem 1.2rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    width: 100%;
+    transition: border-color 0.2s;
+  }
+  .schedule-toggle:hover { border-color: #a78bfa; }
+  .schedule-toggle .arrow {
+    transition: transform 0.25s;
+    font-size: 0.75rem;
+  }
+  .schedule-toggle.open .arrow { transform: rotate(90deg); }
+  .schedule-table-wrap {
+    display: none;
+    margin-top: 0.5rem;
+    background: var(--card);
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .schedule-table-wrap.open { display: block; }
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  .schedule-table th {
+    background: #f3f4f6;
+    text-align: left;
+    padding: 0.55rem 1rem;
+    font-weight: 700;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+  .schedule-table td {
+    padding: 0.5rem 1rem;
+    border-top: 1px solid #f3f4f6;
+  }
+  .schedule-table tr.current-week {
+    background: #fef9c3;
+    font-weight: 600;
+  }
+  .schedule-table tr.past-week { color: #9ca3af; }
+  .schedule-table .week-num {
+    font-weight: 700;
+    min-width: 3rem;
+  }
+  .schedule-table .week-date {
+    color: var(--muted);
+    font-size: 0.78rem;
+  }
 
   main { max-width: 900px; margin: 0 auto; padding: 2rem 1rem 3rem; }
 
@@ -127,6 +266,11 @@
   .lesson-card.done {
     background: #f0fdf4;
     border-color: #86efac;
+  }
+
+  .lesson-card.current-lesson {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
   }
 
   .lesson-card.recital {
@@ -231,6 +375,7 @@
   @media (max-width: 480px) {
     header h1 { font-size: 1.5rem; }
     .lessons-grid { grid-template-columns: 1fr; }
+    .this-week-banner { margin-left: 1rem; margin-right: 1rem; }
   }
 </style>
 </head>
@@ -239,6 +384,12 @@
 <header>
   <h1>🎹 Piano Programme</h1>
   <p>ABRSM Grade 1 · 36 Lessons · Ages 7–9</p>
+
+  <div class="child-tabs">
+    <button class="child-tab active" onclick="switchChild('Ava')" id="tabAva">🌸 Ava</button>
+    <button class="child-tab" onclick="switchChild('Jacob')" id="tabJacob">🚀 Jacob</button>
+  </div>
+
   <div class="progress-bar-wrap">
     <div class="progress-bar-fill" id="progressFill"></div>
   </div>
@@ -246,9 +397,32 @@
   <button class="reset-btn" onclick="resetProgress()">Reset progress</button>
 </header>
 
+<!-- This Week Banner -->
+<div class="this-week-banner" id="thisWeekBanner">
+  <div class="week-label" id="weekLabel"></div>
+  <div class="week-title" id="weekTitle"></div>
+  <div class="week-desc" id="weekDesc"></div>
+</div>
+
+<!-- Full Schedule (collapsible) -->
+<div class="schedule-section">
+  <button class="schedule-toggle" id="scheduleToggle" onclick="toggleSchedule()">
+    <span class="arrow">&#9654;</span>
+    <span>Full Schedule (36 weeks)</span>
+  </button>
+  <div class="schedule-table-wrap" id="scheduleWrap">
+    <table class="schedule-table">
+      <thead>
+        <tr><th>Week</th><th>Lesson</th><th>Focus</th><th>Date</th></tr>
+      </thead>
+      <tbody id="scheduleBody"></tbody>
+    </table>
+  </div>
+</div>
+
 <main>
 
-<!-- ═══════════════════════════════════════════ PHASE 1 -->
+<!-- PHASE 1 -->
 <div class="phase-block">
   <div class="phase-header phase1">
     <span>🟣</span>
@@ -258,7 +432,7 @@
   <div class="lessons-grid" id="phase1Grid"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════ PHASE 2 -->
+<!-- PHASE 2 -->
 <div class="phase-block">
   <div class="phase-header phase2">
     <span>🔵</span>
@@ -268,7 +442,7 @@
   <div class="lessons-grid" id="phase2Grid"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════ PHASE 3 -->
+<!-- PHASE 3 -->
 <div class="phase-block">
   <div class="phase-header phase3">
     <span>🟢</span>
@@ -278,7 +452,7 @@
   <div class="lessons-grid" id="phase3Grid"></div>
 </div>
 
-<!-- ═══════════════════════════════════════════ PHASE 4 -->
+<!-- PHASE 4 -->
 <div class="phase-block">
   <div class="phase-header phase4">
     <span>🟡</span>
@@ -295,6 +469,10 @@
 </footer>
 
 <script>
+/* ─── CONFIG ─── */
+const START_DATE = '2026-04-07'; // Monday of Week 1
+
+/* ─── LESSONS ─── */
 const LESSONS = [
   { n:1,  file:'Lesson1_HotCrossBuns.html',         title:'Hot Cross Buns',              tags:['audio'],             phase:1 },
   { n:2,  file:'Lesson2_MaryHadALittleLamb.html',   title:'Mary Had a Little Lamb',      tags:['audio'],             phase:1 },
@@ -306,7 +484,7 @@ const LESSONS = [
   { n:8,  file:'Lesson8_Phase1Recital.html',        title:'Phase 1 Mini Recital',        tags:['recital'],           phase:1, recital:true },
 
   { n:9,  file:'Lesson9_CMajorScale.html',          title:'C Major Scale & Twinkle',     tags:['audio','scale'],     phase:2 },
-  { n:10, file:'Lesson10_FrereJacques.html',        title:'Frère Jacques',               tags:['audio'],             phase:2 },
+  { n:10, file:'Lesson10_FrereJacques.html',        title:'Frere Jacques',               tags:['audio'],             phase:2 },
   { n:11, file:'Lesson11_GMajorScale.html',         title:'G Major Scale',               tags:['audio','scale'],     phase:2 },
   { n:12, file:'Lesson12_FMajorScale.html',         title:'F Major Scale',               tags:['audio','scale'],     phase:2 },
   { n:13, file:'Lesson13_GrandStaff.html',          title:'Grand Staff',                 tags:['theory'],            phase:2 },
@@ -334,32 +512,177 @@ const LESSONS = [
   { n:33, file:'Lesson33_SightReadingExam.html',    title:'Sight Reading',                tags:['theory'],           phase:4 },
   { n:34, file:'Lesson34_MockExam1.html',           title:'Mock Exam 1',                  tags:['recital'],          phase:4, recital:true },
   { n:35, file:'Lesson35_MockExam2.html',           title:'Mock Exam 2',                  tags:['recital'],          phase:4, recital:true },
-  { n:36, file:'Lesson36_Celebration.html',         title:'🎉 You Did It!',               tags:['recital'],          phase:4, recital:true },
+  { n:36, file:'Lesson36_Celebration.html',         title:'You Did It!',                  tags:['recital'],          phase:4, recital:true },
+];
+
+/* ─── WEEKLY SCHEDULE ─── */
+const WEEKLY_SCHEDULE = [
+  { week:1,  lesson:'Lesson 1 (Hot Cross Buns)',        focus:'Keyboard orientation' },
+  { week:2,  lesson:'Lesson 2 (Mary Had a Little Lamb)',focus:'Notes C, D, E' },
+  { week:3,  lesson:'Lesson 3 (Ode to Joy Simplified)', focus:'Notes F and G' },
+  { week:4,  lesson:'Lesson 4 (Merrily We Roll Along)', focus:'Left hand intro' },
+  { week:5,  lesson:'Lesson 5 (London Bridge)',         focus:'Quarter & half notes' },
+  { week:6,  lesson:'Lesson 6 (Jingle Bells)',          focus:'More rhythms' },
+  { week:7,  lesson:'Lesson 7 (Ode to Joy Full)',       focus:'Full arrangement' },
+  { week:8,  lesson:'Lesson 8 (Phase 1 Recital)',       focus:'Phase 1 recap' },
+  { week:9,  lesson:'Lesson 9 (C Major Scale)',         focus:'First scale' },
+  { week:10, lesson:'Lesson 10 (Frere Jacques)',        focus:'Hands together' },
+  { week:11, lesson:'Lesson 11 (G Major Scale)',        focus:'Second scale' },
+  { week:12, lesson:'Lesson 12 (F Major Scale)',        focus:'Third scale' },
+  { week:13, lesson:'Lesson 13 (Grand Staff)',          focus:'Reading both clefs' },
+  { week:14, lesson:'Lesson 14 (Legato & Staccato)',    focus:'Articulation' },
+  { week:15, lesson:'Lesson 15 (Waltz Time)',           focus:'3/4 time' },
+  { week:16, lesson:'Lesson 16 (Phase 2 Recital)',      focus:'Phase 2 recap' },
+  { week:17, lesson:'Lesson 17 (Dynamics)',             focus:'Loud and soft' },
+  { week:18, lesson:'Lesson 18 (A Minor Scale)',        focus:'First minor scale' },
+  { week:19, lesson:'Lesson 19 (D Minor Scale)',        focus:'Second minor scale' },
+  { week:20, lesson:'Lesson 20 (Contrary Motion)',      focus:'Hands moving apart' },
+  { week:21, lesson:'Lesson 21 (Arpeggios)',            focus:'Broken chords' },
+  { week:22, lesson:'Lesson 22 (Dotted Notes)',         focus:'Dotted rhythms' },
+  { week:23, lesson:'Lesson 23 (Sight Reading)',        focus:'Reading new music' },
+  { week:24, lesson:'Lesson 24 (Phase 3 Recital)',      focus:'Phase 3 recap' },
+  { week:25, lesson:'Lesson 25 (List A)',               focus:'First exam piece' },
+  { week:26, lesson:'Lesson 26 (List A Performance)',   focus:'Polish piece 1' },
+  { week:27, lesson:'Lesson 27 (List B)',               focus:'Second exam piece' },
+  { week:28, lesson:'Lesson 28 (List B Voicing)',       focus:'Polish piece 2' },
+  { week:29, lesson:'Lesson 29 (List C)',               focus:'Third exam piece' },
+  { week:30, lesson:'Lesson 30 (Full Run Through)',     focus:'All three pieces' },
+  { week:31, lesson:'Lesson 31 (Scales Drill)',         focus:'Scales from memory' },
+  { week:32, lesson:'Lesson 32 (Aural Training)',       focus:'Listening skills' },
+  { week:33, lesson:'Lesson 33 (Sight Reading Exam)',   focus:'Exam-level reading' },
+  { week:34, lesson:'Lesson 34 (Mock Exam 1)',          focus:'Full mock' },
+  { week:35, lesson:'Lesson 35 (Mock Exam 2)',          focus:'Full mock' },
+  { week:36, lesson:'Lesson 36 (Celebration)',          focus:'Programme complete' },
 ];
 
 const PHASE_COLOR = { 1:'var(--phase1)', 2:'var(--phase2)', 3:'var(--phase3)', 4:'var(--phase4)' };
 const TAG_CLASS   = { audio:'tag-audio', recital:'tag-recital', theory:'tag-theory', scale:'tag-scale' };
 const TAG_LABEL   = { audio:'🎵 Audio', recital:'🎤 Recital', theory:'📖 Theory', scale:'🎼 Scale' };
 
-function getKey(n) { return 'lesson_done_' + n; }
-function isDone(n)  { return localStorage.getItem(getKey(n)) === '1'; }
-function toggle(n)  {
+/* ─── CHILD TRACKING ─── */
+let activeChild = localStorage.getItem('piano_active_child') || 'Ava';
+
+function switchChild(name) {
+  activeChild = name;
+  localStorage.setItem('piano_active_child', name);
+  document.getElementById('tabAva').classList.toggle('active', name === 'Ava');
+  document.getElementById('tabJacob').classList.toggle('active', name === 'Jacob');
+  renderAll();
+}
+
+function getKey(n) { return 'piano_' + activeChild + '_lesson_' + n; }
+function isDone(n) { return localStorage.getItem(getKey(n)) === '1'; }
+function toggle(n) {
   const was = isDone(n);
   localStorage.setItem(getKey(n), was ? '0' : '1');
   renderAll();
 }
 function resetProgress() {
-  if (!confirm('Reset all lesson progress?')) return;
+  if (!confirm('Reset all lesson progress for ' + activeChild + '?')) return;
   LESSONS.forEach(l => localStorage.removeItem(getKey(l.n)));
   renderAll();
 }
 
+/* ─── WEEK CALCULATION ─── */
+function getCurrentWeek() {
+  const start = new Date(START_DATE + 'T00:00:00');
+  const now = new Date();
+  const diffMs = now - start;
+  if (diffMs < 0) return 0; // not started yet
+  const diffWeeks = Math.floor(diffMs / (7 * 24 * 60 * 60 * 1000)) + 1;
+  return diffWeeks;
+}
+
+function getWeekStartDate(weekNum) {
+  const start = new Date(START_DATE + 'T00:00:00');
+  const d = new Date(start);
+  d.setDate(d.getDate() + (weekNum - 1) * 7);
+  return d;
+}
+
+function formatDate(d) {
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return d.getDate() + ' ' + months[d.getMonth()];
+}
+
+/* ─── THIS WEEK BANNER ─── */
+function renderBanner() {
+  const weekNum = getCurrentWeek();
+  const banner = document.getElementById('thisWeekBanner');
+  const label = document.getElementById('weekLabel');
+  const title = document.getElementById('weekTitle');
+  const desc = document.getElementById('weekDesc');
+
+  banner.className = 'this-week-banner';
+
+  if (weekNum === 0) {
+    banner.classList.add('not-started');
+    label.textContent = activeChild + '\'s Programme';
+    title.textContent = 'Starting soon!';
+    const startDate = new Date(START_DATE + 'T00:00:00');
+    desc.textContent = 'The programme begins on ' + formatDate(startDate) + '.';
+  } else if (weekNum > 36) {
+    banner.classList.add('complete');
+    label.textContent = activeChild + '\'s Programme';
+    title.textContent = '🎉 Programme Complete!';
+    desc.textContent = 'Well done, ' + activeChild + '! All 36 weeks finished.';
+  } else {
+    const entry = WEEKLY_SCHEDULE[weekNum - 1];
+    label.textContent = activeChild + ' · Week ' + weekNum + ' of 36';
+    title.textContent = entry.lesson;
+    desc.textContent = 'This week: ' + entry.focus;
+  }
+}
+
+/* ─── FULL SCHEDULE TABLE ─── */
+function renderSchedule() {
+  const body = document.getElementById('scheduleBody');
+  body.innerHTML = '';
+  const weekNum = getCurrentWeek();
+
+  WEEKLY_SCHEDULE.forEach(entry => {
+    const tr = document.createElement('tr');
+    if (entry.week === weekNum) tr.className = 'current-week';
+    else if (entry.week < weekNum) tr.className = 'past-week';
+
+    const tdWeek = document.createElement('td');
+    tdWeek.className = 'week-num';
+    tdWeek.textContent = entry.week;
+
+    const tdLesson = document.createElement('td');
+    tdLesson.textContent = entry.lesson;
+
+    const tdFocus = document.createElement('td');
+    tdFocus.textContent = entry.focus;
+
+    const tdDate = document.createElement('td');
+    tdDate.className = 'week-date';
+    tdDate.textContent = formatDate(getWeekStartDate(entry.week));
+
+    tr.appendChild(tdWeek);
+    tr.appendChild(tdLesson);
+    tr.appendChild(tdFocus);
+    tr.appendChild(tdDate);
+    body.appendChild(tr);
+  });
+}
+
+function toggleSchedule() {
+  const btn = document.getElementById('scheduleToggle');
+  const wrap = document.getElementById('scheduleWrap');
+  btn.classList.toggle('open');
+  wrap.classList.toggle('open');
+}
+
+/* ─── LESSON CARDS ─── */
 function makeCard(lesson) {
   const done = isDone(lesson.n);
   const pc   = PHASE_COLOR[lesson.phase];
+  const weekNum = getCurrentWeek();
+  const isCurrent = (lesson.n === weekNum && weekNum >= 1 && weekNum <= 36);
 
   const card = document.createElement('div');
-  card.className = 'lesson-card' + (done ? ' done' : '') + (lesson.recital ? ' recital' : '');
+  card.className = 'lesson-card' + (done ? ' done' : '') + (lesson.recital ? ' recital' : '') + (isCurrent ? ' current-lesson' : '');
   card.style.setProperty('--phase-color', pc);
 
   // Number bubble (clicking marks done)
@@ -426,12 +749,64 @@ function renderAll() {
   const pct   = Math.round((done / total) * 100);
   document.getElementById('progressFill').style.width = pct + '%';
   document.getElementById('progressLabel').textContent =
-    done === 0   ? 'No lessons completed yet — let\'s go! 🎹' :
-    done === total ? '🎉 All 36 lessons complete! Amazing!' :
-    done + ' of ' + total + ' lessons completed (' + pct + '%)';
+    done === 0   ? activeChild + ': No lessons completed yet — let\'s go! 🎹' :
+    done === total ? '🎉 ' + activeChild + ': All 36 lessons complete! Amazing!' :
+    activeChild + ': ' + done + ' of ' + total + ' lessons completed (' + pct + '%)';
+
+  renderBanner();
+  renderSchedule();
 }
 
+/* ─── NOTIFICATIONS ─── */
+function setupNotifications() {
+  if (!('Notification' in window)) return;
+
+  if (Notification.permission === 'default') {
+    // Wait a moment before asking, so it's not jarring on first load
+    setTimeout(() => {
+      Notification.requestPermission();
+    }, 2000);
+  }
+
+  // Check every 60 seconds if it's Monday at 9am
+  function checkMondayNotification() {
+    const now = new Date();
+    const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday
+    const hour = now.getHours();
+    const minute = now.getMinutes();
+
+    if (dayOfWeek === 1 && hour === 9 && minute === 0) {
+      const lastNotified = localStorage.getItem('piano_last_notified');
+      const todayStr = now.toISOString().slice(0, 10);
+
+      if (lastNotified !== todayStr && Notification.permission === 'granted') {
+        const weekNum = getCurrentWeek();
+        let body;
+        if (weekNum === 0) {
+          body = 'The programme starts soon. Get ready!';
+        } else if (weekNum > 36) {
+          body = 'Programme complete! Well done!';
+        } else {
+          const entry = WEEKLY_SCHEDULE[weekNum - 1];
+          body = 'This week: ' + entry.lesson + ' — ' + entry.focus;
+        }
+        new Notification('🎹 Piano time!', { body: body });
+        localStorage.setItem('piano_last_notified', todayStr);
+      }
+    }
+  }
+
+  setInterval(checkMondayNotification, 60000);
+  checkMondayNotification(); // also check on load
+}
+
+/* ─── INIT ─── */
+// Restore active child tab state
+document.getElementById('tabAva').classList.toggle('active', activeChild === 'Ava');
+document.getElementById('tabJacob').classList.toggle('active', activeChild === 'Jacob');
+
 renderAll();
+setupNotifications();
 </script>
 </body>
 </html>

@@ -572,9 +572,25 @@ function switchChild(name) {
 
 function getKey(n) { return 'piano_' + activeChild + '_lesson_' + n; }
 function isDone(n) { return localStorage.getItem(getKey(n)) === '1'; }
+
+// ── Supabase tracking ──
+const SB_URL = 'https://bdlrmtcrjenoyullctsw.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkbHJtdGNyamVub3l1bGxjdHN3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4MDM1NDAsImV4cCI6MjA5MDM3OTU0MH0.Wb1aEGF7U44LzJEiej1qJjRN_1r0S_fwCYJroViYfoc';
+const SB_H = {'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'};
+function trackPiano(child, lessonNum, lessonName) {
+  fetch(SB_URL+'/rest/v1/piano_activity', {method:'POST', headers:SB_H,
+    body:JSON.stringify({child_name:child, lesson_number:lessonNum, lesson_name:lessonName, completed:true})
+  }).catch(()=>{});
+}
+
 function toggle(n) {
   const was = isDone(n);
   localStorage.setItem(getKey(n), was ? '0' : '1');
+  // If marking as done, track to Supabase
+  if (!was) {
+    const lesson = LESSONS.find(l => l.n === n);
+    if (lesson) trackPiano(activeChild, n, lesson.title);
+  }
   renderAll();
 }
 function resetProgress() {
